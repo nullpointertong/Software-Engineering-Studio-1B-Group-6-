@@ -1,16 +1,30 @@
 package yourteamnumber.seshealthpatient.Activities;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import yourteamnumber.seshealthpatient.R;
+
+
 
 /**
  * Class: LoginActivity
@@ -25,15 +39,16 @@ import yourteamnumber.seshealthpatient.R;
  * <p>
  */
 public class LoginActivity extends AppCompatActivity {
-
-
     /**
      * Use the @BindView annotation so Butter Knife can search for that view, and cast it for you
      * (in this case it will get casted to Edit Text)
      */
     @BindView(R.id.usernameET)
     EditText usernameEditText;
+    FirebaseDatabase database;
+    FirebaseAuth firebaseAuth;
 
+    DatabaseReference users;
     /**
      * If you want to know more about Butter Knife, please, see the link I left at the build.gradle
      * file.
@@ -59,6 +74,12 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.login_toolbar);
         setSupportActionBar(toolbar);
 
+        //Firebase Setup Code
+        database = FirebaseDatabase.getInstance();
+        users = database.getReference("Users");
+        firebaseAuth = FirebaseAuth.getInstance();
+
+
         // Please try to use more String resources (values -> strings.xml) vs hardcoded Strings.
         setTitle(R.string.login_activity_title);
 
@@ -71,8 +92,9 @@ public class LoginActivity extends AppCompatActivity {
      */
     @OnClick(R.id.login_btn)
     public void LogIn() {
-        String username = usernameEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
+        Button login_btn;
+       final String username = usernameEditText.getText().toString();
+       final String password = passwordEditText.getText().toString();
 
         // TODO: For now, the login button will simply print on the console the username/password and let you in
         // TODO: It is up to you guys to implement a proper login system
@@ -80,11 +102,23 @@ public class LoginActivity extends AppCompatActivity {
         // Having a tag, and the name of the function on the console message helps allot in
         // knowing where the message should appear.
         Log.d(TAG, "LogIn: username: " + username + " password: " + password);
-
-
         // Start a new activity
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+
+        final Intent intent = new Intent(this, MainActivity.class);
+
+        firebaseAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                if(task.isSuccessful())
+                {
+                    startActivity(intent);
+                }
+            }
+        });
+
+
+
     }
 
 

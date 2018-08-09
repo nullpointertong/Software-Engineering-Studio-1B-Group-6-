@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 
 import yourteamnumber.seshealthpatient.Fragments.DataPacketFragment;
@@ -100,6 +101,12 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+        //Setup buttons in Activity Login
+        Button login_btn;
+
+        login_btn = (Button) findViewById(R.id.login_btn);
+
 
         // Setup the navigation drawer, most of this code was taken from:
         // https://developer.android.com/training/implementing-navigation/nav-drawer

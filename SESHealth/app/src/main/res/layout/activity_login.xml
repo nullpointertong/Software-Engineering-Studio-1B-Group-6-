@@ -57,6 +57,7 @@
         android:layout_below="@id/usernameET"
         android:layout_marginTop="20dp"
         android:layout_toEndOf="@id/passwordTV"
+        android:hint="Password"
         android:inputType="textPassword" />
 
     <Button
