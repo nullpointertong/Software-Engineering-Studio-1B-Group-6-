@@ -18,4 +18,14 @@
 
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
+
+    <string name="remove_button">REMOVE</string>
+
+    <!--  DATA PACKET STRINGS  -->
+    <string name="data_packet_send">Send</string>
+
+    <string name="text_input_hint">Describe your problem</string>
+    <string name="text_input_label">Description:</string>
+
+    <string name="data_packet_empty_hint">The data packet is currently empty, tap \"≡\" to add data.</string>
 </resources>

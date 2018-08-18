@@ -127,38 +127,32 @@ public class MainActivity extends AppCompatActivity {
                                 // If the user clicked on a different item than the current item
                                 if (currentState != MenuStates.PATIENT_INFO) {
                                     // change the fragment to the new fragment
-                                    ChangeFragment(new PatientInformationFragment());
-                                    currentState = MenuStates.PATIENT_INFO;
+                                    ChangeFragment(MenuStates.PATIENT_INFO);
                                 }
                                 break;
                             case R.id.nav_data_packet:
                                 if (currentState != MenuStates.DATA_PACKET) {
-                                    ChangeFragment(new DataPacketFragment());
-                                    currentState = MenuStates.DATA_PACKET;
+                                    ChangeFragment(MenuStates.DATA_PACKET);
                                 }
                                 break;
                             case R.id.nav_heartrate:
                                 if (currentState != MenuStates.HEARTRATE) {
-                                    ChangeFragment(new HeartRateFragment());
-                                    currentState = MenuStates.HEARTRATE;
+                                    ChangeFragment(MenuStates.HEARTRATE);
                                 }
                                 break;
                             case R.id.nav_recordvideo:
                                 if (currentState != MenuStates.RECORD_VIDEO) {
-                                    ChangeFragment(new RecordVideoFragment());
-                                    currentState = MenuStates.RECORD_VIDEO;
+                                    ChangeFragment(MenuStates.RECORD_VIDEO);
                                 }
                                 break;
                             case R.id.nav_sendfile:
                                 if (currentState != MenuStates.SEND_FILE) {
-                                    ChangeFragment(new SendFileFragment());
-                                    currentState = MenuStates.SEND_FILE;
+                                    ChangeFragment(MenuStates.SEND_FILE);
                                 }
                                 break;
                             case R.id.nav_map:
                                 if (currentState != MenuStates.NAVIGATION_MAP) {
-                                    ChangeFragment(new MapFragment());
-                                    currentState = MenuStates.NAVIGATION_MAP;
+                                    ChangeFragment(MenuStates.NAVIGATION_MAP);
                                 }
                                 break;
                         }
@@ -217,22 +211,66 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function changes the title of the fragment.
-     *
-     * @param newTitle The new title to write in the
      */
-    public void ChangeTitle(String newTitle) {
-        toolbar.setTitle(newTitle);
+    public void UpdateFragmentTitle()
+    {
+        toolbar.setTitle(GetTitleForFragment());
     }
 
 
     /**
      * This function allows to change the content of the Fragment holder
-     * @param fragment The fragment to be displayed
+     * @param menuState The menu state to be displayed
      */
-    private void ChangeFragment(Fragment fragment) {
+    private void ChangeFragment(MenuStates menuState) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+        transaction.replace(R.id.fragment_container, GetFragmentForMenuState(menuState));
         transaction.addToBackStack(null);
         transaction.commit();
+
+        currentState = menuState;
+        UpdateFragmentTitle();
+    }
+
+    private Fragment GetFragmentForMenuState(MenuStates menuState)
+    {
+        switch (menuState)
+        {
+            case HEARTRATE:
+                return new HeartRateFragment();
+            case SEND_FILE:
+                return new SendFileFragment();
+            case DATA_PACKET:
+                return new DataPacketFragment();
+            case PATIENT_INFO:
+                return new PatientInformationFragment();
+            case NAVIGATION_MAP:
+                return new MapFragment();
+            case RECORD_VIDEO:
+                return new RecordVideoFragment();
+            default:
+                return null;
+        }
+    }
+
+    private String GetTitleForFragment()
+    {
+        switch (currentState)
+        {
+            case HEARTRATE:
+                return getString(R.string.heart_rate);
+            case SEND_FILE:
+                return getString(R.string.send_local_file);
+            case DATA_PACKET:
+                return getString(R.string.create_data_packet);
+            case PATIENT_INFO:
+                return getString(R.string.patient_information);
+            case NAVIGATION_MAP:
+                return getString(R.string.facilities_map);
+            case RECORD_VIDEO:
+                return getString(R.string.record_video);
+            default:
+                return null;
+        }
     }
 }
