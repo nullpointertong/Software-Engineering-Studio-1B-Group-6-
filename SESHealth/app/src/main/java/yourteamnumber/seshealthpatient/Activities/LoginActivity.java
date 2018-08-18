@@ -1,5 +1,6 @@
 package yourteamnumber.seshealthpatient.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -113,6 +115,10 @@ public class LoginActivity extends AppCompatActivity {
                 if(task.isSuccessful())
                 {
                     startActivity(intent);
+                }
+                else
+                {
+                    Toast.makeText(LoginActivity.this, "Wrong Username or Password", Toast.LENGTH_SHORT).show();
                 }
             }
         });
