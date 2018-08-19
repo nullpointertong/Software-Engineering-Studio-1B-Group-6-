@@ -4,12 +4,19 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/crdTextInput"
-        android:layout_width="match_parent"
+    <com.github.captain_miao.optroundcardview.OptRoundCardView
+        android:id="@+id/top_card_view"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="-1dp"
-        android:layout_margin="10dp">
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        app:optRoundCardCornerRadius="8dp"
+        app:optRoundCardLeftBottomCorner="false"
+        app:optRoundCardRightBottomCorner="false"
+        app:optRoundCardBottomEdges="false">
+
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -20,42 +27,53 @@
                 android:id="@+id/etDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/text_input_hint"
-                android:layout_marginStart="5dp"
+                android:layout_below="@id/txtInputTopBar"
                 android:layout_marginEnd="5dp"
-                android:layout_marginTop="-5dp"
-                app:met_minCharacters="0"
-                app:met_maxCharacters="500"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/opensans_light"
+                android:hint="@string/text_input_hint"
+                android:typeface="sans"
                 app:met_floatingLabel="highlight"
-                app:met_floatingLabelText="@string/text_input_label"
                 app:met_floatingLabelAnimating="true"
-                app:met_primaryColor="@color/colorAccent"
-                android:layout_below="@id/lblTextInput"/>
+                app:met_floatingLabelText="@string/text_input_label"
+                app:met_clearButton="true"
+                app:met_maxCharacters="500"
+                app:met_minCharacters="0"
+                app:met_primaryColor="@color/colorAccent" />
 
-            <Button
-                android:id="@+id/btnRemove"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/lblTextInput"
-                android:layout_alignTop="@id/lblTextInput"
-                android:backgroundTint="@color/redColor"
-                android:layout_alignParentEnd="true"
-                android:textSize="13dp"
-                android:text="@string/remove_button" />
+                android:id="@+id/txtInputTopBar">
 
-            <TextView
-                android:id="@+id/lblTextInput"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:elevation="10dp"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
-                android:text="@string/text_input_label"
-                android:textSize="20dp"
-                android:layout_centerHorizontal="true"/>
+                <ImageButton
+                    android:id="@+id/btnRemove"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:elevation="2dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/button_bg"
+                    android:textSize="13dp" />
+
+                <TextView
+                    android:id="@+id/lblTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textAlignment="center"
+                    android:elevation="1dp"
+                    android:fontFamily="@font/opensans_bold"
+                    android:paddingTop="5dp"
+                    android:text="@string/text_input_label"
+                    android:textSize="20dp"
+                    android:textColor="@color/whiteColor"
+                    android:background="@drawable/rounded_corner"/>
+            </RelativeLayout>
 
         </RelativeLayout>
-
-    </android.support.v7.widget.CardView>
+    </com.github.captain_miao.optroundcardview.OptRoundCardView>
 
 </RelativeLayout>

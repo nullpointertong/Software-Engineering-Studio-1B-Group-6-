@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/data_packet_bg"
     tools:context="yourteamnumber.seshealthpatient.Fragments.DataPacketFragment"
     android:id="@+id/frameLayout">
     <!-- TODO: Update blank fragment layout -->
@@ -24,6 +25,7 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
             android:padding="8dp"
+            android:fontFamily="@font/opensans_bold"
             rfab:rfab_size="normal"
             rfab:rfab_drawable="@drawable/ic_menu"
             rfab:rfab_color_normal="@color/colorAccent"
@@ -40,7 +42,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:fontFamily="@font/opensans_regular"
         android:text="@string/data_packet_empty_hint"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textSize="14sp" />
 
 </RelativeLayout>

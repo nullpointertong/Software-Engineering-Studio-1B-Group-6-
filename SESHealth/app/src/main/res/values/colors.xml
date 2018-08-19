@@ -8,4 +8,9 @@
 
     <color name="greenColor">#53df46</color>
     <color name="greenColorPressed">#2b7124</color>
+
+    <color name="descriptionBackColor">#3f8ae6</color>
+
+    <color name="data_packet_bg">#f3f3f3</color>
+
 </resources>
