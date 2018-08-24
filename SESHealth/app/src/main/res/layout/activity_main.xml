@@ -20,9 +20,10 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
+            android:background="#031E3C"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:titleTextColor="@color/whiteColor" />
+            app:titleTextColor="@color/whiteColor"
+            />
 
         <FrameLayout
             android:id="@+id/fragment_container"

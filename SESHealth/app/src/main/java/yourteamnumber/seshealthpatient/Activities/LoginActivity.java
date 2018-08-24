@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -80,6 +82,18 @@ public class LoginActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         users = database.getReference("Users");
         firebaseAuth = FirebaseAuth.getInstance();
+        TextView register_textview = findViewById(R.id.textView2);
+        register_textview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent k = new Intent(LoginActivity.this, RegisterActivity.class);
+                    startActivity(k);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
 
         // Please try to use more String resources (values -> strings.xml) vs hardcoded Strings.
