@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/whiteColor"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="yourteamnumber.seshealthpatient.Activities.LoginActivity">
 
@@ -10,65 +11,102 @@
         android:id="@+id/login_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimaryDark"
+        android:background="#031E3C"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:titleTextColor="@color/whiteColor"
         />
 
-
-    <TextView
-        android:id="@+id/usernameTV"
-        style="@style/LoginStyles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:labelFor="@+id/usernameET"
-        android:text="@string/username_txt" />
-
-    <EditText
-        android:id="@id/usernameET"
-        style="@style/LoginStyles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/usernameTV"
-        android:hint="@string/email_example_com"
-        android:inputType="textEmailAddress" />
-
-    <TextView
-        android:id="@+id/passwordTV"
-        style="@style/LoginStyles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/usernameTV"
-        android:layout_marginTop="20dp"
-        android:labelFor="@+id/passwordET"
-        android:text="@string/password_txt" />
-
-    <EditText
-        android:id="@id/passwordET"
-        style="@style/LoginStyles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/usernameET"
-        android:layout_marginTop="20dp"
-        android:layout_toEndOf="@id/passwordTV"
-        android:hint="Password"
-        android:inputType="textPassword" />
-
-    <Button
-        android:id="@+id/login_btn"
-        style="@style/LoginStyles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/passwordTV"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_below="@+id/login_toolbar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
-        android:text="@string/log_in_txt" />
+        app:srcCompat="@drawable/logo"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="60dp"/>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/imageView"
+        android:fillViewport="true">
+        <LinearLayout
+            android:id="@+id/inputfield_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="50dp"
+                android:gravity="center">
+                <ImageView
+                    android:id="@+id/usernameTV"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:labelFor="@+id/usernameET"
+                    app:srcCompat="@drawable/email_icon" />
+
+                <EditText
+                    android:id="@id/usernameET"
+                    style="@style/LoginStyles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:hint="@string/email_example_com"
+                    android:inputType="textEmailAddress" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginHorizontal="50dp">
+
+                <ImageView
+                    android:id="@+id/passwordTV"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:labelFor="@+id/passwordET"
+                    app:srcCompat="@drawable/password" />
+
+                <EditText
+                    android:id="@id/passwordET"
+                    style="@style/LoginStyles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:hint="password"
+                    android:inputType="textPassword" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/login_btn"
+                style="@style/LoginStyles"
+                android:layout_width="168dp"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/textView2"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/round_button"
+                android:text="@string/log_in_txt"
+                android:textColor="@color/whiteColor"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Register Here."
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp" />
+        </LinearLayout>
+    </ScrollView>
 
 
 </RelativeLayout>
