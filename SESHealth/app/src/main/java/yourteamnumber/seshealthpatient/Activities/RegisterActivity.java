@@ -29,10 +29,10 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText  register_passwordET2;
 
 
-    private Button register_btn;
+    private Button register_btn;   //Buttons
 
-    private TextView textView4;
-    private TextView textView5;
+    private TextView textView4;  //Textviews within the program
+    private TextView textView5;  //
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase database;
