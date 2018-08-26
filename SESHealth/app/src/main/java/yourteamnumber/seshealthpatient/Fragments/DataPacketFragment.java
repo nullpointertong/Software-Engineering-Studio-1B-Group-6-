@@ -71,7 +71,7 @@ public class DataPacketFragment extends Fragment {
         activeViews = new ArrayList<>();
         dataPacket = new DataPacket();
 
-        txtAddDataHint = getView().findViewById(R.id.txtAddData);
+//        txtAddDataHint = getView().findViewById(R.id.txtAddData);
         relativeLayout = getView().findViewById(R.id.frameLayout);
         rfaLayout = getView().findViewById(R.id.activity_main_rfal);
         rfaBtn = getView().findViewById(R.id.activity_main_rfab);
@@ -118,14 +118,13 @@ public class DataPacketFragment extends Fragment {
         );
 
         rfabHelper.build();
-
-        mAdapter = new DataPacketAdapter(mDataPacketList);
+        recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_view);
+        mAdapter = new DataPacketAdapter(this.getContext(), mDataPacketList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(mAdapter);
-
         prepareDatapackets();
     }
 
@@ -138,6 +137,8 @@ public class DataPacketFragment extends Fragment {
 
         dataPacket = new DataPacket();
         mDataPacketList.add(dataPacket);
+
+        mAdapter.notifyDataSetChanged();
     }
 
     private void AddTextInput() {
@@ -198,7 +199,7 @@ public class DataPacketFragment extends Fragment {
 
     private void HandleItemClick(int dataId)
     {
-        txtAddDataHint.setVisibility(View.INVISIBLE);
+//        txtAddDataHint.setVisibility(View.INVISIBLE);
 
         switch (dataId)
         {

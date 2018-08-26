@@ -1,5 +1,6 @@
 package yourteamnumber.seshealthpatient.Model.DataPacket.Models;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import yourteamnumber.seshealthpatient.R;
 
 public class DataPacketAdapter extends RecyclerView.Adapter<DataPacketAdapter.ViewHolder> {
 
+    private Context mContext;
     private List<DataPacket> mDataPacketList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -26,8 +28,9 @@ public class DataPacketAdapter extends RecyclerView.Adapter<DataPacketAdapter.Vi
     }
 
 
-    public DataPacketAdapter(List<DataPacket> dataPacketList) {
-        this.mDataPacketList = mDataPacketList;
+    public DataPacketAdapter(Context context, List<DataPacket> dataPacketList) {
+        this.mContext = context;
+        this.mDataPacketList = dataPacketList;
     }
 
     @Override
@@ -42,7 +45,6 @@ public class DataPacketAdapter extends RecyclerView.Adapter<DataPacketAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         DataPacket dataPacket = mDataPacketList.get(position);
         holder.id.setText(dataPacket.getDataPackedId().toString());
-        holder.description.setText(dataPacket.getTextData().toString());
     }
 
     @Override
