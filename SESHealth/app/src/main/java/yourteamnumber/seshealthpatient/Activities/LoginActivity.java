@@ -1,13 +1,17 @@
 package yourteamnumber.seshealthpatient.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -78,6 +82,18 @@ public class LoginActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         users = database.getReference("Users");
         firebaseAuth = FirebaseAuth.getInstance();
+        TextView register_textview = findViewById(R.id.textView2);
+        register_textview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent k = new Intent(LoginActivity.this, RegisterActivity.class);
+                    startActivity(k);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
 
         // Please try to use more String resources (values -> strings.xml) vs hardcoded Strings.
@@ -92,16 +108,21 @@ public class LoginActivity extends AppCompatActivity {
      */
     @OnClick(R.id.login_btn)
     public void LogIn() {
-        Button login_btn;
        final String username = usernameEditText.getText().toString();
        final String password = passwordEditText.getText().toString();
+
+       if (username.isEmpty() || password.isEmpty())
+       {
+           Toast.makeText(this, "The username and password cannot be empty.", Toast.LENGTH_SHORT).show();
+           return;
+       }
 
         // TODO: For now, the login button will simply print on the console the username/password and let you in
         // TODO: It is up to you guys to implement a proper login system
 
         // Having a tag, and the name of the function on the console message helps allot in
         // knowing where the message should appear.
-        Log.d(TAG, "LogIn: username: " + username + " password: " + password);
+        Log.d(TAG, "Log In: username: " + username + " password: " + password);
         // Start a new activity
 
         final Intent intent = new Intent(this, MainActivity.class);
@@ -113,6 +134,10 @@ public class LoginActivity extends AppCompatActivity {
                 if(task.isSuccessful())
                 {
                     startActivity(intent);
+                }
+                else
+                {
+                    Toast.makeText(LoginActivity.this, "Wrong Username or Password", Toast.LENGTH_SHORT).show();
                 }
             }
         });

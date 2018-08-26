@@ -123,7 +123,6 @@ public class SendFileFragment extends Fragment implements GoogleApiClient.OnConn
         // TODO: get the root folder info and display its ID
         DriveFolder rootFolder = Drive.DriveApi.getRootFolder(mGoogleApiClient);
         DriveId rootID = rootFolder.getDriveId();
-
         tvData.setText("Root Folder: " + rootID.toString());
     }
 
@@ -136,7 +135,6 @@ public class SendFileFragment extends Fragment implements GoogleApiClient.OnConn
         // TODO: invoke the file chooser and display the file info
         openFileIS = new OpenFileActivityBuilder()
                 .setActivityTitle("Select A File")
-                .setMimeType(new String[] {"application/pdf"})
                 .build(mGoogleApiClient);
         // This code will open the file picker Activity, and the result will
         // be passed to the onActivityResult function.
