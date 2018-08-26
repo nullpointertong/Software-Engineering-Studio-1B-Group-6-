@@ -123,20 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
         final Intent intent = new Intent(this, MainActivity.class);
 
-        firebaseAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-
-                if(task.isSuccessful())
-                {
-                    startActivity(intent);
-                }
-                else
-                {
-                    Toast.makeText(LoginActivity.this, "Wrong Username or Password", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        startActivity(intent);
 
 
 
