@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/vertical_margin"
+    android:paddingLeft="@dimen/horizontal_margin"
+    android:paddingRight="@dimen/horizontal_margin"
+    android:paddingTop="@dimen/row_padding_vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toLeftOf="@+id/data_packet_button"
+        >
+
+        <TextView
+            android:id="@+id/data_packet_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:text="Data packet 001"/>
+
+        <TextView
+            android:id="@+id/data_packet_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/data_packet_id"
+            android:text="This is the first data packet. Please write any contents here."/>
+
+        <TextView
+            android:id="@+id/data_packet_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/data_packet_description"
+            android:text="Created: 25 / 08 / 2018"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/data_packet_button"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true">
+            <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:textColor="@color/whiteColor"
+            android:text="send"/>
+    </LinearLayout>
+
+
+</RelativeLayout>
