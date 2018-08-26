@@ -19,13 +19,6 @@
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
 
-
-    <string name="relevant_hint">Type medical record here!   </string>
-    <string name="relevant_hint1">Already 0/200 words!</string>
-    <string name="upload_relevant_text">Upload</string>
-    <string name="upload_tv">Upload other files if any.</string>
-    <string name="maxwords_toast">Too much words!</string>
-    <string name="select_Btn">SELECT FILE</string>
-    <string name="upload_Btn">UPLOAD</string>
-    <string name="fileName_Tv">No file is selected</string>
+    <string name="googledrive">Choose from Google Drive</string>
+    <string name="dropbox">Choose from Dropbox</string>
 </resources>

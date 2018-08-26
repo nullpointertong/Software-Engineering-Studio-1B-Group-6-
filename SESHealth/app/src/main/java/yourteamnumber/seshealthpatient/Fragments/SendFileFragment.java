@@ -1,66 +1,93 @@
 package yourteamnumber.seshealthpatient.Fragments;
 
 
-import android.Manifest;
-import android.app.ProgressDialog;
+
+import android.accounts.AccountManager;
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.IntentSender;
+import android.database.Cursor;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.app.Fragment;
+
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.DriveFile;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.DriveResource;
+import com.google.android.gms.drive.Metadata;
+import com.google.android.gms.drive.OpenFileActivityBuilder;
+
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.client.http.FileContent;
+import com.google.api.client.http.GenericUrl;
+
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+
 
 import yourteamnumber.seshealthpatient.R;
+
+
+
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SendFileFragment extends Fragment {
+public class SendFileFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks {
 
-    private Button mUploadTextBtn;
-    private EditText mRevelantText;
-    private TextView mInPutTv;
-    //receive current input characters
-    private CharSequence temp;
-    private int maxNum = 200;
-    private int nowNum;
-    private Button mselectFileBtn;
-    private Button muplaodFileBtn;
-    private TextView mFileNameTv;
-    ProgressDialog progressDialog;
-    //local storage
-    Uri fileUri;
-    //upload files
-    FirebaseStorage storage;
-    //store files
-    FirebaseDatabase database;
+    private static final String TAG = "GoogleDrive API" ;
+    private final int RESOLVE_CONNECTION_REQUEST_CODE = 1000;
+    private final int OPEN_FILE_REQUEST_CODE = 1001;
+    TextView tvData;
 
+    private Context mContext;
+
+    private ListView mListView;
+
+
+    //reference to the google play services client
+    protected GoogleApiClient mGoogleApiClient;
 
     public SendFileFragment() {
         // Required empty public constructor
-
     }
 
     @Override
@@ -68,164 +95,201 @@ public class SendFileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_send_file, container, false);
-       //connect the visual component to my java code
-        mFileNameTv = (TextView) v.findViewById(R.id.fileNameTv);
-        mInPutTv = (TextView) v.findViewById(R.id.input_tv);
 
-        mselectFileBtn = (Button) v.findViewById(R.id.selectBtn);
-        mselectFileBtn.setOnClickListener(new View.OnClickListener() {
+        tvData = (TextView) v.findViewById(R.id.tvMsg);
+        mContext = getActivity();
+
+        v.findViewById(R.id.google_driveBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    selectFiles();
-                }
-                else {
-                    ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
-                }
+                chooseFile();
             }
         });
 
-        muplaodFileBtn = (Button) v.findViewById(R.id.uploadBtn);
-        muplaodFileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (fileUri != null) {
-                    uploadFile(fileUri);
-                }
-                else {
-                    Toast.makeText(getActivity(),
-                            "You should select a file",
-                            Toast.LENGTH_SHORT).show();
-                }
+        mListView = (ListView) v.findViewById(R.id.listView1);
+
+        AdapterView.OnItemClickListener mMessageClickedHandler = new AdapterView.OnItemClickListener()
+        {
+            public void onItemClick(AdapterView parent, View v, int position, long id)
+            {
+
+            }
+        };
+
+        mListView.setOnItemClickListener(mMessageClickedHandler);
+
+        final Button button2 = (Button) v.findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+
             }
         });
 
-        mUploadTextBtn = (Button) v.findViewById(R.id.upload_btn);
-        mUploadTextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
 
-        mRevelantText = (EditText) v.findViewById(R.id.relevant_text);
-        mRevelantText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //receive current input characters
-                temp = s;
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                //current characters
-                nowNum = editable.length();
-                mInPutTv.setText("Already "+nowNum+"/200 words!");
-                int selectionStart = mRevelantText.getSelectionStart();
-                int selectionEnd = mRevelantText.getSelectionEnd();
-                if (temp.length() > maxNum) {
-                    //get character string
-                    editable.delete(selectionStart - 1, selectionEnd);
-                    mRevelantText.setText(editable.toString());
-                    int selection = editable.length();
-                    //let selection go to the end
-                    mRevelantText.setSelection(selection);
-                    Toast.makeText(getActivity(),
-                            R.string.maxwords_toast,
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addApi(Drive.API)
+                .addScope(Drive.SCOPE_FILE)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
 
         return v;
     }
 
-    private void uploadFile(Uri fileUri) {
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setTitle("Uploading file...");
-        progressDialog.setProgress(0);
-        progressDialog.show();
-        final String fileName = System.currentTimeMillis()+"";
-        storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference();
-        storageReference.child("Uploads").child(fileName).putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                //return the upload file url
-                String url = taskSnapshot.getDownloadUrl().toString();
-                // store the url in realtime database
-                database = FirebaseDatabase.getInstance();
-                DatabaseReference reference = database.getReference();//return path root
-                reference.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+    protected void getRootFolderInfo() {
+        // TODO: get the root folder info and display its ID
+        DriveFolder rootFolder = Drive.DriveApi.getRootFolder(mGoogleApiClient);
+        DriveId rootID = rootFolder.getDriveId();
+
+        tvData.setText("Root Folder: " + rootID.toString());
+    }
+    //a
+    // Give the user a standard file-picker UI that lets them select a file
+    // for your app to operate on. Note that the OpenFileActivityBuilder
+    // shows all files, not just the ones that your app has created.
+    protected void chooseFile() {
+        IntentSender openFileIS;
+
+        // TODO: invoke the file chooser and display the file info
+        openFileIS = new OpenFileActivityBuilder()
+                .setActivityTitle("Select A File")
+                .setMimeType(new String[] {"application/pdf"})
+                .build(mGoogleApiClient);
+        // This code will open the file picker Activity, and the result will
+        // be passed to the onActivityResult function.
+       try {
+            startIntentSenderForResult(openFileIS, OPEN_FILE_REQUEST_CODE, new Intent(), 0,0,0,null);
+        }
+        catch (IntentSender.SendIntentException e) {
+            Log.e(TAG, "Problem starting the OpenFileActivityBuilder");
+        }
+    }
+
+    // Once the user has chosen a file, this function will display information
+    // about the file in the TextView
+    protected void displayChosenFileData(Intent fileData) {
+        // the chosen file is stored as an Extra piece of data in the Intent
+        DriveId chosenFileID = fileData
+                .getParcelableExtra(OpenFileActivityBuilder.EXTRA_RESPONSE_DRIVE_ID);
+        // Given a Drive ID, we can convert it to a file reference
+        DriveFile theFile = chosenFileID.asDriveFile();
+        // Once  have the file reference,  can get the file's metadata
+        // TODO: display the file metadata
+        theFile.getMetadata(mGoogleApiClient)
+                .setResultCallback(new ResultCallback<DriveResource.MetadataResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(),
-                                    "Upload successfully",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            Toast.makeText(getActivity(),
-                                    "Upload successfully",
-                                    Toast.LENGTH_SHORT).show();
-                        }
+                    public void onResult(@NonNull DriveResource.MetadataResult metadataResult) {
+                        Metadata theData = metadataResult.getMetadata();
+                        String str = theData.getTitle() + "\n" + theData.getMimeType() + "\n" + theData.getFileSize() + "bytes\n";
+                        tvData.setText(str);
                     }
                 });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(),
-                        "Upload unsuccessfully",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                //track the progress of  = upload
-                int currentProgress =(int) (100 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                progressDialog.setProgress(currentProgress);
-            }
-        });
+    }
+
+    private final ResultCallback<DriveApi.DriveContentsResult> mNewContentCallback =
+            new ResultCallback<DriveApi.DriveContentsResult>() {
+                @Override
+                public void onResult(@NonNull final DriveApi.DriveContentsResult result) {
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            // Retrieve the output stream from the DriveContents
+                            OutputStream outStrm = result.getDriveContents().getOutputStream();
+                            OutputStreamWriter outStrmWrt = new OutputStreamWriter(outStrm);
+
+                            try {
+                                outStrmWrt.write("This is some file content!");
+                                outStrmWrt.close();
+                            }
+                            catch (IOException e) {
+                                Log.e(TAG, "Error writing to file " + e);
+                            }
+
+                            // TODO: Create a MetadataChangesetBuilder to change the MIME type
+
+                            IntentSender intentSender;
+                            // TODO: Create the IntentSender to fire off the CreateFileActivity
+
+
+//                            try {
+//                                startIntentSenderForResult(
+//                                        intentSender, CREATE_FILE_REQUEST_CODE, null, 0, 0, 0);
+//                            }
+//                            catch (IntentSender.SendIntentException e) {
+//                                Log.w(TAG, "Unable to send intent", e);
+//                            }
+                        }
+                    }.start();
+                }
+            };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG,"onStart: Connceting to Google Play Services");
+
+        //connect to play services
+        GoogleApiAvailability gAPI = GoogleApiAvailability.getInstance();
+        int resultCode = gAPI.isGooglePlayServicesAvailable(getActivity());
+        if (resultCode != ConnectionResult.SUCCESS) {
+            gAPI.getErrorDialog(getActivity(), resultCode, 1).show();
+        }
+        else {
+            mGoogleApiClient.connect();
+        }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 9 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            selectFiles();
-        }
-        else {
-            Toast.makeText(getActivity(),
-                    "Please provide permission",
-                    Toast.LENGTH_SHORT).show();
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            Log.i(TAG, "onStop: Disconnecting from Google Play Services");
+            mGoogleApiClient.disconnect();
         }
     }
 
-    private void selectFiles() {
-        // jump to file manager by using intent
-        Intent intent = new Intent();
-        intent.setType("application/pdf");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,86);
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.i(TAG, "onConnected: Play services onConnected called");
+        getRootFolderInfo();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(TAG, "onConnectionSuspened: Connection was suspended, cause code is " + i);
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(TAG, "onConnectionFailed:Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
+        if (connectionResult.hasResolution()) {
+            try {
+                connectionResult.startResolutionForResult(getActivity(), RESOLVE_CONNECTION_REQUEST_CODE);
+            }
+            catch (IntentSender.SendIntentException e) {
+                // Unable to resolve, message user appropriately
+            }
+        }
+        else {
+            GoogleApiAvailability gAPI = GoogleApiAvailability.getInstance();
+            gAPI.getErrorDialog(getActivity(), connectionResult.getErrorCode(), 0).show();
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //if user choose a  file
-        if (requestCode == 86 && resultCode == getActivity().RESULT_OK && data != null) {
-            fileUri = data.getData();//get uri
-            mFileNameTv.setText(data.getData().getLastPathSegment() + " is selected");
-        }
-        else {
-            Toast.makeText(getActivity(),
-                    "Please select a file",
-                    Toast.LENGTH_SHORT).show();
+        switch (requestCode) {
+            case RESOLVE_CONNECTION_REQUEST_CODE:
+                if (resultCode == getActivity().RESULT_OK) {
+                    mGoogleApiClient.connect();
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
         }
     }
-
 }
