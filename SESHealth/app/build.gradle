@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "yourteamnumber.seshealthpatient"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -27,6 +27,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:11.8.0'
     implementation 'com.google.firebase:firebase-auth:11.8.0'
 
+
+    implementation 'com.google.firebase:firebase-storage:11.8.0'
+    implementation 'com.google.android.gms:play-services:11.8.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.0.1'
+    implementation 'com.google.api-client:google-api-client-android:1.20.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -41,6 +46,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.github.captain-miao:optroundcardview:1.0.0'
     implementation 'com.github.wangjiegulu:rfab:2.0.0'
+
 
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 

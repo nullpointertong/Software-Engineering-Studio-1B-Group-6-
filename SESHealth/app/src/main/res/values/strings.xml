@@ -19,6 +19,10 @@
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
 
+
+    <string name="googledrive">Choose from Google Drive</string>
+    <string name="dropbox">Choose from Dropbox</string>
+
     <string name="remove_button">REMOVE</string>
 
     <!--  DATA PACKET STRINGS  -->
@@ -32,4 +36,5 @@
         <item>Patient</item>
         <item>Doctor</item>
     </string-array>
+
 </resources>
