@@ -66,7 +66,6 @@ public class LoginActivity extends AppCompatActivity {
      */
     private static String TAG = "LoginActivity";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,11 +93,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-
-
         // Please try to use more String resources (values -> strings.xml) vs hardcoded Strings.
         setTitle(R.string.login_activity_title);
-
     }
 
 
