@@ -16,16 +16,14 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.app.Fragment;
 
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.widget.AdapterView;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -33,11 +31,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
-
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveApi;
 import com.google.android.gms.drive.DriveFile;
@@ -47,24 +45,18 @@ import com.google.android.gms.drive.DriveResource;
 import com.google.android.gms.drive.Metadata;
 import com.google.android.gms.drive.OpenFileActivityBuilder;
 
-import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
-import com.google.api.client.http.FileContent;
-import com.google.api.client.http.GenericUrl;
-
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-
+import java.util.List;
 
 import yourteamnumber.seshealthpatient.R;
 
-
+import static android.app.Activity.RESULT_OK;
+import static com.google.android.gms.internal.zzahn.runOnUiThread;
 
 
 
@@ -76,18 +68,30 @@ public class SendFileFragment extends Fragment implements GoogleApiClient.OnConn
     private static final String TAG = "GoogleDrive API" ;
     private final int RESOLVE_CONNECTION_REQUEST_CODE = 1000;
     private final int OPEN_FILE_REQUEST_CODE = 1001;
+    private final int CREATE_FILE_REQUEST_CODE = 1002;
+    private final int DELETE_FILE_REQUEST_CODE = 1003;
     TextView tvData;
-
+    static final int 				REQUEST_ACCOUNT_PICKER = 1;
+    static final int 				REQUEST_AUTHORIZATION = 2;
+    static final int 				RESULT_STORE_FILE = 4;
+    private static Uri mFileUri;
+    private static Drive 			mService;
+    private GoogleAccountCredential mCredential;
     private Context mContext;
-
+    private List<File> mResultList;
     private ListView mListView;
-
+    private String[] 				mFileArray;
+    private String 					mDLVal;
+    private ArrayAdapter mAdapter;
 
     //reference to the google play services client
     protected GoogleApiClient mGoogleApiClient;
 
+
+
     public SendFileFragment() {
         // Required empty public constructor
+
     }
 
     @Override
@@ -95,35 +99,12 @@ public class SendFileFragment extends Fragment implements GoogleApiClient.OnConn
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_send_file, container, false);
-
         tvData = (TextView) v.findViewById(R.id.tvMsg);
-        mContext = getActivity();
 
         v.findViewById(R.id.google_driveBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 chooseFile();
-            }
-        });
-
-        mListView = (ListView) v.findViewById(R.id.listView1);
-
-        AdapterView.OnItemClickListener mMessageClickedHandler = new AdapterView.OnItemClickListener()
-        {
-            public void onItemClick(AdapterView parent, View v, int position, long id)
-            {
-
-            }
-        };
-
-        mListView.setOnItemClickListener(mMessageClickedHandler);
-
-        final Button button2 = (Button) v.findViewById(R.id.button2);
-        button2.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-
             }
         });
 
@@ -145,7 +126,7 @@ public class SendFileFragment extends Fragment implements GoogleApiClient.OnConn
 
         tvData.setText("Root Folder: " + rootID.toString());
     }
-    //a
+
     // Give the user a standard file-picker UI that lets them select a file
     // for your app to operate on. Note that the OpenFileActivityBuilder
     // shows all files, not just the ones that your app has created.
@@ -159,7 +140,7 @@ public class SendFileFragment extends Fragment implements GoogleApiClient.OnConn
                 .build(mGoogleApiClient);
         // This code will open the file picker Activity, and the result will
         // be passed to the onActivityResult function.
-       try {
+        try {
             startIntentSenderForResult(openFileIS, OPEN_FILE_REQUEST_CODE, new Intent(), 0,0,0,null);
         }
         catch (IntentSender.SendIntentException e) {
@@ -168,14 +149,15 @@ public class SendFileFragment extends Fragment implements GoogleApiClient.OnConn
     }
 
     // Once the user has chosen a file, this function will display information
-    // about the file in the TextView
+    // about the file in the TextView in the Activity
     protected void displayChosenFileData(Intent fileData) {
         // the chosen file is stored as an Extra piece of data in the Intent
         DriveId chosenFileID = fileData
                 .getParcelableExtra(OpenFileActivityBuilder.EXTRA_RESPONSE_DRIVE_ID);
         // Given a Drive ID, we can convert it to a file reference
         DriveFile theFile = chosenFileID.asDriveFile();
-        // Once  have the file reference,  can get the file's metadata
+
+        // Once we have the file reference, we can get the file's metadata
         // TODO: display the file metadata
         theFile.getMetadata(mGoogleApiClient)
                 .setResultCallback(new ResultCallback<DriveResource.MetadataResult>() {
@@ -188,10 +170,26 @@ public class SendFileFragment extends Fragment implements GoogleApiClient.OnConn
                 });
     }
 
+    // Create a file using the CreateFileActivityBuilder - instantiate
+    // new DriveContents and then invoke the callback to set the
+    // initial file content and use the Activity to choose a location
+    protected void createFileUsingActivity() {
+        // Step 1: Create a new DriveContents object and set its callback
+        // TODO: Create the new content
+    }
+
     private final ResultCallback<DriveApi.DriveContentsResult> mNewContentCallback =
             new ResultCallback<DriveApi.DriveContentsResult>() {
                 @Override
                 public void onResult(@NonNull final DriveApi.DriveContentsResult result) {
+                    // Step 2: Using the newly created content, set the initial
+                    // file metadata and properties and then invoke the
+                    // CreateFileWithActivityBuilder
+
+                    // Performing intensive work, such as writing data to a file, should
+                    // always happen off of the main UI thread so that your app stays responsive.
+                    // This is a very simple example so it just creates a new Thread,
+                    // but you can use other methods like an AsyncTask or IntentService for this.
                     new Thread() {
                         @Override
                         public void run() {
@@ -224,6 +222,8 @@ public class SendFileFragment extends Fragment implements GoogleApiClient.OnConn
                     }.start();
                 }
             };
+
+
 
     @Override
     public void onStart() {
@@ -279,14 +279,26 @@ public class SendFileFragment extends Fragment implements GoogleApiClient.OnConn
         }
     }
 
+
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
+            // This code is passed when the user has resolved whatever connection
+            // problem there was with the Google Play Services library
             case RESOLVE_CONNECTION_REQUEST_CODE:
                 if (resultCode == getActivity().RESULT_OK) {
                     mGoogleApiClient.connect();
                 }
                 break;
+
+
+            // This code is passed when the user has selected a filename and
+            // folder to create new content in.
+
+
+
             default:
                 super.onActivityResult(requestCode, resultCode, data);
                 break;
