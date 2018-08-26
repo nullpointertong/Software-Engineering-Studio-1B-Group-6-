@@ -37,10 +37,14 @@
 
     </com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/txtAddData"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical"/>
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/opensans_regular"
+        android:text="@string/data_packet_empty_hint"
+        android:textAlignment="center"
+        android:textSize="14sp" />
 
 </RelativeLayout>
