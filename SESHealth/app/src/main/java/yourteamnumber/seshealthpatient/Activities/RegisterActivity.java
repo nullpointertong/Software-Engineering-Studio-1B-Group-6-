@@ -16,7 +16,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -24,15 +28,15 @@ import yourteamnumber.seshealthpatient.R;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText register_usernameET;
+    private EditText register_usernameET;   //Initailization of Variables required
     private EditText register_passwordET;
     private EditText  register_passwordET2;
+    private Spinner spinner;
 
+    private Button register_btn;
 
-    private Button register_btn;   //Buttons
-
-    private TextView textView4;  //Textviews within the program
-    private TextView textView5;  //
+    private TextView textView4;
+    private TextView textView5;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase database;
@@ -47,6 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
         register_usernameET = (EditText) findViewById(R.id.register_usernameET);
         register_passwordET = (EditText) findViewById(R.id.register_passwordET);
         register_passwordET2 = (EditText) findViewById(R.id.register_passwordET2);
+        spinner = (Spinner) findViewById(R.id.spinner);
 
         register_btn = (Button) findViewById(R.id.register_btn);
 
@@ -90,7 +95,6 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "The username and password cannot be empty.", Toast.LENGTH_SHORT).show();
             return;
         }
-
         final Intent intent = new Intent(this, LoginActivity.class);
         if(!password.equals(confirmPassword)) {
             Toast.makeText(RegisterActivity.this,"Passwords don't match" , Toast.LENGTH_SHORT).show();
@@ -100,6 +104,14 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
+                        Map hashMap = new HashMap();
+                        String userId = firebaseAuth.getUid();
+                        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id");
+
+                        //hashMap.put();
+                        //currentUser.setValue(hashMap);
+
+
                         Toast.makeText(RegisterActivity.this, "Registration Sucessful!", Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                     } else {
