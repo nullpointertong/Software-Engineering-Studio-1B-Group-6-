@@ -104,14 +104,14 @@ public class LoginActivity extends AppCompatActivity {
      */
     @OnClick(R.id.login_btn)
     public void LogIn() {
-       final String username = usernameEditText.getText().toString();
-       final String password = passwordEditText.getText().toString();
+        final String username = usernameEditText.getText().toString();
+        final String password = passwordEditText.getText().toString();
 
-       if (username.isEmpty() || password.isEmpty())
-       {
-           Toast.makeText(this, "The username and password cannot be empty.", Toast.LENGTH_SHORT).show();
-           return;
-       }
+        if (username.isEmpty() || password.isEmpty())
+        {
+            Toast.makeText(this, "The username and password cannot be empty.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // TODO: For now, the login button will simply print on the console the username/password and let you in
         // TODO: It is up to you guys to implement a proper login system

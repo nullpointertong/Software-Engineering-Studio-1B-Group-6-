@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "yourteamnumber.seshealthpatient"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -15,6 +15,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -29,6 +33,16 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-maps:11.8.0'
     implementation 'com.google.android.gms:play-services-location:11.8.0'
+
+    compile 'com.google.apis:google-api-services-drive:v2-rev105-1.17.0-rc'
+    compile 'com.google.api-client:google-api-client-android:1.20.0'
+    compile 'com.google.http-client:google-http-client-gson:1.20.0'
+
+
+    implementation 'com.google.firebase:firebase-storage:11.8.0'
+    implementation 'com.google.android.gms:play-services:11.8.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.0.1'
+    implementation 'com.google.api-client:google-api-client-android:1.20.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
