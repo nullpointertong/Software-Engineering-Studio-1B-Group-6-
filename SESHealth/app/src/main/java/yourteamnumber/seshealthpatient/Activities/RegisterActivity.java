@@ -16,6 +16,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+<<<<<<< HEAD
+=======
+import com.google.firebase.database.FirebaseDatabase;
+>>>>>>> 217178c7480954f25ed7aac41ba391a3300879f5
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -25,6 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText register_usernameET;
     private EditText register_passwordET;
+<<<<<<< HEAD
 
     private Button register_btn;
 
@@ -32,6 +37,18 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView textView5;
 
     private FirebaseAuth firebaseAuth;
+=======
+    private EditText  register_passwordET2;
+
+
+    private Button register_btn;   //Buttons
+
+    private TextView textView4;  //Textviews within the program
+    private TextView textView5;  //
+
+    private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase database;
+>>>>>>> 217178c7480954f25ed7aac41ba391a3300879f5
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +59,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         register_usernameET = (EditText) findViewById(R.id.register_usernameET);
         register_passwordET = (EditText) findViewById(R.id.register_passwordET);
+<<<<<<< HEAD
+=======
+        register_passwordET2 = (EditText) findViewById(R.id.register_passwordET2);
+>>>>>>> 217178c7480954f25ed7aac41ba391a3300879f5
 
         register_btn = (Button) findViewById(R.id.register_btn);
 
@@ -73,6 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.register_btn)
+<<<<<<< HEAD
     public void registerUser(){
         String email = register_usernameET.getText().toString().trim();
         String password = register_passwordET.getText().toString().trim();
@@ -86,6 +108,38 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+=======
+    public void registerUser() {
+        String email = register_usernameET.getText().toString().trim();
+        String password = register_passwordET.getText().toString().trim();
+        String confirmPassword = register_passwordET2.getText().toString().trim();
+
+        boolean passwordConfirmation = false;
+
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "The username and password cannot be empty.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final Intent intent = new Intent(this, LoginActivity.class);
+        if(!password.equals(confirmPassword)) {
+            Toast.makeText(RegisterActivity.this,"Passwords don't match" , Toast.LENGTH_SHORT).show();
+
+        } else {
+            firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(RegisterActivity.this, "Registration Sucessful!", Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(RegisterActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+>>>>>>> 217178c7480954f25ed7aac41ba391a3300879f5
     }
 
     @OnClick(R.id.textView4)
