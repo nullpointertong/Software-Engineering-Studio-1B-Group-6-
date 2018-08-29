@@ -100,29 +100,18 @@ public class HeartRateFragment extends Fragment {
         // Inflate the layout for this fragment
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
-            Log.i("TEST","Granted");
-            //init(barcodeScannerView, getIntent(), null);
+            context = getActivity().getApplicationContext();
+            Button button1 = v.findViewById(R.id.Btn_start);
+            preview = (SurfaceView) v.findViewById(R.id.preview);
+
+            previewHolder = preview.getHolder();
+            previewHolder.addCallback(surfaceCallback);
+            previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+            text = (TextView) v.findViewById(R.id.text);
         } else {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.CAMERA}, 1);//1 can be another integer
         }
-        context = getActivity().getApplicationContext();
-    Button button1 = v.findViewById(R.id.Btn_start);
-        preview = (SurfaceView) v.findViewById(R.id.preview);
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View V) {
-
-
-
-
-
-            }
-        });
-        previewHolder = preview.getHolder();
-        previewHolder.addCallback(surfaceCallback);
-        previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        text = (TextView) v.findViewById(R.id.text);
 
         return v;
     }

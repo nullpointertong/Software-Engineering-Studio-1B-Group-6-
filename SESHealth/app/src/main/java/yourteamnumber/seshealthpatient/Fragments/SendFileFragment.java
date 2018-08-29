@@ -284,7 +284,7 @@ public class SendFileFragment extends Fragment {
                                             Log.d(TAG, "Creating file");
                                             File sdCard = Environment.getExternalStorageDirectory();
 
-                                            File dir = new File (sdCard.getAbsolutePath() + "/SESHealthPation/DataPackets/DataPacket" + dataPacketIdent++);
+                                            File dir = new File (sdCard.getAbsolutePath() + "/SESHealthPatient/DataPackets/DataPacket");
                                             if (!dir.exists())
                                             {
                                                 dir.mkdirs();
