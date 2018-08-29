@@ -31,6 +31,10 @@
     <string name="text_input_hint">Describe your problem</string>
     <string name="text_input_label">Description</string>
 
+    <string name="select_file_title">Select a File</string>
+    <string name="file_not_selected">No file selected.</string>
+    <string name="read_failed">Failed to read metadata</string>
+
     <string name="data_packet_empty_hint">The data packet is currently empty, tap \"≡\" to add data.</string>
     <string-array name="usertype_array">
         <item>Patient</item>

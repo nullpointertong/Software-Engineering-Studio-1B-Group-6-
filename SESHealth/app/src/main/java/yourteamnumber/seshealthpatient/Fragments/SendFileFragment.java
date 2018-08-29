@@ -2,6 +2,7 @@ package yourteamnumber.seshealthpatient.Fragments;
 
 
 
+import android.Manifest;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -10,14 +11,18 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.app.Fragment;
 
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,28 +36,51 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.DriveClient;
+import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.DriveResource;
+import com.google.android.gms.drive.DriveResourceClient;
 import com.google.android.gms.drive.Metadata;
 import com.google.android.gms.drive.OpenFileActivityBuilder;
 
+import com.google.android.gms.drive.OpenFileActivityOptions;
+import com.google.android.gms.drive.query.Filters;
+import com.google.android.gms.drive.query.SearchableField;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.GenericUrl;
+import com.google.common.io.ByteStreams;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import butterknife.OnClick;
+import yourteamnumber.seshealthpatient.Activities.MainActivity;
 import yourteamnumber.seshealthpatient.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -63,30 +91,38 @@ import static com.google.android.gms.internal.zzahn.runOnUiThread;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SendFileFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks {
+public class SendFileFragment extends Fragment {
 
-    private static final String TAG = "GoogleDrive API" ;
-    private final int RESOLVE_CONNECTION_REQUEST_CODE = 1000;
-    private final int OPEN_FILE_REQUEST_CODE = 1001;
-    private final int CREATE_FILE_REQUEST_CODE = 1002;
-    private final int DELETE_FILE_REQUEST_CODE = 1003;
-    TextView tvData;
-    static final int 				REQUEST_ACCOUNT_PICKER = 1;
-    static final int 				REQUEST_AUTHORIZATION = 2;
-    static final int 				RESULT_STORE_FILE = 4;
-    private static Uri mFileUri;
-    private static Drive 			mService;
-    private GoogleAccountCredential mCredential;
-    private Context mContext;
-    private List<File> mResultList;
-    private ListView mListView;
-    private String[] 				mFileArray;
-    private String 					mDLVal;
-    private ArrayAdapter mAdapter;
+    private Button btnSignIn;
+    private ListView lvAddedFiles;
+    private int dataPacketIdent = 1;
+
+    ArrayAdapter<String> adapter;
+    ArrayList<String> addedFilesList = new ArrayList<String>();
+
+    private static final String TAG = "SendFileFragment" ;
+    protected static final int REQUEST_CODE_SIGN_IN = 0;
+    protected static final int REQUEST_CODE_OPEN_ITEM = 1;
+
+    /**
+     * Tracks completion of the drive picker
+     */
+    private TaskCompletionSource<DriveId> mOpenItemTaskSource;
+
+
+    /**
+     * Handles high-level drive functions like sync
+     */
+    private DriveClient mDriveClient;
+
+    /**
+     * Handle access to Drive resources/files.
+     */
+    private DriveResourceClient mDriveResourceClient;
+
 
     //reference to the google play services client
     protected GoogleApiClient mGoogleApiClient;
-
 
 
     public SendFileFragment() {
@@ -99,207 +135,240 @@ public class SendFileFragment extends Fragment implements GoogleApiClient.OnConn
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_send_file, container, false);
-        tvData = (TextView) v.findViewById(R.id.tvMsg);
-
-        v.findViewById(R.id.google_driveBtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseFile();
-            }
-        });
-
-
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addApi(Drive.API)
-                .addScope(Drive.SCOPE_FILE)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-
         return v;
     }
 
-    protected void getRootFolderInfo() {
-        // TODO: get the root folder info and display its ID
-        DriveFolder rootFolder = Drive.DriveApi.getRootFolder(mGoogleApiClient);
-        DriveId rootID = rootFolder.getDriveId();
-        tvData.setText("Root Folder: " + rootID.toString());
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        btnSignIn = getActivity().findViewById(R.id.google_driveBtn);
+        lvAddedFiles = getActivity().findViewById(R.id.lvAddedFiles);
+
+        adapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_list_item_1,
+                addedFilesList);
+
+        lvAddedFiles.setAdapter(adapter);
+
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testBoi(v);
+            }
+        });
     }
 
-    // Give the user a standard file-picker UI that lets them select a file
-    // for your app to operate on. Note that the OpenFileActivityBuilder
-    // shows all files, not just the ones that your app has created.
-    protected void chooseFile() {
-        IntentSender openFileIS;
+    /**
+     * Starts the sign-in process and initializes the Drive client.
+     */
+    public void testBoi(View view) {
 
-        // TODO: invoke the file chooser and display the file info
-        openFileIS = new OpenFileActivityBuilder()
-                .setActivityTitle("Select A File")
-                .build(mGoogleApiClient);
-        // This code will open the file picker Activity, and the result will
-        // be passed to the onActivityResult function.
-        try {
-            startIntentSenderForResult(openFileIS, OPEN_FILE_REQUEST_CODE, new Intent(), 0,0,0,null);
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "No permissions, requesting...");
+            showMessage("Please grant permission to store files locally.");
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    112);
         }
-        catch (IntentSender.SendIntentException e) {
-            Log.e(TAG, "Problem starting the OpenFileActivityBuilder");
+        else
+        {
+            Log.d(TAG, "Signing in");
+            Set<Scope> requiredScopes = new HashSet<>(2);
+            requiredScopes.add(Drive.SCOPE_FILE);
+            requiredScopes.add(Drive.SCOPE_APPFOLDER);
+            GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
+            if (signInAccount != null && signInAccount.getGrantedScopes().containsAll(requiredScopes)) {
+                Log.d(TAG, "Init - Account");
+                initializeDriveClient(signInAccount);
+            } else {
+                GoogleSignInOptions signInOptions =
+                        new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestScopes(Drive.SCOPE_FILE)
+                                .requestScopes(Drive.SCOPE_APPFOLDER)
+                                .build();
+                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getContext(), signInOptions);
+                startActivityForResult(googleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
+            }
         }
     }
 
-    // Once the user has chosen a file, this function will display information
-    // about the file in the TextView in the Activity
-    protected void displayChosenFileData(Intent fileData) {
-        // the chosen file is stored as an Extra piece of data in the Intent
-        DriveId chosenFileID = fileData
-                .getParcelableExtra(OpenFileActivityBuilder.EXTRA_RESPONSE_DRIVE_ID);
-        // Given a Drive ID, we can convert it to a file reference
-        DriveFile theFile = chosenFileID.asDriveFile();
+    /**
+     * Prompts the user to select a text file using OpenFileActivity.
+     *
+     * @return Task that resolves with the selected item's ID.
+     */
+    private Task<DriveId> pickTextFile() {
+        Log.d(TAG, "Filter applied");
 
-        // Once we have the file reference, we can get the file's metadata
-        // TODO: display the file metadata
-        theFile.getMetadata(mGoogleApiClient)
-                .setResultCallback(new ResultCallback<DriveResource.MetadataResult>() {
-                    @Override
-                    public void onResult(@NonNull DriveResource.MetadataResult metadataResult) {
-                        Metadata theData = metadataResult.getMetadata();
-                        String str = theData.getTitle() + "\n" + theData.getMimeType() + "\n" + theData.getFileSize() + "bytes\n";
-                        tvData.setText(str);
-                    }
+        OpenFileActivityOptions openOptions =
+                new OpenFileActivityOptions.Builder()
+                        .setSelectionFilter(Filters.eq(SearchableField.MIME_TYPE, "image/jpeg"))
+                        .setActivityTitle(getString(R.string.select_file_title))
+                        .build();
+        return pickItem(openOptions);
+    }
+
+    /**
+     * Prompts the user to select a folder using OpenFileActivity.
+     *
+     * @param openOptions Filter that should be applied to the selection
+     * @return Task that resolves with the selected item's ID.
+     */
+    private Task<DriveId> pickItem(OpenFileActivityOptions openOptions) {
+        Log.d(TAG, "Picking item...");
+        mOpenItemTaskSource = new TaskCompletionSource<>();
+        getDriveClient()
+                .newOpenFileActivityIntentSender(openOptions)
+                .continueWith((Continuation<IntentSender, Void>) task -> {
+                    startIntentSenderForResult(
+                    task.getResult(), REQUEST_CODE_OPEN_ITEM, null, 0, 0, 0, null);
+                    Log.d(TAG, "Process: Picking File");
+                    return null;
+                });
+        return mOpenItemTaskSource.getTask();
+    }
+
+    protected DriveClient getDriveClient() {
+        return mDriveClient;
+    }
+    protected DriveResourceClient getDriveResourceClient() {
+        return mDriveResourceClient;
+    }
+
+    /**
+     * Continues the sign-in process, initializing the Drive clients with the current
+     * user's account.
+     */
+    private void initializeDriveClient(GoogleSignInAccount signInAccount) {
+        mDriveClient = Drive.getDriveClient(getContext(), signInAccount);
+        mDriveResourceClient = Drive.getDriveResourceClient(getContext(), signInAccount);
+        onDriveClientReady();
+    }
+
+    protected void onDriveClientReady() {
+        Log.d(TAG, "Success: Picking File");
+        pickTextFile()
+                .addOnSuccessListener(driveId -> {
+                    Log.d(TAG, "Success: File Picked");
+                    retrieveContents(driveId.asDriveFile());
+                })
+                .addOnFailureListener(getActivity(), e -> {
+                    Log.d(TAG, "No file selected", e);
+                    showMessage(getString(R.string.file_not_selected));
+
                 });
     }
 
-    // Create a file using the CreateFileActivityBuilder - instantiate
-    // new DriveContents and then invoke the callback to set the
-    // initial file content and use the Activity to choose a location
-    protected void createFileUsingActivity() {
-        // Step 1: Create a new DriveContents object and set its callback
-        // TODO: Create the new content
+    private void retrieveContents(DriveFile file) {
+        Log.d(TAG, "Success: retrieving contents");
+        Task<DriveContents> openFileTask =
+                getDriveResourceClient().openFile(file, DriveFile.MODE_READ_ONLY);
+
+        openFileTask
+                .continueWithTask(task -> {
+                    Log.d(TAG, "Success: get result");
+                    DriveContents contents = task.getResult();
+                    InputStream contentStream = contents.getInputStream();
+                    byte[] contentStreamAsByteArray = ByteStreams.toByteArray(contentStream);
+
+                    if (task.isSuccessful())
+                    {
+                        Log.d(TAG, "Success: Retrieving metadata");
+                        Task<Metadata> getMetadataTask = getDriveResourceClient().getMetadata(file);
+                        getMetadataTask
+                                .addOnSuccessListener(getActivity(),
+                                        metadata -> {
+                                            Log.d(TAG, "Successful");
+                                            Log.d(TAG, "Creating file");
+                                            File sdCard = Environment.getExternalStorageDirectory();
+
+                                            File dir = new File (sdCard.getAbsolutePath() + "/SESHealthPation/DataPackets/DataPacket" + dataPacketIdent++);
+                                            if (!dir.exists())
+                                            {
+                                                dir.mkdirs();
+                                            }
+
+                                            File newFile = new File(dir, metadata.getTitle());
+                                            try {
+                                                newFile.createNewFile();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                            Log.d(TAG, "Writing to output");
+                                            FileOutputStream fileOutputStream;
+                                            try
+                                            {
+                                                fileOutputStream = new FileOutputStream(newFile);
+                                                fileOutputStream.write(contentStreamAsByteArray);
+                                                fileOutputStream.close();
+                                                Log.d(TAG, newFile.getPath());
+                                                adapter.add(newFile.getName());
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                Log.d(TAG, e.getMessage());
+                                            }
+
+                                            try {
+                                                contentStream.close();
+                                            } catch (IOException e) {
+                                                Log.d(TAG, e.getMessage());
+                                            }
+                                        })
+                                .addOnFailureListener(getActivity(), e -> {
+                                    Log.d(TAG, "Unable to retrieve metadata", e);
+                                    showMessage(getString(R.string.read_failed));
+                                });
+
+                    }
+
+                    Task<Void> discardTask = getDriveResourceClient().discardContents(contents);
+                    return discardTask;
+                })
+                .addOnFailureListener(e -> {
+                    Log.d(TAG, "Unable to read contents", e);
+                    showMessage(getString(R.string.read_failed));
+                });
     }
-
-    private final ResultCallback<DriveApi.DriveContentsResult> mNewContentCallback =
-            new ResultCallback<DriveApi.DriveContentsResult>() {
-                @Override
-                public void onResult(@NonNull final DriveApi.DriveContentsResult result) {
-                    // Step 2: Using the newly created content, set the initial
-                    // file metadata and properties and then invoke the
-                    // CreateFileWithActivityBuilder
-
-                    // Performing intensive work, such as writing data to a file, should
-                    // always happen off of the main UI thread so that your app stays responsive.
-                    // This is a very simple example so it just creates a new Thread,
-                    // but you can use other methods like an AsyncTask or IntentService for this.
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            // Retrieve the output stream from the DriveContents
-                            OutputStream outStrm = result.getDriveContents().getOutputStream();
-                            OutputStreamWriter outStrmWrt = new OutputStreamWriter(outStrm);
-
-                            try {
-                                outStrmWrt.write("This is some file content!");
-                                outStrmWrt.close();
-                            }
-                            catch (IOException e) {
-                                Log.e(TAG, "Error writing to file " + e);
-                            }
-
-                            // TODO: Create a MetadataChangesetBuilder to change the MIME type
-
-                            IntentSender intentSender;
-                            // TODO: Create the IntentSender to fire off the CreateFileActivity
-
-
-//                            try {
-//                                startIntentSenderForResult(
-//                                        intentSender, CREATE_FILE_REQUEST_CODE, null, 0, 0, 0);
-//                            }
-//                            catch (IntentSender.SendIntentException e) {
-//                                Log.w(TAG, "Unable to send intent", e);
-//                            }
-                        }
-                    }.start();
-                }
-            };
-
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.i(TAG,"onStart: Connceting to Google Play Services");
-
-        //connect to play services
-        GoogleApiAvailability gAPI = GoogleApiAvailability.getInstance();
-        int resultCode = gAPI.isGooglePlayServicesAvailable(getActivity());
-        if (resultCode != ConnectionResult.SUCCESS) {
-            gAPI.getErrorDialog(getActivity(), resultCode, 1).show();
-        }
-        else {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            Log.i(TAG, "onStop: Disconnecting from Google Play Services");
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.i(TAG, "onConnected: Play services onConnected called");
-        getRootFolderInfo();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.d(TAG, "onConnectionSuspened: Connection was suspended, cause code is " + i);
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed:Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
-        if (connectionResult.hasResolution()) {
-            try {
-                connectionResult.startResolutionForResult(getActivity(), RESOLVE_CONNECTION_REQUEST_CODE);
-            }
-            catch (IntentSender.SendIntentException e) {
-                // Unable to resolve, message user appropriately
-            }
-        }
-        else {
-            GoogleApiAvailability gAPI = GoogleApiAvailability.getInstance();
-            gAPI.getErrorDialog(getActivity(), connectionResult.getErrorCode(), 0).show();
-        }
-    }
-
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            // This code is passed when the user has resolved whatever connection
-            // problem there was with the Google Play Services library
-            case RESOLVE_CONNECTION_REQUEST_CODE:
-                if (resultCode == getActivity().RESULT_OK) {
-                    mGoogleApiClient.connect();
+            case REQUEST_CODE_SIGN_IN:
+                if (resultCode != RESULT_OK) {
+                    // Sign-in may fail or be cancelled by the user. For this sample, sign-in is
+                    // required and is fatal. For apps where sign-in is optional, handle
+                    // appropriately
+                    Log.d(TAG, "Sign-in failed.");
+                    return;
+                }
+
+                Task<GoogleSignInAccount> getAccountTask =
+                        GoogleSignIn.getSignedInAccountFromIntent(data);
+                if (getAccountTask.isSuccessful()) {
+                    initializeDriveClient(getAccountTask.getResult());
+                } else {
+                    Log.d(TAG, "Sign-in failed.");
                 }
                 break;
-
-
-            // This code is passed when the user has selected a filename and
-            // folder to create new content in.
-
-
-
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
+            case REQUEST_CODE_OPEN_ITEM:
+                if (resultCode == RESULT_OK) {
+                    DriveId driveId = data.getParcelableExtra(
+                            OpenFileActivityOptions.EXTRA_RESPONSE_DRIVE_ID);
+                    mOpenItemTaskSource.setResult(driveId);
+                } else {
+                    mOpenItemTaskSource.setException(new RuntimeException("Unable to open file"));
+                }
                 break;
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
+
+    protected void showMessage(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+    }
+
 }

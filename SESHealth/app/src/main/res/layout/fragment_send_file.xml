@@ -8,50 +8,28 @@
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Status:"
-        android:id="@+id/textView"
-        android:textStyle="bold" />
-
-    <TextView
+        android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="files message"
-        android:id="@+id/tvMsg"
-        android:textSize="22sp"
-        android:layout_marginBottom="10dp" />
+        android:gravity="center"
+        android:text="Added Files:"
+        android:textSize="25dp"/>
+
+    <ListView
+        android:id="@+id/lvAddedFiles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+    </ListView>
 
     <Button
         android:id="@+id/google_driveBtn"
-        android:text="@string/googledrive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_google_drive" />
-
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="67dp"
-        android:text="Download" />
-
-    <ListView
-        android:id="@+id/listView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/button2"
-        android:layout_marginTop="60dp" >
-    </ListView>
-
-
-
-
-
+        android:layout_gravity="center"
+        android:drawablePadding="10dp"
+        android:drawableStart="@drawable/ic_google_drive"
+        android:text="Add File" />
 
 </LinearLayout>
