@@ -107,9 +107,10 @@ public class RegisterActivity extends AppCompatActivity {
                         Map hashMap = new HashMap();
                         String userId = firebaseAuth.getUid();
                         DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id");
+                        String userType = spinner.getSelectedItem().toString();
 
-                        //hashMap.put("UserType", );
-                        //currentUser.setValue(hashMap);
+                        hashMap.put("UserType", userType); //Type specifier maybe required here
+                        currentUser.setValue(hashMap);
 
 
                         Toast.makeText(RegisterActivity.this, "Registration Sucessful!", Toast.LENGTH_SHORT).show();
