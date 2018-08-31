@@ -51,7 +51,11 @@
             android:label="@string/title_activity_data_packet"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".Activities.CreateDataPacketActivity" />
-        <activity android:name=".Activities.UpdateProfileActivity"></activity>
+        <activity android:name=".Activities.UpdateProfileActivity" />
+        <activity android:name=".Activities.HeartRateActivity" />
+        <activity android:name=".Activities.MapActivity" />
+        <activity android:name=".Activities.SendFileActivity" />
+        <activity android:name=".Activities.RecordVideoActivity"></activity>
     </application>
 
 </manifest>
