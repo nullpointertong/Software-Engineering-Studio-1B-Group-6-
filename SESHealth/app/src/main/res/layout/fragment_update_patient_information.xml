@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     tools:context="yourteamnumber.seshealthpatient.Fragments.PatientInformationFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -13,20 +12,12 @@
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
         tools:context=".MainActivity">
-        <TextView
-            android:id="@+id/welcome_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:textSize="30dp"
-            android:text="Welcome, %1$s! "
-            android:layout_marginBottom="20dp"/>
 
         <ImageView
             android:id="@+id/patient_image_view"
             android:layout_width="140dp"
             android:layout_height="140dp"
-            android:layout_below="@+id/welcome_text_view"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             app:srcCompat="@drawable/patient_icon" />
 
@@ -58,11 +49,10 @@
                         android:text="First Name"
                         android:textSize="18sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <EditText
                         android:id="@+id/patient_firstName"
-                        android:layout_column="2" />
+                        android:layout_column="2"
+                        android:inputType="textPersonName|textCapWords" />
 
                 </TableRow>
 
@@ -77,12 +67,10 @@
                         android:text="Last Name"
                         android:textSize="18sp" />
 
-                    <TextView
+                    <EditText
                         android:id="@+id/patient_lastName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:layout_column="2"
-                        />
+                        android:inputType="textPersonName|textCapWords" />
 
                 </TableRow>
 
@@ -97,12 +85,13 @@
                         android:text="Gender"
                         android:textSize="18sp" />
 
-                    <TextView
-                        android:id="@+id/patient_gender"
-                        android:layout_width="wrap_content"
+                    <Spinner
+                        android:id="@+id/spinner"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_column="2"
-                        />
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:padding="10dp" />
 
                 </TableRow>
 
@@ -117,11 +106,10 @@
                         android:text="Height"
                         android:textSize="18sp" />
 
-                    <TextView
+                    <EditText
                         android:id="@+id/patient_height"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="2"/>
+                        android:layout_column="2"
+                        android:inputType="numberDecimal" />
 
                 </TableRow>
 
@@ -136,11 +124,10 @@
                         android:text="Weight"
                         android:textSize="18sp" />
 
-                    <TextView
+                    <EditText
                         android:id="@+id/patient_weight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="2"/>
+                        android:layout_column="2"
+                        android:inputType="numberDecimal" />
 
                 </TableRow>
 
@@ -155,12 +142,10 @@
                         android:text="Medical Condition"
                         android:textSize="18sp" />
 
-                    <TextView
+                    <EditText
                         android:id="@+id/patient_medicalCondition"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:layout_column="2"
-                        />
+                        android:inputType="text" />
 
                 </TableRow>
 
@@ -180,7 +165,7 @@
                 android:layout_width="152dp"
                 android:layout_height="wrap_content"
                 android:background="@color/dark_navy"
-                android:text="edit"
+                android:text="update"
                 android:textColor="@color/whiteColor"
                 android:textSize="18sp" />
         </LinearLayout>
