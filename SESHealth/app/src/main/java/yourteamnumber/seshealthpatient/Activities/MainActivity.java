@@ -12,8 +12,7 @@ import yourteamnumber.seshealthpatient.R;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    public static final int PROFILE_REQUEST_CODE = 1;
-    public static final int DATAPACKET_REQUEST_CODE = 2;
+    public static final int REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +23,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button create_data_packet = findViewById(R.id.dataPacketButton);
         edit_profile.setOnClickListener(this);
         create_data_packet.setOnClickListener(this);
+
+        setTitle("Main");
     }
 
 
@@ -31,11 +32,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v.getId() == R.id.editProfileButton) {
             Intent intent = new Intent(MainActivity.this, UpdateProfileActivity.class);
-            startActivityForResult(intent, PROFILE_REQUEST_CODE);
+            startActivityForResult(intent, REQUEST_CODE);
         }
         if (v.getId() == R.id.dataPacketButton) {
             Intent intent = new Intent(MainActivity.this, DataPacketActivity.class);
-            startActivityForResult(intent, DATAPACKET_REQUEST_CODE);
+            startActivityForResult(intent, REQUEST_CODE);
         }
     }
 }
