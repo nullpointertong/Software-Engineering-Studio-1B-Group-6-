@@ -21,11 +21,16 @@ public class CreateDataPacketActivity extends AppCompatActivity implements View.
         EditText location_et = findViewById(R.id.location_et);
         Button attach_file_btn = findViewById(R.id.attach_file_button);
         Button record_video_btn = findViewById(R.id.record_button);
+        Button add_btn = findViewById(R.id.create_data_packet_add_button);
+        Button cancel_btn = findViewById(R.id.create_data_packet_cancel_button);
 
-        editTextSetting(heartrate_et);
-        editTextSetting(location_et);
+        heartrate_et.setOnClickListener(this);
+        location_et.setOnClickListener(this);
         attach_file_btn.setOnClickListener(this);
         record_video_btn.setOnClickListener(this);
+        add_btn.setOnClickListener(this);
+        cancel_btn.setOnClickListener(this);
+
     }
 
 
@@ -48,13 +53,15 @@ public class CreateDataPacketActivity extends AppCompatActivity implements View.
                 intent = new Intent(CreateDataPacketActivity.this, RecordVideoActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
                 break;
+            case R.id.create_data_packet_add_button:
+                intent = new Intent(CreateDataPacketActivity.this, DataPacketActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
+                break;
+            case R.id.create_data_packet_cancel_button:
+                intent = new Intent(CreateDataPacketActivity.this, DataPacketActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
+                break;
         }
 
-    }
-
-    public void editTextSetting(EditText et) {
-        et.setOnClickListener(this);
-        et.setFocusable(false);
-        et.setClickable(true);
     }
 }
