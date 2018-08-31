@@ -46,4 +46,5 @@
         <item>Female</item>
     </string-array>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_data_packet">DataPacketActivity</string>
 </resources>

@@ -1,35 +1,25 @@
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="30dp"
-    tools:context="yourteamnumber.seshealthpatient.Activities.MainActivity">
+    android:id="@+id/update_profile_layout"
+    tools:context="yourteamnumber.seshealthpatient.Activities.UpdateProfileActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/main_toolbar"
+        android:id="@+id/update_profile_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="#031E3C"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:titleTextColor="@color/whiteColor"
-        />
-    <TextView
-        android:id="@+id/welcome_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:layout_below="@+id/main_toolbar"
-        android:text="Welcome, %1$s! "
-        android:textSize="30dp" />
+        app:titleTextColor="@color/whiteColor" />
 
     <ImageView
         android:id="@+id/patient_image_view"
         android:layout_width="140dp"
         android:layout_height="140dp"
-        android:layout_below="@+id/welcome_text_view"
+        android:layout_below="@+id/update_profile_toolbar"
         android:layout_centerHorizontal="true"
         app:srcCompat="@drawable/patient_icon" />
 
@@ -61,11 +51,10 @@
                     android:text="First Name"
                     android:textSize="18sp" />
 
-                <TextView
+                <EditText
                     android:id="@+id/patient_firstName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:inputType="textPersonName|textCapWords" />
 
             </TableRow>
 
@@ -80,11 +69,10 @@
                     android:text="Last Name"
                     android:textSize="18sp" />
 
-                <TextView
+                <EditText
                     android:id="@+id/patient_lastName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:inputType="textPersonName|textCapWords" />
 
             </TableRow>
 
@@ -99,11 +87,13 @@
                     android:text="Gender"
                     android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/patient_gender"
-                    android:layout_width="wrap_content"
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_column="2" />
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:padding="10dp" />
 
             </TableRow>
 
@@ -118,11 +108,10 @@
                     android:text="Height"
                     android:textSize="18sp" />
 
-                <TextView
+                <EditText
                     android:id="@+id/patient_height"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:inputType="numberDecimal" />
 
             </TableRow>
 
@@ -137,11 +126,10 @@
                     android:text="Weight"
                     android:textSize="18sp" />
 
-                <TextView
+                <EditText
                     android:id="@+id/patient_weight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:inputType="numberDecimal" />
 
             </TableRow>
 
@@ -156,11 +144,10 @@
                     android:text="Medical Condition"
                     android:textSize="18sp" />
 
-                <TextView
+                <EditText
                     android:id="@+id/patient_medicalCondition"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:inputType="text" />
 
             </TableRow>
 
@@ -173,37 +160,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginHorizontal="10dp"
         android:gravity="center">
 
         <Button
-            android:id="@+id/editProfileButton"
-            android:layout_width="100dp"
+            android:id="@+id/swapButton"
+            android:layout_width="152dp"
             android:layout_height="wrap_content"
             android:background="@color/dark_navy"
-            android:text="edit profile"
+            android:text="update"
             android:textColor="@color/whiteColor"
-            android:textSize="15sp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"/>
-        <Button
-            android:id="@+id/dataPacketButton"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:background="@color/dark_navy"
-            android:text="create data packet"
-            android:textColor="@color/whiteColor"
-            android:textSize="15sp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"/>
-        <Button
-            android:id="@+id/mapButton"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:background="@color/dark_navy"
-            android:text="view map"
-            android:textColor="@color/whiteColor"
-            android:textSize="18sp"
-            android:layout_weight="1"/>
+            android:textSize="18sp" />
     </LinearLayout>
 </RelativeLayout>
+
