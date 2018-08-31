@@ -108,7 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
                         String userId = firebaseAuth.getUid();
                         DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id");
 
-                        //hashMap.put();
+                        //hashMap.put("UserType", );
                         //currentUser.setValue(hashMap);
 
 
