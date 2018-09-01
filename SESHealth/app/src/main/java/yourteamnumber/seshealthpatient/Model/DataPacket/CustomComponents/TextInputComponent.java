@@ -15,25 +15,46 @@ public class TextInputComponent extends LinearLayout {
 
     private MaterialEditText etDescription;
 
+    public TextInputComponent(Context context) {
+        super(context);
+            init();
+    }
+
     public TextInputComponent(Context context, AttributeSet attrs) {
         super(context, attrs);
+            init();
+    }
 
+    public TextInputComponent(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+            init();
+    }
+
+    private void init()
+    {
         setOrientation(LinearLayout.HORIZONTAL);
         setGravity(Gravity.CENTER_VERTICAL);
 
-        LayoutInflater inflater = (LayoutInflater) context
+        LayoutInflater inflater = (LayoutInflater) this.getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.text_input_component, this, true);
 
         etDescription = findViewById(R.id.etDescription);
     }
 
-    public TextInputComponent(Context context) {
-        this(context, null);
-    }
 
     public TextData getTextData()
     {
         return new TextData(etDescription.getText().toString());
+    }
+
+    public void setText(String text)
+    {
+        etDescription.setText(text);
+    }
+
+    public boolean isNotEmpty()
+    {
+        return !etDescription.getText().toString().isEmpty();
     }
 }
