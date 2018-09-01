@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import android.content.res.Configuration;
 
 import android.hardware.Camera.PreviewCallback;
+import android.widget.Toast;
 
 import yourteamnumber.seshealthpatient.R;
 
@@ -86,6 +87,8 @@ public class HeartRateFragment extends Fragment {
     private static final int[] beatsArray = new int[beatsArraySize];
     private static double beats = 0;
     private static long startTime = 0;
+    private CountDownProgress countDownProgress;
+    private int progress;
 
     public HeartRateFragment() {
         // Required empty public constructor
@@ -107,13 +110,21 @@ public class HeartRateFragment extends Fragment {
                     new String[]{Manifest.permission.CAMERA}, 1);//1 can be another integer
         }
         context = getActivity().getApplicationContext();
-    Button button1 = v.findViewById(R.id.Btn_start);
+        countDownProgress = (CountDownProgress)v.findViewById(R.id.countdownProgress);
+        countDownProgress.setCountdownTime(10*1000);
+
+        Button button1 = v.findViewById(R.id.Btn_start);
         preview = (SurfaceView) v.findViewById(R.id.preview);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View V) {
 
+                countDownProgress.startCountDownTime(new CountDownProgress.OnCountdownFinishListener() {
+                    @Override
+                    public void countdownFinished() {
 
+                    }
+                });
 
 
 
@@ -123,6 +134,11 @@ public class HeartRateFragment extends Fragment {
         previewHolder.addCallback(surfaceCallback);
         previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         text = (TextView) v.findViewById(R.id.text);
+
+
+                /*Message message = Message.obtain();
+                message.what = HANDLER_MESSAGE;
+                handler.sendMessage(message);*/
 
         return v;
     }
