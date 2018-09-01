@@ -10,6 +10,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="patient_information">Patient Information</string>
+    <string name="update_patient_information">Update Patient Information</string>
     <string name="create_data_packet">Create Data Packet</string>
     <string name="heart_rate">Heart Rate</string>
     <string name="record_video">Record Video</string>
@@ -42,6 +43,10 @@
     <string-array name="usertype_array">
         <item>Patient</item>
         <item>Doctor</item>
+    </string-array>
+    <string-array name="gender_array">
+        <item>Male</item>
+        <item>Female</item>
     </string-array>
     <string name="title_activity_maps">Map</string>
 </resources>

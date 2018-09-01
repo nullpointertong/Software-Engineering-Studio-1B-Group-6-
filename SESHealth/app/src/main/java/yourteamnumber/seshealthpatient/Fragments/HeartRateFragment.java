@@ -1,14 +1,11 @@
 package yourteamnumber.seshealthpatient.Fragments;
 
-
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -16,7 +13,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.Manifest;
 import android.app.Activity;
@@ -37,8 +33,6 @@ import android.content.res.Configuration;
 import android.hardware.Camera.PreviewCallback;
 import android.widget.Toast;
 
-import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
-import yourteamnumber.seshealthpatient.Model.DataPacket.Models.HeartRate;
 import yourteamnumber.seshealthpatient.R;
 
 /**
@@ -46,21 +40,29 @@ import yourteamnumber.seshealthpatient.R;
  */
 public class HeartRateFragment extends Fragment {
 
-    public static int samplesTaken;
-    public static int SAMPLES_REQUIRED = 5;
+    private Timer timer = new Timer();
+    private TimerTask task;
+    private static int gx;
+    private static int j;
+
+    private static double flag = 1;
+    private Handler handler;
+    private String title = "pulse";
+    private Context context;
+    private int addX = -1;
+    double addY;
+    int[] xv = new int[300];
+    int[] yv = new int[300];
+    int[] hua = new int[]{9, 10, 11, 12, 13, 14, 13, 12, 11, 10, 9, 8, 7, 6,
+            7, 8, 9, 10, 11, 10, 10};
 
     // private static final String TAG = "HeartRateMonitor";
     private static final AtomicBoolean processing = new AtomicBoolean(false);
     private static SurfaceView preview = null;
     private static SurfaceHolder previewHolder = null;
     private static Camera camera = null;
-    private static LinearLayout layout;
     // private static View image = null;
     private static TextView text = null;
-    private static Button startButton;
-    private static Context context;
-    private static Activity activity;
-    private static DataPacket datapacket;
 
 
     private static int averageIndex = 0;
@@ -75,11 +77,17 @@ public class HeartRateFragment extends Fragment {
 
     private static TYPE currentType = TYPE.GREEN;
 
+    public static TYPE getCurrent() {
+        return currentType;
+    }
+
     private static int beatsIndex = 0;
     private static final int beatsArraySize = 3;
     private static final int[] beatsArray = new int[beatsArraySize];
     private static double beats = 0;
     private static long startTime = 0;
+    private CountDownProgress countDownProgress;
+    private int progress;
 
     public HeartRateFragment() {
         // Required empty public constructor
@@ -92,37 +100,46 @@ public class HeartRateFragment extends Fragment {
         super.onCreate(savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_heart_rate, container, false);
         // Inflate the layout for this fragment
-
-
-        return v;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        startButton = view.findViewById(R.id.btnStart);
-        layout = view.findViewById(R.id.heartRateLayout);
-
-        datapacket = getArguments() != null ? (DataPacket) getArguments().getSerializable("data_packet") : null;
-
-        samplesTaken = 0;
-
-        context = getContext();
-        activity = getActivity();
-
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
-            preview = (SurfaceView) view.findViewById(R.id.preview);
-
-            previewHolder = preview.getHolder();
-            previewHolder.addCallback(surfaceCallback);
-            previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-            text = (TextView) view.findViewById(R.id.text);
+            Log.i("TEST","Granted");
+            //init(barcodeScannerView, getIntent(), null);
         } else {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.CAMERA}, 1);//1 can be another integer
         }
+        context = getActivity().getApplicationContext();
+        countDownProgress = (CountDownProgress)v.findViewById(R.id.countdownProgress);
+        countDownProgress.setCountdownTime(10*1000);
+
+        Button button1 = v.findViewById(R.id.Btn_start);
+        preview = (SurfaceView) v.findViewById(R.id.preview);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View V) {
+
+                countDownProgress.startCountDownTime(new CountDownProgress.OnCountdownFinishListener() {
+                    @Override
+                    public void countdownFinished() {
+
+                    }
+                });
+
+
+
+            }
+        });
+        previewHolder = preview.getHolder();
+        previewHolder.addCallback(surfaceCallback);
+        previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        text = (TextView) v.findViewById(R.id.text);
+
+
+                /*Message message = Message.obtain();
+                message.what = HANDLER_MESSAGE;
+                handler.sendMessage(message);*/
+
+        return v;
     }
 
     @Override
@@ -142,127 +159,106 @@ public class HeartRateFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        if (camera != null) {
-            camera.setPreviewCallback(null);
-            camera.stopPreview();
-            camera.release();
-            camera = null;
-        }
+        camera.setPreviewCallback(null);
+        camera.stopPreview();
+        camera.release();
+        camera = null;
     }
 
-    private static PreviewCallback previewCallback = (data, cam) -> {
-        if (data == null)
-            throw new NullPointerException();
-        Camera.Size size = cam.getParameters().getPreviewSize();
-        if (size == null)
-            throw new NullPointerException();
-        if (!processing.compareAndSet(false, true))
-            return;
-        int width = size.width;
-        int height = size.height;
+    private static PreviewCallback previewCallback = new PreviewCallback() {
 
-        int imgAvg = ImageProcessing.decodeYUV420SPtoRedAvg(data.clone(),
-                height, width);
+        public void onPreviewFrame(byte[] data, Camera cam) {
+            if (data == null)
+                throw new NullPointerException();
+            Camera.Size size = cam.getParameters().getPreviewSize();
+            if (size == null)
+                throw new NullPointerException();
+            if (!processing.compareAndSet(false, true))
+                return;
+            int width = size.width;
+            int height = size.height;
+
+            int imgAvg = ImageProcessing.decodeYUV420SPtoRedAvg(data.clone(),
+                    height, width);
+            gx = imgAvg;
 
 
-        // Log.i(TAG, "imgAvg=" + imgAvg);
-        if (imgAvg == 0 || imgAvg == 255) {
-            processing.set(false);
-            return;
-        }
-
-        int averageArrayAvg = 0;
-        int averageArrayCnt = 0;
-        for (int i = 0; i < averageArray.length; i++) {
-            if (averageArray[i] > 0) {
-                averageArrayAvg += averageArray[i];
-                averageArrayCnt++;
-            }
-        }
-
-        int rollingAverage = (averageArrayCnt > 0) ? (averageArrayAvg / averageArrayCnt)
-                : 0;
-        TYPE newType = currentType;
-        if (imgAvg < rollingAverage) {
-            newType = TYPE.RED;
-            if (newType != currentType) {
-                beats++;
-
-                // Log.e(TAG, "BEAT!! beats=" + beats);
-            }
-        } else if (imgAvg > rollingAverage) {
-            newType = TYPE.GREEN;
-        }
-
-        if (averageIndex == averageArraySize)
-            averageIndex = 0;
-        averageArray[averageIndex] = imgAvg;
-        averageIndex++;
-
-        // Transitioned from one state to another to the same
-        if (newType != currentType) {
-            currentType = newType;
-            // image.postInvalidate();
-        }
-
-        long endTime = System.currentTimeMillis();
-        double totalTimeInSecs = (endTime - startTime) / 1000d;
-        if (totalTimeInSecs >= 2) {
-            double bps = (beats / totalTimeInSecs);
-            int dpm = (int) (bps * 60d);
-            if (dpm < 30 || dpm > 180 || imgAvg < 200) {
-
-                startTime = System.currentTimeMillis();
-
-                beats = 0;
-                text.setText("Finger not on");
+            // Log.i(TAG, "imgAvg=" + imgAvg);
+            if (imgAvg == 0 || imgAvg == 255) {
                 processing.set(false);
                 return;
             }
-            // Log.e(TAG, "totalTimeInSecs=" + totalTimeInSecs + " beats="+
-            // beats);
-            if (beatsIndex == beatsArraySize)
-                beatsIndex = 0;
-            beatsArray[beatsIndex] = dpm;
-            beatsIndex++;
-            int beatsArrayAvg = 0;
-            int beatsArrayCnt = 0;
-            for (int i = 0; i < beatsArray.length; i++) {
-                if (beatsArray[i] > 0) {
-                    beatsArrayAvg += beatsArray[i];
-                    beatsArrayCnt++;
+
+            int averageArrayAvg = 0;
+            int averageArrayCnt = 0;
+            for (int i = 0; i < averageArray.length; i++) {
+                if (averageArray[i] > 0) {
+                    averageArrayAvg += averageArray[i];
+                    averageArrayCnt++;
                 }
             }
-            int beatsAvg = (beatsArrayAvg / beatsArrayCnt);
-            String heartRate = String.valueOf(beatsAvg) + " BPM";
-            text.setText(heartRate + " - " + samplesTaken + "/5 samples taken.");
-            samplesTaken++;
 
-            if (samplesTaken > SAMPLES_REQUIRED && datapacket != null)
-            {
-                camera.stopPreview();
-                camera.release();
-                camera = null;
-                layout.removeAllViews();
-                Toast.makeText(context, "Heart Rate is: " + heartRate, Toast.LENGTH_LONG).show();
+            int rollingAverage = (averageArrayCnt > 0) ? (averageArrayAvg / averageArrayCnt)
+                    : 0;
+            TYPE newType = currentType;
+            if (imgAvg < rollingAverage) {
+                newType = TYPE.RED;
+                if (newType != currentType) {
+                    beats++;
+                    flag = 0;
 
-                Fragment newFragment = new DataPacketFragment();
-                Bundle bundle = new Bundle();
-                datapacket.addHeartRate(new HeartRate(beatsAvg));
-                bundle.putSerializable("data_packet", datapacket);
-                newFragment.setArguments(bundle);
-                FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();
-
-                transaction.replace(R.id.fragment_container, newFragment);
-                transaction.addToBackStack(null);
-
-                transaction.commit();
+                    // Log.e(TAG, "BEAT!! beats=" + beats);
+                }
+            } else if (imgAvg > rollingAverage) {
+                newType = TYPE.GREEN;
             }
 
-            startTime = System.currentTimeMillis();
-            beats = 0;
+            if (averageIndex == averageArraySize)
+                averageIndex = 0;
+            averageArray[averageIndex] = imgAvg;
+            averageIndex++;
+
+            // Transitioned from one state to another to the same
+            if (newType != currentType) {
+                currentType = newType;
+                // image.postInvalidate();
+            }
+
+            long endTime = System.currentTimeMillis();
+            double totalTimeInSecs = (endTime - startTime) / 1000d;
+            if (totalTimeInSecs >= 2) {
+                double bps = (beats / totalTimeInSecs);
+                int dpm = (int) (bps * 60d);
+                if (dpm < 30 || dpm > 180 || imgAvg < 200) {
+
+                    startTime = System.currentTimeMillis();
+
+                    beats = 0;
+                    processing.set(false);
+                    return;
+                }
+                // Log.e(TAG, "totalTimeInSecs=" + totalTimeInSecs + " beats="+
+                // beats);
+                if (beatsIndex == beatsArraySize)
+                    beatsIndex = 0;
+                beatsArray[beatsIndex] = dpm;
+                beatsIndex++;
+                int beatsArrayAvg = 0;
+                int beatsArrayCnt = 0;
+                for (int i = 0; i < beatsArray.length; i++) {
+                    if (beatsArray[i] > 0) {
+                        beatsArrayAvg += beatsArray[i];
+                        beatsArrayCnt++;
+                    }
+                }
+                int beatsAvg = (beatsArrayAvg / beatsArrayCnt);
+                text.setText("HeartRate: " + String.valueOf(beatsAvg)+ " bpd");
+
+                startTime = System.currentTimeMillis();
+                beats = 0;
+            }
+            processing.set(false);
         }
-        processing.set(false);
     };
 
     private static SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {

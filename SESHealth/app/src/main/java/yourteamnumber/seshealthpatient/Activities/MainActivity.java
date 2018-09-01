@@ -23,6 +23,7 @@ import yourteamnumber.seshealthpatient.Fragments.DataPacketFragment;
 import yourteamnumber.seshealthpatient.Fragments.HeartRateFragment;
 import yourteamnumber.seshealthpatient.Fragments.MapFragment;
 import yourteamnumber.seshealthpatient.Fragments.PatientInformationFragment;
+import yourteamnumber.seshealthpatient.Fragments.UpdatePatientInformationFragment;
 import yourteamnumber.seshealthpatient.Fragments.RecordVideoFragment;
 import yourteamnumber.seshealthpatient.Fragments.SendFileFragment;
 import yourteamnumber.seshealthpatient.R;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP
+        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, UPDATE_PATIENT_INFO
     }
 
     /**
@@ -128,6 +129,11 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.PATIENT_INFO) {
                                     // change the fragment to the new fragment
                                     ChangeFragment(MenuStates.PATIENT_INFO);
+                                }
+                                break;
+                            case R.id.nav_update_patient_info:
+                                if (currentState != MenuStates.UPDATE_PATIENT_INFO) {
+                                    ChangeFragment(MenuStates.UPDATE_PATIENT_INFO);
                                 }
                                 break;
                             case R.id.nav_data_packet:
@@ -244,6 +250,8 @@ public class MainActivity extends AppCompatActivity {
                 return new DataPacketFragment();
             case PATIENT_INFO:
                 return new PatientInformationFragment();
+            case UPDATE_PATIENT_INFO:
+                return new UpdatePatientInformationFragment();
             case NAVIGATION_MAP:
                 return new MapFragment();
             case RECORD_VIDEO:
@@ -265,6 +273,8 @@ public class MainActivity extends AppCompatActivity {
                 return getString(R.string.create_data_packet);
             case PATIENT_INFO:
                 return getString(R.string.patient_information);
+            case UPDATE_PATIENT_INFO:
+                return getString(R.string.update_patient_information);
             case NAVIGATION_MAP:
                 return getString(R.string.facilities_map);
             case RECORD_VIDEO:
