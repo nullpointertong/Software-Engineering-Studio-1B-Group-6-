@@ -25,6 +25,10 @@ public class RecordVideoFragment extends Fragment {
     private final int VIDEO_REQUEST_CODE = 1001;
     private Button mRecordBtn;
 
+
+
+    //test test test test
+
     public RecordVideoFragment() {
         // Required empty public constructor
     }
