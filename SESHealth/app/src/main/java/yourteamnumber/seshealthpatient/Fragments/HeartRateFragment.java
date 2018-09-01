@@ -1,6 +1,5 @@
 package yourteamnumber.seshealthpatient.Fragments;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
@@ -32,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import android.content.res.Configuration;
 
 import android.hardware.Camera.PreviewCallback;
+import android.widget.Toast;
 
 import yourteamnumber.seshealthpatient.R;
 
@@ -86,6 +86,8 @@ public class HeartRateFragment extends Fragment {
     private static final int[] beatsArray = new int[beatsArraySize];
     private static double beats = 0;
     private static long startTime = 0;
+    private CountDownProgress countDownProgress;
+    private int progress;
 
     public HeartRateFragment() {
         // Required empty public constructor
@@ -100,18 +102,42 @@ public class HeartRateFragment extends Fragment {
         // Inflate the layout for this fragment
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
-            context = getActivity().getApplicationContext();
-            Button button1 = v.findViewById(R.id.Btn_start);
-            preview = (SurfaceView) v.findViewById(R.id.preview);
-
-            previewHolder = preview.getHolder();
-            previewHolder.addCallback(surfaceCallback);
-            previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-            text = (TextView) v.findViewById(R.id.text);
+            Log.i("TEST","Granted");
+            //init(barcodeScannerView, getIntent(), null);
         } else {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.CAMERA}, 1);//1 can be another integer
         }
+        context = getActivity().getApplicationContext();
+        countDownProgress = (CountDownProgress)v.findViewById(R.id.countdownProgress);
+        countDownProgress.setCountdownTime(10*1000);
+
+        Button button1 = v.findViewById(R.id.Btn_start);
+        preview = (SurfaceView) v.findViewById(R.id.preview);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View V) {
+
+                countDownProgress.startCountDownTime(new CountDownProgress.OnCountdownFinishListener() {
+                    @Override
+                    public void countdownFinished() {
+
+                    }
+                });
+
+
+
+            }
+        });
+        previewHolder = preview.getHolder();
+        previewHolder.addCallback(surfaceCallback);
+        previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        text = (TextView) v.findViewById(R.id.text);
+
+
+                /*Message message = Message.obtain();
+                message.what = HANDLER_MESSAGE;
+                handler.sendMessage(message);*/
 
         return v;
     }
