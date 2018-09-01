@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#031E3C</color>
     <color name="whiteColor">#FFFF</color>
     <color name="redColor">#f46464</color>
 
@@ -12,5 +12,6 @@
     <color name="descriptionBackColor">#3f8ae6</color>
 
     <color name="data_packet_bg">#f3f3f3</color>
+    <color name="dark_navy">#031E3C</color>
 
 </resources>

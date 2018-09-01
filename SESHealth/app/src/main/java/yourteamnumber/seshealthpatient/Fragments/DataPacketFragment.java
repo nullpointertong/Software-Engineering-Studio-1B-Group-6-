@@ -7,6 +7,10 @@ import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +28,7 @@ import java.util.List;
 
 import yourteamnumber.seshealthpatient.Model.DataPacket.CustomComponents.TextInputComponent;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
+import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacketAdapter;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.TextData;
 import yourteamnumber.seshealthpatient.R;
 
@@ -41,6 +46,10 @@ public class DataPacketFragment extends Fragment {
     private ArrayList<CustomComponents> activeDataComponents;
     private ArrayList<View> activeViews;
     private DataPacket dataPacket;
+
+    private List<DataPacket> mDataPacketList = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private DataPacketAdapter mAdapter;
 
     public DataPacketFragment() {
     }
@@ -62,7 +71,6 @@ public class DataPacketFragment extends Fragment {
         activeViews = new ArrayList<>();
         dataPacket = new DataPacket();
 
-        txtAddDataHint = getView().findViewById(R.id.txtAddData);
         relativeLayout = getView().findViewById(R.id.frameLayout);
         rfaLayout = getView().findViewById(R.id.activity_main_rfal);
         rfaBtn = getView().findViewById(R.id.activity_main_rfab);
@@ -109,7 +117,29 @@ public class DataPacketFragment extends Fragment {
         );
 
         rfabHelper.build();
+        recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_view);
+        mAdapter = new DataPacketAdapter(this.getContext(), mDataPacketList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(mAdapter);
+        prepareDatapackets();
     }
+
+    private void prepareDatapackets() {
+        dataPacket = new DataPacket();
+        mDataPacketList.add(dataPacket);
+
+        dataPacket = new DataPacket();
+        mDataPacketList.add(dataPacket);
+
+        dataPacket = new DataPacket();
+        mDataPacketList.add(dataPacket);
+
+        mAdapter.notifyDataSetChanged();
+    }
+
 
     private void AddTextInput() {
         if (!ComponentExists(CustomComponents.TEXT_INPUT))
