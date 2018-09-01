@@ -428,7 +428,7 @@ public class DataPacketFragment extends Fragment {
 
     private void setInputsForDataPacket(Bundle savedInstanceState)
     {
-        if (!dataPacket.getTextData().toString().isEmpty())
+        if (dataPacket.getTextData() != null && !dataPacket.getTextData().toString().isEmpty())
         {
             textInputComponent.setText(dataPacket.getTextData().toString());
         }
