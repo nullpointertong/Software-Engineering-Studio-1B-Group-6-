@@ -8,6 +8,7 @@ public class HeartRate {
     {
         this.heartRate = heartRate;
     }
+    public HeartRate() {}
 
     public int getHeartRate() {
         return heartRate;

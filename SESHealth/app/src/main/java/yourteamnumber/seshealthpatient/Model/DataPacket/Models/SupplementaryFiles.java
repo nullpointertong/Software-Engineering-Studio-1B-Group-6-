@@ -12,6 +12,11 @@ public class SupplementaryFiles {
         this.filePaths = filePaths;
         this.fileNames = fileNames;
     }
+    public SupplementaryFiles()
+    {
+        this.filePaths = null;
+        this.fileNames = null;
+    }
 
     public ArrayList<String> getFilePaths()
     {

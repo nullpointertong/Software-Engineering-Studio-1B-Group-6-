@@ -9,6 +9,7 @@ public class TextData {
     {
         this.data = data;
     }
+    public TextData() {this.data = "";}
 
     public String getData()
     {
