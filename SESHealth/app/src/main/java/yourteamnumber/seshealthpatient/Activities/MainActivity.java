@@ -140,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.nav_data_packet:
                                 if (currentState != MenuStates.DATA_PACKET) {
                                     ChangeFragment(MenuStates.DATA_PACKET);
-                                    break;
                                 }
+                                break;
                             case R.id.nav_list_data_packet:
                                 if (currentState != MenuStates.LIST_DATA_PACKET) {
                                     ChangeFragment(MenuStates.LIST_DATA_PACKET);
