@@ -77,6 +77,7 @@ public class ListDataPacketFragment extends Fragment {
         ref.child("DataPackets").child(userUid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mDataPacketList.clear();
                 for (DataSnapshot datapacketDataSnapshot : dataSnapshot.getChildren()) {
                     DataPacket dataPacket = datapacketDataSnapshot.getValue(DataPacket.class);
                     mDataPacketList.add(dataPacket);

@@ -44,14 +44,21 @@ public class DataPacketAdapter extends RecyclerView.Adapter<DataPacketAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         DataPacket dataPacket = mDataPacketList.get(position);
-        String temp = dataPacket.getTextData().getData();
-        holder.number.setText(String.format(holder.id.getText().toString(), position));
-        if (temp.length() < 20) {
-            holder.description.setText(dataPacket.getTextData().getData());
+
+        holder.number.setText(String.format(holder.number.getText().toString(), position+1));
+        holder.id.setText(String.format(holder.id.getText().toString(), dataPacket.getDataPackedId().toString()));
+
+        if (dataPacket.getTextData() == null) {
+            holder.description.setText("");
         } else {
-            holder.description.setText(dataPacket.getTextData().getData().substring(0, 18) + "...");
+            String temp = dataPacket.getTextData().getData();
+            if (temp.length() < 20) {
+                holder.description.setText(dataPacket.getTextData().getData());
+            } else {
+                holder.description.setText(dataPacket.getTextData().getData().substring(0, 18) + "...");
+            }
         }
-        holder.id.setText(String.format(dataPacket.getDataPackedId().toString(), position));
+
     }
 
     @Override
