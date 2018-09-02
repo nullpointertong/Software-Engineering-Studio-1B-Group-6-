@@ -7,7 +7,6 @@ public class HeartRate {
     public HeartRate()
     {
     }
-    public HeartRate() {}
 
     public int getHeartRate() {
         return heartRate;

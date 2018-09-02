@@ -512,8 +512,6 @@ public class DataPacketFragment extends Fragment {
 
             textInputComponent.disable();
             heartRateButton.setEnabled(false);
-            map.setClickable(false);
-            map.setEnabled(false);
             addFilesButton.setEnabled(false);
             suppFiles.setEnabled(false);
         }

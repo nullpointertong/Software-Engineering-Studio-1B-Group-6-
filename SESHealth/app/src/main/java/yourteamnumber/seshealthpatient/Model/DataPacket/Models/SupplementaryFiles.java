@@ -18,11 +18,6 @@ public class SupplementaryFiles {
     public void setFileNames(ArrayList<String> fileNames) {
         this.fileNames = fileNames;
     }
-    public SupplementaryFiles()
-    {
-        this.filePaths = null;
-        this.fileNames = null;
-    }
 
     public ArrayList<String> getFilePaths()
     {
