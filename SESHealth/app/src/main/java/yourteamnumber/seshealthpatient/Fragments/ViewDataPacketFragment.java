@@ -33,7 +33,7 @@ public class ViewDataPacketFragment extends Fragment {
             Toast.makeText(this.getContext(), "Error: Data packet cannot be read", Toast.LENGTH_SHORT);
             this.getFragmentManager().popBackStackImmediate();
         }
-        Log.d("DAta Packet: ", dataPacket.toString());
+        //Log.d("Data Packet: ", dataPacket.toString());
 
     }
 
@@ -48,8 +48,18 @@ public class ViewDataPacketFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextView textView = getActivity().findViewById(R.id.data_packet_id_tv);
-        textView.setText(dataPacket.getDataPackedId());
+        ((TextView)getActivity().findViewById(R.id.data_packet_id_tv))
+                .setText(dataPacket.getDataPackedId());
+        ((TextView)getActivity().findViewById(R.id.data_packet_desc_tv))
+                .setText(dataPacket.getTextData() != null ? dataPacket.getTextData().getData() : "N.A.");
+        ((TextView)getActivity().findViewById(R.id.data_packet_location_tv))
+                .setText(dataPacket.getLocation() != null ? dataPacket.getLocation().toString() : "N.A.");
+        ((TextView)getActivity().findViewById(R.id.data_packet_heartrate_tv))
+                .setText(dataPacket.getHeartRate() != null ? dataPacket.getHeartRate().toString() : "N.A.");
+        ((TextView)getActivity().findViewById(R.id.data_packet_video_bool_tv))
+                .setText(dataPacket.getVideoSnippet() != null ? "Yes" : "No");
+        ((TextView)getActivity().findViewById(R.id.data_packet_file_bool_tv))
+                .setText(dataPacket.getSupplementaryFiles() != null ? "Yes" : "No");
 
     }
 

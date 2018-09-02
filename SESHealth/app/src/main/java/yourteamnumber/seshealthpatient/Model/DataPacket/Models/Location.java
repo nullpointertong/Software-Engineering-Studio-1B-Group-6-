@@ -24,7 +24,7 @@ public class Location {
     }
     public Location()
     {
-        
+
     }
 
     public double getLatitude () { return latitude; }
@@ -46,7 +46,9 @@ public class Location {
 
     @Override
     public String toString() {
-        return name + ", " + address + ", " + latitude + ", " + longitude;
+        return ((name != null && name != "")? name + ", " : "") +
+                ((address != null && address != "")? address + ", " : "")+
+                latitude + ", " + longitude;
     }
 
 }
