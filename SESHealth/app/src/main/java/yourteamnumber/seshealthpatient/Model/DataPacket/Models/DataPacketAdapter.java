@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ public class DataPacketAdapter extends RecyclerView.Adapter<DataPacketAdapter.Vi
 
     private Context mContext;
     private List<DataPacket> mDataPacketList;
+    CustomItemClickListener listener;
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView number, description, id;
@@ -25,20 +28,27 @@ public class DataPacketAdapter extends RecyclerView.Adapter<DataPacketAdapter.Vi
             description = (TextView) view.findViewById(R.id.data_packet_description);
             id = (TextView) view.findViewById(R.id.data_packet_id);
         }
+
     }
 
 
-    public DataPacketAdapter(Context context, List<DataPacket> dataPacketList) {
+    public DataPacketAdapter(Context context, List<DataPacket> dataPacketList, CustomItemClickListener listener) {
         this.mContext = context;
         this.mDataPacketList = dataPacketList;
+        this.listener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.data_packet_list_row, parent, false);
-
-        return new ViewHolder(itemView);
+        View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.data_packet_list_row, parent, false);
+        final ViewHolder mViewHolder = new ViewHolder(mView);
+        mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(v, mViewHolder.getPosition());
+            }
+        });
+        return mViewHolder;
     }
 
     @Override
