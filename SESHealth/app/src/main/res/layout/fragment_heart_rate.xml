@@ -1,64 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:background="#99CCCC"
-android:orientation="vertical"
-android:layout_width="match_parent"
-android:layout_height="match_parent">
+    android:background="@color/whiteColor"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/heartRateLayout">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/login_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="13dp"
+        android:background="#031E3C"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <SurfaceView
-            android:id="@+id/preview"
-            android:layout_width="200dp"
-            android:layout_height="150dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-
-        <Button
-            android:id="@+id/Btn_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="50dp"
-            android:layout_centerHorizontal="true"
-            android:text="Start" />
+        />
 
 
 
 
-    </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
 
         <TextView
-            android:id="@+id/text"
+            android:id="@+id/txtHeartRate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:layout_weight="1"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/opensans_regular"
+
             android:text="HeartRate:"
-            android:textColor="@android:color/black">
+            android:textColor="#000000"></TextView>
 
 
-        </TextView>
-
-
+        <ProgressBar
+            android:id="@+id/pbrHeartRate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:progress="0"
+            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+            android:padding="70dp"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circle_progress"
+            android:layout_centerInParent="true" />
 
     </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/txtHeartRateTip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/opensans_extrabolditalic"
+            android:text="Please place your finger on the camera."
+            android:textColor="#FF0000"
+            android:textSize="15sp" />
+
+
+        <SurfaceView
+            android:id="@+id/preview"
+            android:layout_below="@id/txtHeartRateTip"
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" />
+
+    </RelativeLayout>
+
 
 
 

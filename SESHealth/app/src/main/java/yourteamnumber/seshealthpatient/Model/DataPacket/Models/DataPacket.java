@@ -5,13 +5,16 @@ import android.content.DialogInterface;
 import android.location.Location;
 import android.support.v7.app.AlertDialog;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.Serializable;
 import java.util.UUID;
 
-public class DataPacket {
+public class DataPacket implements Serializable{
 
     private UUID dataPackedId;
     private TextData textData;
-    private Location location;
+    private LatLng location;
     private VideoSnippet videoSnippet;
     private SupplementaryFiles supplementaryFiles;
     private HeartRate heartRate;
@@ -26,7 +29,7 @@ public class DataPacket {
         return "DataPacket{" +
                 "\ndataPackedId=" + dataPackedId +
                 ", \ntextData=" + textData +
-                ", \nlocation= N/A" +
+                ", \nlocation=" + location +
                 ", \nvideoSnippet=" + videoSnippet +
                 ", \nsupplementaryFiles=" + supplementaryFiles +
                 ", \nheartRate=" + heartRate +
@@ -71,11 +74,11 @@ public class DataPacket {
         this.textData = textData;
     }
 
-    public Location getLocation() {
+    public LatLng getLocation() {
         return location;
     }
 
-    public void addLocation(Location location) {
+    public void addLocation(LatLng location) {
         this.location = location;
     }
 

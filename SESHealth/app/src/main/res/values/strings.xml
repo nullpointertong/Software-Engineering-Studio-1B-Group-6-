@@ -31,6 +31,9 @@
 
     <string name="text_input_hint">Describe your problem</string>
     <string name="text_input_label">Description</string>
+    <string name="map_location_label">Location</string>
+    <string name="heart_rate_label">Heart Rate</string>
+    <string name="supp_files_label">Supplementary Files</string>
 
     <string name="select_file_title">Select a File</string>
     <string name="file_not_selected">No file selected.</string>
