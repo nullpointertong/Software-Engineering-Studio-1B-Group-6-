@@ -74,7 +74,7 @@ public class ListDataPacketFragment extends Fragment {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference();
 
-        ref.child("DataPackets").addValueEventListener(new ValueEventListener() {
+        ref.child("DataPackets").child(userUid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot datapacketDataSnapshot : dataSnapshot.getChildren()) {

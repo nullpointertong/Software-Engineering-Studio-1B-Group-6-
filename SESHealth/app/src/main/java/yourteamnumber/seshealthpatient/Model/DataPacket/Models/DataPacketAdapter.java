@@ -17,13 +17,13 @@ public class DataPacketAdapter extends RecyclerView.Adapter<DataPacketAdapter.Vi
     private List<DataPacket> mDataPacketList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView id, description, date;
+        public TextView number, description, id;
 
         public ViewHolder(View view) {
             super(view);
-            id = (TextView) view.findViewById(R.id.data_packet_id);
+            number = (TextView) view.findViewById(R.id.data_packet_num);
             description = (TextView) view.findViewById(R.id.data_packet_description);
-            date = (TextView) view.findViewById(R.id.data_packet_date);
+            id = (TextView) view.findViewById(R.id.data_packet_id);
         }
     }
 
@@ -44,7 +44,14 @@ public class DataPacketAdapter extends RecyclerView.Adapter<DataPacketAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         DataPacket dataPacket = mDataPacketList.get(position);
-        holder.id.setText(dataPacket.getDataPackedId().toString());
+        String temp = dataPacket.getTextData().getData();
+        holder.number.setText(String.format(holder.id.getText().toString(), position));
+        if (temp.length() < 20) {
+            holder.description.setText(dataPacket.getTextData().getData());
+        } else {
+            holder.description.setText(dataPacket.getTextData().getData().substring(0, 18) + "...");
+        }
+        holder.id.setText(String.format(dataPacket.getDataPackedId().toString(), position));
     }
 
     @Override
