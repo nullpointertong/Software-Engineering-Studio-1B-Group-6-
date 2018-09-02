@@ -64,12 +64,17 @@ public class DataPacket implements Serializable{
 
     @Override
     public String toString() {
+        String locationString;
+        if (location != null)
+            locationString = location.toString();
+        else
+            locationString = "null";
         return "DataPacket{" +
                 "\ndataPackedId=" + dataPackedId +
                 ", \nUserId=" + userId +
                 ", \nUserEmail=" + userEmail +
                 ", \ntextData=" + textData +
-                ", \nlocation=" + location.toString() +
+                ", \nlocation=" + locationString +
                 ", \nvideoSnippet=" + videoSnippet +
                 ", \nsupplementaryFiles=" + supplementaryFiles +
                 ", \nheartRate=" + heartRate +

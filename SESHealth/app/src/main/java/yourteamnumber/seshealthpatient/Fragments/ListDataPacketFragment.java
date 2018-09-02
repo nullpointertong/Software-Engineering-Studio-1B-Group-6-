@@ -1,5 +1,6 @@
 package yourteamnumber.seshealthpatient.Fragments;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -69,8 +70,15 @@ public class ListDataPacketFragment extends Fragment {
             @Override
             public void onItemClick(View v, int position) {
                 Log.d(TAG, "clicked position:" + position);
-                String postId = mDataPacketList.get(position).getDataPackedId();
-                // do what ever you want to do with it
+                Fragment viewDataPacketFragment = new ViewDataPacketFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("data_packet", mDataPacketList.get(position));
+                viewDataPacketFragment.setArguments(bundle);
+                getActivity().getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, viewDataPacketFragment)
+                .addToBackStack(null)
+                .commit();
+
             }});
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
