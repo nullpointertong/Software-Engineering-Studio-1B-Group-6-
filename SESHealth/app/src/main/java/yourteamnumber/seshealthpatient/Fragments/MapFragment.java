@@ -1,9 +1,11 @@
 package yourteamnumber.seshealthpatient.Fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.support.annotation.NonNull;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -11,35 +13,33 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.FusedLocationProviderClient;
+import android.location.LocationListener;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.lang.StringBuilder;
 
-import yourteamnumber.seshealthpatient.Activities.MainActivity;
-import yourteamnumber.seshealthpatient.R;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.MedicalFacility;
+import yourteamnumber.seshealthpatient.R;
 
+import static android.content.Context.LOCATION_SERVICE;
 
 
 /**
@@ -54,64 +54,50 @@ public class MapFragment extends Fragment {
     private static final int DEFAULT_ZOOM = 14;
     private final LatLng mDefaultLocation = new LatLng(-33.8840504, 151.1992254);
 
-    private static FirebaseDatabase database;
-    private DatabaseReference facilitiesRef;
-    private List<MedicalFacility> mFacilities = new ArrayList<MedicalFacility>();
+    private LocationManager mLocationManager;
+    private final String TAG = "map_fragment";
+    private StringBuilder sbPlaceQuery;
+    private JSONObject jsonPlaceList;
+
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+            mLastKnownLocation = location;
+            Log.d(TAG, "My location: "+ mLastKnownLocation.toString());
+            if (mMap.isMyLocationEnabled() && mLocationPermissionGranted) {
+                createPlaceQuery();
+                runPlacesRequestTask();
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
     public MapFragment() {
-        database = FirebaseDatabase.getInstance();
-        facilitiesRef = database.getReference().child("MedicalFacilities");
-        /**
-         * Write
-
-        List<String> physicians = new ArrayList<String>();
-        physicians.add("Shitty McShitfaced");
-        MedicalFacility facility = new MedicalFacility(
-                "King Henry VIII",
-                "25 Suck It Street",
-                physicians,
-                new LatLng(-33.963721, 151.224782));
-        MedicalFacility facility1 = new MedicalFacility(
-                "UTS HEalth Unit",
-                "15 Broadway, Ultimo 2007 NSW",
-                physicians,
-                new LatLng(-33.92324, 151.224243));
-        MedicalFacility facility2 = new MedicalFacility(
-                "Bing Bong",
-                "420 Blaze It Street",
-                physicians,
-                new LatLng(-33.923321, 151.2232111));
-        facilitiesRef.child("0").setValue(facility);
-        facilitiesRef.child("1").setValue(facility1);
-        facilitiesRef.child("2").setValue(facility2);
-
-         *   Read
-         */
-        facilitiesRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot facilityData : dataSnapshot.getChildren())
-                {
-                    MedicalFacility facility = facilityData.getValue(MedicalFacility.class);
-                    mFacilities.add(facility);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("Read from Firebase failed: " + databaseError.getCode() + " "+ databaseError.getMessage());
-            }
-        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        mLocationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+
+
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         mMapView = rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-
-
 
         mMapView.onResume(); // needed to get the map to display immediately
 
@@ -129,37 +115,45 @@ public class MapFragment extends Fragment {
                 // Move camera to Sydney
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
 
-
                 requestLocationPermission();
 
                 initiateDeviceLocation();
 
-                markFacilities();
+
             }
         });
-
         return rootView;
     }
 
-    void markFacilities()
-    {
-        for (MedicalFacility facility : mFacilities) {
-            mMap.addMarker(new MarkerOptions().position(new LatLng(facility.getLatitude(), facility.getLongitude()))
-                    .title(facility.getName())
-                    .snippet("Address: " + facility.getAddress() + " | Physicians: " + facility.getPhysicians()));
-        }
+    void createPlaceQuery() {
+        /** Create
+         * Create query to get medical facilities through google's Nearby Search function
+         */
+        sbPlaceQuery = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+
+        sbPlaceQuery.append("location=" + mLastKnownLocation.getLatitude() + "," + mLastKnownLocation.getLongitude());
+        sbPlaceQuery.append("&radius=5000");
+        sbPlaceQuery.append("&keyword=hospital+clinic+doctor+health");
+        sbPlaceQuery.append("&sensor=true");
+        sbPlaceQuery.append("&key=" + getResources().getString(R.string.google_server_key));
+
+
     }
 
-    void initiateDeviceLocation()
-    {
+    void initiateDeviceLocation() {
         try {
             if (mLocationPermissionGranted) {
+
                 // For showing a move to my location button
                 mMap.setMyLocationEnabled(true);
-
+                try {
+                    mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5, 1000, mLocationListener);
+                } catch (Exception e) {
+                    Log.d(TAG, e.toString());
+                }
                 // For dropping a marker at a point on the Map
                 LatLng currentLoc = mDefaultLocation;//new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude());
-                mMap.addMarker(new MarkerOptions().position(currentLoc).title("Current location").snippet("You are here"));
+                //mMap.addMarker(new MarkerOptions().position(currentLoc).title("Current location").snippet("You are here"));
 
                 // For zooming automatically to the location of the marker
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(currentLoc).zoom(DEFAULT_ZOOM).build();
@@ -170,23 +164,48 @@ public class MapFragment extends Fragment {
         }
     }
 
-
-
-    void requestLocationPermission()
-    {
-
+    void requestLocationPermission() {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getActivity(), "Location permission is required to find nearby facilities!", Toast.LENGTH_LONG);
-            mLocationPermissionGranted = false;
+        mLocationPermissionGranted = true;
 
-        } else {
-            mLocationPermissionGranted = true;
-        }
     }
+
+    void updateMap()
+    {
+        try {
+            if (jsonPlaceList == null) {
+                Log.e(TAG, "Failed to get list of places");
+                return;
+            } else {
+                JSONArray placeList = (JSONArray)jsonPlaceList.get("results");
+                for (int i = 0; i < placeList.length(); i++) {
+                    JSONObject place = (JSONObject)placeList.get(i);
+                    double latitude = place.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+                    double longitude = place.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+                    String name = place.getString("name");
+                    String address = place.getString("vicinity");
+                    int rating = place.getInt("rating");
+                    mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
+                            .title(name)
+                            .snippet(address));
+
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+
+    }
+
+
+
+    public void runPlacesRequestTask() {
+        new HTTPRequestAsyncTask(getActivity(), mMap, sbPlaceQuery.toString()).execute("");
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -209,5 +228,79 @@ public class MapFragment extends Fragment {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    class HTTPRequestAsyncTask extends AsyncTask<String, Void, Boolean> {
+
+        private GoogleMap mMap;
+        private Activity contex;
+        private String placeQuery;
+        private String data;
+        BufferedReader reader;
+
+        HTTPRequestAsyncTask(Activity activity, GoogleMap googleMap, String placeQuery)
+        {
+            this.mMap=googleMap;
+            this.contex=activity;
+            this.placeQuery=placeQuery;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... urls) {
+            return getNearbyPlaces();
+        }
+
+        Boolean getNearbyPlaces() {
+            try {
+                URL url = new URL(placeQuery);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                InputStream stream = connection.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+
+                StringBuffer sb = new StringBuffer();
+
+                String line = "";
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                data = sb.toString();
+                //Log.d(TAG, data);
+                br.close();
+                return true;
+
+            } catch (Exception e) {
+                Log.e("Exception: %s", e.toString());
+                return false;
+            }
+        }
+
+        protected void onPostExecute(Boolean result) {
+            try {
+
+                StringReader is = new StringReader(data);
+//                InputStream is = getActivity().getResources().openRawResource(R.raw.place_search_response); // For testing without internet
+                reader = new BufferedReader(is);
+
+                StringBuffer buffer = new StringBuffer();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line+"\n");
+//                    Log.d("Response: ", "> " + line);
+                }
+                jsonPlaceList = new JSONObject(buffer.toString());
+                //Log.d("JSON Object >", jsonPlaceList.toString());
+                updateMap();
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+        }
     }
 }
