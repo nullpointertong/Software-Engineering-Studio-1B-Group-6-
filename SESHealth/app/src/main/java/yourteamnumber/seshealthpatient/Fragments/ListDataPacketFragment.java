@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import yourteamnumber.seshealthpatient.Model.DataPacket.Models.CustomItemClickListener;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacketAdapter;
 import yourteamnumber.seshealthpatient.R;
@@ -64,7 +65,13 @@ public class ListDataPacketFragment extends Fragment {
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         userUid = currentFirebaseUser.getUid();
         recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_view);
-        mAdapter = new DataPacketAdapter(this.getContext(), mDataPacketList);
+        mAdapter = new DataPacketAdapter(this.getContext(), mDataPacketList, new CustomItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Log.d(TAG, "clicked position:" + position);
+                String postId = mDataPacketList.get(position).getDataPackedId();
+                // do what ever you want to do with it
+            }});
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -77,6 +84,7 @@ public class ListDataPacketFragment extends Fragment {
         ref.child("DataPackets").child(userUid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mDataPacketList.clear();
                 for (DataSnapshot datapacketDataSnapshot : dataSnapshot.getChildren()) {
                     DataPacket dataPacket = datapacketDataSnapshot.getValue(DataPacket.class);
                     mDataPacketList.add(dataPacket);
