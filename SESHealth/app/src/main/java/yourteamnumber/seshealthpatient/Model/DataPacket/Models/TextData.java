@@ -13,6 +13,7 @@ public class TextData {
     public void setData(String data) {
         this.data = data;
     }
+    public TextData() {this.data = "";}
 
     public String getData()
     {
