@@ -53,6 +53,11 @@ public class TextInputComponent extends LinearLayout {
         etDescription.setText(text);
     }
 
+    public void disable()
+    {
+        etDescription.setEnabled(false);
+    }
+
     public boolean isNotEmpty()
     {
         return !etDescription.getText().toString().isEmpty();

@@ -9,6 +9,14 @@ public class HeartRate {
         this.heartRate = heartRate;
     }
 
+    public int getHeartRate() {
+        return heartRate;
+    }
+
+    public void setHeartRate(int heartRate) {
+        this.heartRate = heartRate;
+    }
+
     @Override
     public String toString() {
         return (Integer.toString(heartRate));

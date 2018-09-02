@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -63,6 +64,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import butterknife.OnClick;
 import yourteamnumber.seshealthpatient.Model.DataPacket.CustomComponents.TextInputComponent;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.SupplementaryFiles;
@@ -94,6 +96,7 @@ public class DataPacketFragment extends Fragment {
 
     ArrayAdapter<String> adapter;
     ArrayList<String> addedFilesList = new ArrayList<String>();
+    ArrayList<String> addedFilesFullPathList = new ArrayList<>();
 
     private static final String TAG = "DataPacketFragment" ;
     protected static final int REQUEST_CODE_SIGN_IN = 0;
@@ -137,7 +140,7 @@ public class DataPacketFragment extends Fragment {
         suppFiles = view.findViewById(R.id.suppList);
         heartRateText = view.findViewById(R.id.txtHeartRate);
 
-        dataPacket = new DataPacket();
+        dataPacket = new DataPacket(view);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
 
@@ -336,6 +339,7 @@ public class DataPacketFragment extends Fragment {
                                                 fileOutputStream.write(contentStreamAsByteArray);
                                                 fileOutputStream.close();
                                                 Log.d(TAG, newFile.getPath());
+                                                addedFilesFullPathList.add(newFile.getAbsolutePath());
                                                 adapter.add(newFile.getName());
                                             }
                                             catch (Exception e)
@@ -465,7 +469,7 @@ public class DataPacketFragment extends Fragment {
 
         if (!addedFilesList.isEmpty())
         {
-            dataPacket.addSupplementaryFiles(new SupplementaryFiles(addedFilesList));
+            dataPacket.addSupplementaryFiles(new SupplementaryFiles(addedFilesFullPathList, addedFilesList));
         }
 
         return dataPacket;
@@ -482,12 +486,30 @@ public class DataPacketFragment extends Fragment {
             dataPacket.addLocation(currentLocation);
         }
 
-        if (!addedFilesList.isEmpty())
+        if (!addedFilesFullPathList.isEmpty())
         {
-            dataPacket.addSupplementaryFiles(new SupplementaryFiles(addedFilesList));
+            dataPacket.addSupplementaryFiles(new SupplementaryFiles(addedFilesFullPathList, addedFilesList));
         }
 
-        dataPacket.Send(getContext());
+        if (dataPacket.send(getContext()))
+        {
+            Snackbar successSnackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), "Successfully sent.", Snackbar.LENGTH_LONG);
+            successSnackbar.setAction("Review", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dataPacket.showDataPacketDialog(getContext());
+                }
+            });
+
+            successSnackbar.show();
+
+            textInputComponent.disable();
+            heartRateButton.setEnabled(false);
+            map.setClickable(false);
+            map.setEnabled(false);
+            addFilesButton.setEnabled(false);
+            suppFiles.setEnabled(false);
+        }
     }
 
 
