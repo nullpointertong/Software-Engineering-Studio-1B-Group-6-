@@ -12,6 +12,7 @@
     <string name="patient_information">Patient Information</string>
     <string name="update_patient_information">Update Patient Information</string>
     <string name="create_data_packet">Create Data Packet</string>
+    <string name="list_data_packet">List Data Packet</string>
     <string name="heart_rate">Heart Rate</string>
     <string name="record_video">Record Video</string>
     <string name="send_local_file">Send Local File</string>

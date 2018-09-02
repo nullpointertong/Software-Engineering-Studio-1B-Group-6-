@@ -11,6 +11,9 @@
             android:id="@+id/nav_data_packet"
             android:title="@string/create_data_packet" />
         <item
+            android:id="@+id/nav_list_data_packet"
+            android:title="@string/list_data_packet" />
+        <item
             android:id="@+id/nav_heartrate"
             android:title="@string/heart_rate" />
         <item

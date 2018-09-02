@@ -21,6 +21,7 @@ import android.widget.Button;
 
 import yourteamnumber.seshealthpatient.Fragments.DataPacketFragment;
 import yourteamnumber.seshealthpatient.Fragments.HeartRateFragment;
+import yourteamnumber.seshealthpatient.Fragments.ListDataPacketFragment;
 import yourteamnumber.seshealthpatient.Fragments.MapFragment;
 import yourteamnumber.seshealthpatient.Fragments.PatientInformationFragment;
 import yourteamnumber.seshealthpatient.Fragments.UpdatePatientInformationFragment;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, UPDATE_PATIENT_INFO
+        PATIENT_INFO, DATA_PACKET, LIST_DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, UPDATE_PATIENT_INFO
     }
 
     /**
@@ -139,6 +140,11 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.nav_data_packet:
                                 if (currentState != MenuStates.DATA_PACKET) {
                                     ChangeFragment(MenuStates.DATA_PACKET);
+                                    break;
+                                }
+                            case R.id.nav_list_data_packet:
+                                if (currentState != MenuStates.LIST_DATA_PACKET) {
+                                    ChangeFragment(MenuStates.LIST_DATA_PACKET);
                                 }
                                 break;
                             case R.id.nav_heartrate:
@@ -248,6 +254,8 @@ public class MainActivity extends AppCompatActivity {
                 return new SendFileFragment();
             case DATA_PACKET:
                 return new DataPacketFragment();
+            case LIST_DATA_PACKET:
+                return new ListDataPacketFragment();
             case PATIENT_INFO:
                 return new PatientInformationFragment();
             case UPDATE_PATIENT_INFO:
@@ -271,6 +279,8 @@ public class MainActivity extends AppCompatActivity {
                 return getString(R.string.send_local_file);
             case DATA_PACKET:
                 return getString(R.string.create_data_packet);
+            case LIST_DATA_PACKET:
+                return getString(R.string.list_data_packet);
             case PATIENT_INFO:
                 return getString(R.string.patient_information);
             case UPDATE_PATIENT_INFO:
