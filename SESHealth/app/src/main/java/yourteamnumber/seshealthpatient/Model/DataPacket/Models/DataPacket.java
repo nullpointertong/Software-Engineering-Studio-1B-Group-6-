@@ -30,7 +30,7 @@ public class DataPacket implements Serializable{
     private String userId;
     private String userEmail;
     private TextData textData;
-    private LatLng location;
+    private Location location;
     private VideoSnippet videoSnippet;
     private SupplementaryFiles supplementaryFiles;
     private HeartRate heartRate;
@@ -53,6 +53,14 @@ public class DataPacket implements Serializable{
         this.userEmail = mUser.getEmail();
         this.view = view;
     }
+    public DataPacket()
+    {
+        this.dataPackedId = UUID.randomUUID().toString();
+        this.mAuth = FirebaseAuth.getInstance();
+        this.mUser = mAuth.getCurrentUser();
+        this.userId = mUser.getUid();
+        this.userEmail = mUser.getEmail();
+    }
 
     @Override
     public String toString() {
@@ -61,7 +69,7 @@ public class DataPacket implements Serializable{
                 ", \nUserId=" + userId +
                 ", \nUserEmail=" + userEmail +
                 ", \ntextData=" + textData +
-                ", \nlocation=" + location +
+                ", \nlocation=" + location.toString() +
                 ", \nvideoSnippet=" + videoSnippet +
                 ", \nsupplementaryFiles=" + supplementaryFiles +
                 ", \nheartRate=" + heartRate +
@@ -156,11 +164,11 @@ public class DataPacket implements Serializable{
         this.textData = textData;
     }
 
-    public LatLng getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void addLocation(LatLng location) {
+    public void addLocation(Location location) {
         this.location = location;
     }
 

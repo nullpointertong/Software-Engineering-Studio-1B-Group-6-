@@ -67,6 +67,7 @@ import java.util.Set;
 import butterknife.OnClick;
 import yourteamnumber.seshealthpatient.Model.DataPacket.CustomComponents.TextInputComponent;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
+import yourteamnumber.seshealthpatient.Model.DataPacket.Models.Location;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.SupplementaryFiles;
 import yourteamnumber.seshealthpatient.R;
 
@@ -438,7 +439,7 @@ public class DataPacketFragment extends Fragment {
         }
         if (dataPacket.getLocation() != null)
         {
-            currentLocation = dataPacket.getLocation();
+            currentLocation = new LatLng(dataPacket.getLocation().getLatitude(), dataPacket.getLocation().getLongitude());
             addLocationButton.setVisibility(View.INVISIBLE);
             showLocation(getView(), savedInstanceState, currentLocation);
         }
@@ -464,7 +465,7 @@ public class DataPacketFragment extends Fragment {
         }
         if (locationAdded)
         {
-            dataPacket.addLocation(currentLocation);
+            dataPacket.addLocation(new Location("", "", currentLocation.latitude, currentLocation.longitude));
         }
 
         if (!addedFilesList.isEmpty())
@@ -483,7 +484,7 @@ public class DataPacketFragment extends Fragment {
         }
         if (locationAdded)
         {
-            dataPacket.addLocation(currentLocation);
+            dataPacket.addLocation(new Location("", "", currentLocation.latitude, currentLocation.longitude));
         }
 
         if (!addedFilesFullPathList.isEmpty())
