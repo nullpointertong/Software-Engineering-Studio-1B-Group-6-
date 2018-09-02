@@ -22,6 +22,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class DataPacket implements Serializable{
@@ -82,6 +83,11 @@ public class DataPacket implements Serializable{
             return false;
         }
 
+        if (getSupplementaryFiles() == null)
+        {
+            return true;
+        }
+
         return uploadSupplementaryFiles();
     }
 
@@ -122,7 +128,7 @@ public class DataPacket implements Serializable{
     {
         String dataPacketSummary = "Description: " + getTextData() +
                                    "\nLocation: " + getLocation() +
-                                   "\nFiles: " + getSupplementaryFiles().getFileNames() +
+                                   "\nFiles: " + (getSupplementaryFiles() == null ? "null" : getSupplementaryFiles().getFileNames()) +
                                    "\nHeart Rate: " + getHeartRate();
 
         AlertDialog.Builder alertDialogBuilder =

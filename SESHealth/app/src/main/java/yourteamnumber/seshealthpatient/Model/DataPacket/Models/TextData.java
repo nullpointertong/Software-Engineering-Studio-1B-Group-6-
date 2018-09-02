@@ -5,8 +5,12 @@ import java.util.Arrays;
 public class TextData {
     private String data;
 
-    public TextData(String data)
+    public TextData()
     {
+
+    }
+
+    public void setData(String data) {
         this.data = data;
     }
 

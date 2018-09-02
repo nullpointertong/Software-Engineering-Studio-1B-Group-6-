@@ -4,9 +4,8 @@ public class HeartRate {
 
     private int heartRate;
 
-    public HeartRate(int heartRate)
+    public HeartRate()
     {
-        this.heartRate = heartRate;
     }
 
     public int getHeartRate() {

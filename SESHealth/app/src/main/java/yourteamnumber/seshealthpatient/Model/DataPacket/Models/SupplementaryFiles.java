@@ -7,9 +7,15 @@ public class SupplementaryFiles {
     ArrayList<String> filePaths;
     ArrayList<String> fileNames;
 
-    public SupplementaryFiles(ArrayList<String> filePaths, ArrayList<String> fileNames)
+    public SupplementaryFiles()
     {
+    }
+
+    public void setFilePaths(ArrayList<String> filePaths) {
         this.filePaths = filePaths;
+    }
+
+    public void setFileNames(ArrayList<String> fileNames) {
         this.fileNames = fileNames;
     }
 

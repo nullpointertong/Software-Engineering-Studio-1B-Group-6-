@@ -469,7 +469,10 @@ public class DataPacketFragment extends Fragment {
 
         if (!addedFilesList.isEmpty())
         {
-            dataPacket.addSupplementaryFiles(new SupplementaryFiles(addedFilesFullPathList, addedFilesList));
+            SupplementaryFiles suppFiles = new SupplementaryFiles();
+            suppFiles.setFileNames(addedFilesList);
+            suppFiles.setFilePaths(addedFilesFullPathList);
+            dataPacket.addSupplementaryFiles(suppFiles);
         }
 
         return dataPacket;
@@ -488,7 +491,10 @@ public class DataPacketFragment extends Fragment {
 
         if (!addedFilesFullPathList.isEmpty())
         {
-            dataPacket.addSupplementaryFiles(new SupplementaryFiles(addedFilesFullPathList, addedFilesList));
+            SupplementaryFiles supplementaryFiles = new SupplementaryFiles();
+            supplementaryFiles.setFilePaths(addedFilesFullPathList);
+            supplementaryFiles.setFileNames(addedFilesList);
+            dataPacket.addSupplementaryFiles(supplementaryFiles);
         }
 
         if (dataPacket.send(getContext()))
