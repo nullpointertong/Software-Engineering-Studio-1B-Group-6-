@@ -2,7 +2,9 @@ package yourteamnumber.seshealthpatient.Model.DataPacket.Models;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class Location {
+import java.io.Serializable;
+
+public class Location implements Serializable{
 
     private double latitude;
     private double longitude;

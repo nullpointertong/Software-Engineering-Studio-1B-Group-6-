@@ -36,24 +36,13 @@ public class DataPacket implements Serializable{
     private SupplementaryFiles supplementaryFiles;
     private HeartRate heartRate;
 
-    private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
-    private static FirebaseDatabase database;
-    private DatabaseReference dataPacketStorageRef;
-    private DatabaseReference dataPacketRef;
+    private transient FirebaseAuth mAuth;
+    private transient FirebaseUser mUser;
+    private transient static FirebaseDatabase database;
+    private transient DatabaseReference dataPacketStorageRef;
 
     private boolean dataPacketSuccess = true;
-    private View view;
 
-    public DataPacket(View view)
-    {
-        this.dataPackedId = UUID.randomUUID().toString();
-        this.mAuth = FirebaseAuth.getInstance();
-        this.mUser = mAuth.getCurrentUser();
-        this.userId = mUser.getUid();
-        this.userEmail = mUser.getEmail();
-        this.view = view;
-    }
     public DataPacket()
     {
         this.dataPackedId = UUID.randomUUID().toString();
@@ -92,16 +81,68 @@ public class DataPacket implements Serializable{
             dataPacketStorageRef.child(userId).child(dataPackedId).setValue(this);
         }
         catch (Exception e) {
+            Log.d("DataPacket", e.getMessage());
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             return false;
         }
 
-        if (getSupplementaryFiles() == null)
+        return uploadFiles();
+    }
+
+    private boolean uploadFiles()
+    {
+        boolean returnValue;
+
+        if (getSupplementaryFiles() != null && getVideoSnippet() != null)
+        {
+            return uploadSupplementaryFiles() && uploadVideoSnippets();
+        }
+        else if (getVideoSnippet() != null && getSupplementaryFiles() == null)
+        {
+            return uploadVideoSnippets();
+        }
+        else if (getVideoSnippet() == null && getSupplementaryFiles() != null)
+        {
+            return uploadSupplementaryFiles();
+        }
+        else
         {
             return true;
         }
+    }
 
-        return uploadSupplementaryFiles();
+    private boolean uploadVideoSnippets()
+    {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        for (int i = 0; i < getVideoSnippet().getVideoSnippetsNames().size(); i++)
+        {
+            String fileName = getVideoSnippet().getVideoSnippetsNames().get(i);
+            String filePath = getVideoSnippet().getVideoSnippetsPath().get(i);
+
+            StorageReference supplementaryImageRef = storageRef.child(userId + "/" + dataPackedId + "/videos/" + fileName);
+
+            UploadTask uploadTask;
+            Uri file = Uri.fromFile(new File(filePath));
+            uploadTask = supplementaryImageRef.putFile(file);
+
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    dataPacketSuccess = false;
+                    Log.d("DataPacket", exception.getMessage());
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    dataPacketSuccess = true;
+                    Log.d("DataPacket", "Videos Uploaded");
+                }
+            });
+        }
+
+        return dataPacketSuccess;
     }
 
     private boolean uploadSupplementaryFiles()
@@ -129,7 +170,7 @@ public class DataPacket implements Serializable{
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     dataPacketSuccess = true;
-                    Log.d("DataPacket", "Data Packet sent");
+                    Log.d("DataPacket", "Supp Files uploaded");
                 }
             });
         }
@@ -142,7 +183,8 @@ public class DataPacket implements Serializable{
         String dataPacketSummary = "Description: " + getTextData() +
                                    "\nLocation: " + getLocation() +
                                    "\nFiles: " + (getSupplementaryFiles() == null ? "null" : getSupplementaryFiles().getFileNames()) +
-                                   "\nHeart Rate: " + getHeartRate();
+                                   "\nHeart Rate: " + getHeartRate() +
+                                   "\nVideo Snippets " + (getVideoSnippet() == null ? "null" : getVideoSnippet().getVideoSnippetsNames());
 
         AlertDialog.Builder alertDialogBuilder =
                 new AlertDialog.Builder(context)

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,16 +19,19 @@ import android.widget.Toast;
 import java.io.File;
 
 import yourteamnumber.seshealthpatient.BuildConfig;
+import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
+import yourteamnumber.seshealthpatient.Model.DataPacket.Models.VideoSnippet;
 import yourteamnumber.seshealthpatient.R;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class RecordVideoFragment extends Fragment {
-    private final int VIDEO_REQUEST_CODE = 1001;
-    private Button mRecordBtn;
     private static final String TAG = "RecordVideoFragment" ;
 
+    private final int VIDEO_REQUEST_CODE = 1001;
+
+    private DataPacket currentDataPacker;
 
     //test test test test
 
@@ -41,21 +45,22 @@ public class RecordVideoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_record_video, container, false);
-        mRecordBtn = (Button) v.findViewById(R.id.recordButton);
-        mRecordBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recordVideo(v);
-            }
-        });
+
         return v;
     }
 
-    public void recordVideo(View view) {
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        currentDataPacker = getArguments() != null ? (DataPacket) getArguments().getSerializable("data_packet") : null;
+
+        recordVideo();
+    }
+
+    public void recordVideo() {
         Intent camera_intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        File video_file = getFilepath();
-        //Uri video_uri = Uri.fromFile(video_file);
-        Uri video_uri = FileProvider.getUriForFile(getActivity(), "yourteamnumber.seshealthpatient.provider", video_file);
+        Uri video_uri = FileProvider.getUriForFile(getActivity(), "yourteamnumber.seshealthpatient.provider", getFilepath());
         camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, video_uri);
         camera_intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
         startActivityForResult(camera_intent, VIDEO_REQUEST_CODE);
@@ -77,47 +82,25 @@ public class RecordVideoFragment extends Fragment {
     }
 
     public File getFilepath() {
-        /**
-        //create a folder to store the video
         File sdCard = Environment.getExternalStorageDirectory();
-        File folder = new File(sdCard.getAbsolutePath() + "/SESHealthPatient/DataPackets/DataPacket");
-        Log.d(TAG, "creat file successfully");
-        //check fold if exists
-        if (!folder.exists()) {
-            boolean success = folder.mkdir();
-            Log.d(TAG, "no exist file");
-            if (success) {
-                Log.d(TAG, "success == true");
-            }
+
+        String dataPackerIdentifier = currentDataPacker.getDataPackedId().toString();
+        File dir = new File (sdCard.getAbsolutePath() + "/SESHealthPatient/DataPackets/" + dataPackerIdentifier + "/videos");
+        if (!dir.exists())
+        {
+            dir.mkdirs();
         }
-        File video_file = new File(folder, "sample_video.mp4");
-        Log.d(TAG, "creat video successfully");
-        return video_file;
-         **/
-        boolean mExternalStorageAvailable = false;
-        boolean mExternalStorageWriteable = false;
-        String state = Environment.getExternalStorageState();
-        Toast.makeText(getActivity(),"State is " + state, Toast.LENGTH_LONG).show();
-        if (Environment.MEDIA_MOUNTED.equals(state)){
-            //We can read and write the media
-            mExternalStorageAvailable = mExternalStorageWriteable = true;
-            Toast.makeText(getActivity(), "We Can Read And Write ", Toast.LENGTH_LONG).show();
-            File file = new File(Environment.getExternalStorageDirectory()
-                    +File.separator
-                    +"studentrecords"); //folder name
-            file.mkdir();
-            File video_file = new File(file, "video1.mp4");
-            return video_file;
-        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)){
-            mExternalStorageAvailable = true;
-            mExternalStorageWriteable = false;
-            Toast.makeText(getActivity(), "We Can Read but Not Write ", Toast.LENGTH_LONG).show();
-            return null;
-        }else{
-            //something else is wrong
-            mExternalStorageAvailable = mExternalStorageWriteable = false;
-            Toast.makeText(getActivity(), "We Can't Read OR Write ", Toast.LENGTH_LONG).show();
-            return null;
+
+        VideoSnippet videoSnippet = currentDataPacker.getVideoSnippet();
+        if (videoSnippet == null)
+        {
+            videoSnippet = new VideoSnippet();
         }
+
+        String fileTitle = "Video - " + videoSnippet.getNumVideoSnippets() + ".mp4";
+        File newFile = new File(dir, fileTitle);
+        videoSnippet.addVideoSnippets(newFile);
+
+        return newFile;
     }
 }

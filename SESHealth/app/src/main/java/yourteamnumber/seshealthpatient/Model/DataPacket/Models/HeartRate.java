@@ -1,6 +1,8 @@
 package yourteamnumber.seshealthpatient.Model.DataPacket.Models;
 
-public class HeartRate {
+import java.io.Serializable;
+
+public class HeartRate implements Serializable{
 
     private int heartRate;
 

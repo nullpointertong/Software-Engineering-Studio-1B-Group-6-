@@ -1,8 +1,9 @@
 package yourteamnumber.seshealthpatient.Model.DataPacket.Models;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class TextData {
+public class TextData implements Serializable{
     private String data;
 
     public TextData()
