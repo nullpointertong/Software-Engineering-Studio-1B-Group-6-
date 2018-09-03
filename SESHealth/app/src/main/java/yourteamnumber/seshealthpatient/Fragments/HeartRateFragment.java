@@ -247,7 +247,10 @@ public class HeartRateFragment extends Fragment {
 
                 Fragment newFragment = new DataPacketFragment();
                 Bundle bundle = new Bundle();
-                datapacket.addHeartRate(new HeartRate(beatsAvg));
+                HeartRate heartRate1 = new HeartRate();
+                heartRate1.setHeartRate(beatsAvg);
+
+                datapacket.addHeartRate(heartRate1);
                 bundle.putSerializable("data_packet", datapacket);
                 newFragment.setArguments(bundle);
                 FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();

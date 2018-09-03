@@ -45,7 +45,9 @@ public class TextInputComponent extends LinearLayout {
 
     public TextData getTextData()
     {
-        return new TextData(etDescription.getText().toString());
+        TextData textData = new TextData();
+        textData.setData(etDescription.getText().toString());
+        return textData;
     }
 
     public void setText(String text)

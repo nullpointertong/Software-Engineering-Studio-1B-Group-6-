@@ -7,14 +7,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,11 +68,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import butterknife.OnClick;
 import yourteamnumber.seshealthpatient.Model.DataPacket.CustomComponents.TextInputComponent;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.Location;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.SupplementaryFiles;
+import yourteamnumber.seshealthpatient.Model.DataPacket.Models.VideoSnippet;
 import yourteamnumber.seshealthpatient.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -78,6 +81,7 @@ public class DataPacketFragment extends Fragment {
 
 
     private static final int DEFAULT_ZOOM = 14;
+    private final int VIDEO_REQUEST_CODE = 1001;
     private FusedLocationProviderClient mFusedLocationClient;
 
 
@@ -91,6 +95,7 @@ public class DataPacketFragment extends Fragment {
     private TextView heartRateText;
     private ListView suppFiles;
     private ImageButton heartRateButton;
+    private ImageButton recordVideoButton;
     private ImageButton sendButton;
 
     private MapView map;
@@ -139,10 +144,11 @@ public class DataPacketFragment extends Fragment {
         sendButton = view.findViewById(R.id.btnSend);
         heartRateButton = view.findViewById(R.id.btnHeartRate);
         addFilesButton = view.findViewById(R.id.btnAddFiles);
+        recordVideoButton = view.findViewById(R.id.btnRecordVideo);
         suppFiles = view.findViewById(R.id.suppList);
         heartRateText = view.findViewById(R.id.txtHeartRate);
 
-        dataPacket = new DataPacket(view);
+        dataPacket = new DataPacket();
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
 
@@ -171,7 +177,6 @@ public class DataPacketFragment extends Fragment {
         heartRateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showMessage("Test");
                 Fragment newFragment = new HeartRateFragment();
                 Bundle dataPacketBundle = new Bundle();
                 dataPacketBundle.putSerializable("data_packet", getDataPacket());
@@ -182,6 +187,13 @@ public class DataPacketFragment extends Fragment {
                 transaction.addToBackStack(null);
 
                 transaction.commit();
+            }
+        });
+
+        recordVideoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recordVideo();
             }
         });
 
@@ -219,6 +231,8 @@ public class DataPacketFragment extends Fragment {
             }
         });
     }
+
+    // region Drive API
 
     public void testBoi(View view) {
 
@@ -321,7 +335,7 @@ public class DataPacketFragment extends Fragment {
                                             File sdCard = Environment.getExternalStorageDirectory();
 
                                             String dataPackerIdentifier = dataPacket.getDataPackedId().toString();
-                                            File dir = new File (sdCard.getAbsolutePath() + "/SESHealthPatient/DataPackets/" + dataPackerIdentifier);
+                                            File dir = new File (sdCard.getAbsolutePath() + "/SESHealthPatient/DataPackets/" + dataPackerIdentifier + "/images");
                                             if (!dir.exists())
                                             {
                                                 dir.mkdirs();
@@ -412,6 +426,8 @@ public class DataPacketFragment extends Fragment {
         return mDriveResourceClient;
     }
 
+    // endregion
+
     private void showLocation(View view, Bundle savedInstanceState, LatLng location)
     {
         map = view.findViewById(R.id.mapView2);
@@ -432,6 +448,43 @@ public class DataPacketFragment extends Fragment {
         });
     }
 
+    // region Record Video
+
+
+    public void recordVideo() {
+        Intent camera_intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        Uri video_uri = FileProvider.getUriForFile(getActivity(), "yourteamnumber.seshealthpatient.provider", filePathForVideo());
+        camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, video_uri);
+        camera_intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        startActivityForResult(camera_intent, VIDEO_REQUEST_CODE);
+    }
+
+    public File filePathForVideo() {
+        File sdCard = Environment.getExternalStorageDirectory();
+
+        String dataPackerIdentifier = dataPacket.getDataPackedId().toString();
+        File dir = new File (sdCard.getAbsolutePath() + "/SESHealthPatient/DataPackets/" + dataPackerIdentifier + "/videos");
+        if (!dir.exists())
+        {
+            dir.mkdirs();
+        }
+
+        VideoSnippet videoSnippet = dataPacket.getVideoSnippet();
+        if (videoSnippet == null)
+        {
+            videoSnippet = new VideoSnippet();
+            dataPacket.addVideoSnippet(videoSnippet);
+        }
+
+        String fileTitle = "Video - " + videoSnippet.getNumVideoSnippets() + ".mp4";
+        File newFile = new File(dir, fileTitle);
+        videoSnippet.addVideoSnippets(newFile);
+
+        return newFile;
+    }
+
+    // endregion
+
     private void setInputsForDataPacket(Bundle savedInstanceState)
     {
         if (dataPacket.getTextData() != null && !dataPacket.getTextData().toString().isEmpty())
@@ -447,9 +500,9 @@ public class DataPacketFragment extends Fragment {
 
         if (dataPacket.getSupplementaryFiles() != null)
         {
-            for (String filePath : dataPacket.getSupplementaryFiles().getFilePaths())
+            for (String fileName : dataPacket.getSupplementaryFiles().getFileNames())
             {
-                adapter.add(filePath);
+                adapter.add(fileName);
             }
         }
 
@@ -471,7 +524,10 @@ public class DataPacketFragment extends Fragment {
 
         if (!addedFilesList.isEmpty())
         {
-            dataPacket.addSupplementaryFiles(new SupplementaryFiles(addedFilesFullPathList, addedFilesList));
+            SupplementaryFiles suppFiles = new SupplementaryFiles();
+            suppFiles.setFileNames(addedFilesList);
+            suppFiles.setFilePaths(addedFilesFullPathList);
+            dataPacket.addSupplementaryFiles(suppFiles);
         }
 
         return dataPacket;
@@ -490,7 +546,10 @@ public class DataPacketFragment extends Fragment {
 
         if (!addedFilesFullPathList.isEmpty())
         {
-            dataPacket.addSupplementaryFiles(new SupplementaryFiles(addedFilesFullPathList, addedFilesList));
+            SupplementaryFiles supplementaryFiles = new SupplementaryFiles();
+            supplementaryFiles.setFilePaths(addedFilesFullPathList);
+            supplementaryFiles.setFileNames(addedFilesList);
+            dataPacket.addSupplementaryFiles(supplementaryFiles);
         }
 
         if (dataPacket.send(getContext()))
@@ -507,9 +566,9 @@ public class DataPacketFragment extends Fragment {
 
             textInputComponent.disable();
             heartRateButton.setEnabled(false);
-            map.setClickable(false);
-            map.setEnabled(false);
             addFilesButton.setEnabled(false);
+            recordVideoButton.setEnabled(false);
+            sendButton.setEnabled(false);
             suppFiles.setEnabled(false);
         }
     }

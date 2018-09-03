@@ -147,21 +147,6 @@ public class MainActivity extends AppCompatActivity {
                                     ChangeFragment(MenuStates.LIST_DATA_PACKET);
                                 }
                                 break;
-                            case R.id.nav_heartrate:
-                                if (currentState != MenuStates.HEARTRATE) {
-                                    ChangeFragment(MenuStates.HEARTRATE);
-                                }
-                                break;
-                            case R.id.nav_recordvideo:
-                                if (currentState != MenuStates.RECORD_VIDEO) {
-                                    ChangeFragment(MenuStates.RECORD_VIDEO);
-                                }
-                                break;
-                            case R.id.nav_sendfile:
-                                if (currentState != MenuStates.SEND_FILE) {
-                                    ChangeFragment(MenuStates.SEND_FILE);
-                                }
-                                break;
                             case R.id.nav_map:
                                 if (currentState != MenuStates.NAVIGATION_MAP) {
                                     ChangeFragment(MenuStates.NAVIGATION_MAP);
@@ -248,10 +233,6 @@ public class MainActivity extends AppCompatActivity {
     {
         switch (menuState)
         {
-            case HEARTRATE:
-                return new HeartRateFragment();
-            case SEND_FILE:
-                return new SendFileFragment();
             case DATA_PACKET:
                 return new DataPacketFragment();
             case LIST_DATA_PACKET:
@@ -262,8 +243,6 @@ public class MainActivity extends AppCompatActivity {
                 return new UpdatePatientInformationFragment();
             case NAVIGATION_MAP:
                 return new MapFragment();
-            case RECORD_VIDEO:
-                return new RecordVideoFragment();
             default:
                 return null;
         }
@@ -273,10 +252,6 @@ public class MainActivity extends AppCompatActivity {
     {
         switch (currentState)
         {
-            case HEARTRATE:
-                return getString(R.string.heart_rate);
-            case SEND_FILE:
-                return getString(R.string.send_local_file);
             case DATA_PACKET:
                 return getString(R.string.create_data_packet);
             case LIST_DATA_PACKET:
@@ -287,8 +262,6 @@ public class MainActivity extends AppCompatActivity {
                 return getString(R.string.update_patient_information);
             case NAVIGATION_MAP:
                 return getString(R.string.facilities_map);
-            case RECORD_VIDEO:
-                return getString(R.string.record_video);
             default:
                 return null;
         }
