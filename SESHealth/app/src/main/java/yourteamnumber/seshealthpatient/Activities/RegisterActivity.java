@@ -106,7 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Map hashMap = new HashMap();
                         String userId = firebaseAuth.getUid();
-                        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id");
+                        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
                         String userType = spinner.getSelectedItem().toString();
 
                         hashMap.put("UserType", userType); //Type specifier maybe required here
