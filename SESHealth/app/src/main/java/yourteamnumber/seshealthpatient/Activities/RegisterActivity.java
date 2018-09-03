@@ -110,6 +110,12 @@ public class RegisterActivity extends AppCompatActivity {
                         String userType = spinner.getSelectedItem().toString();
 
                         hashMap.put("UserType", userType); //Type specifier maybe required here
+                        hashMap.put("First Name", ""); //Type specifier maybe required here
+                        hashMap.put("Last Name", "");
+                        hashMap.put("Gender", "");
+                        hashMap.put("Height", "");
+                        hashMap.put("Weight", "");
+                        hashMap.put("Medical Condition", "");
                         currentUser.setValue(hashMap);
 
 

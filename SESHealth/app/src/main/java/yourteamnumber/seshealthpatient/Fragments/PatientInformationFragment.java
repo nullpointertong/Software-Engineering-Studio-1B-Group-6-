@@ -13,6 +13,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,24 +60,9 @@ public class PatientInformationFragment extends Fragment {
         // Note the use of getActivity() to reference the Activity holding this fragment
 
         getActivity().setTitle("Username Information");
-        patient_firstName = getActivity().findViewById(R.id.patient_firstName);
 
-        patient_lastName = getActivity().findViewById(R.id.patient_lastName);
 
-        patient_gender = getActivity().findViewById(R.id.patient_gender);
 
-        patient_height = getActivity().findViewById(R.id.patient_height);
-
-        patient_weight = getActivity().findViewById(R.id.patient_weight);
-
-        patient_medicalCondition = getActivity().findViewById(R.id.patient_medicalCondition);
-
-//        patient_firstName.setText("TEST DATA");  Creates Null Pointer Error
-//        patient_lastName.setText("TEST DATA");
-//        patient_gender.setText("TEST DATA");
-//        patient_height.setText("TEST DATA");
-//        patient_weight.setText("TEST DATA");
-//        patient_medicalCondition.setText("TEST DATA");
     }
 
     @Override
@@ -91,6 +81,46 @@ public class PatientInformationFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Now that the view has been created, we can use butter knife functionality
+        patient_firstName = getActivity().findViewById(R.id.patient_firstName);
+
+        patient_lastName = getActivity().findViewById(R.id.patient_lastName);
+
+        patient_gender = getActivity().findViewById(R.id.patient_gender);
+
+        patient_height = getActivity().findViewById(R.id.patient_height);
+
+        patient_weight = getActivity().findViewById(R.id.patient_weight);
+
+        patient_medicalCondition = getActivity().findViewById(R.id.patient_medicalCondition);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        String userId = firebaseAuth.getUid();
+        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
+        patient_firstName.setText(" ");
+        patient_lastName.setText(" ");
+        patient_gender.setText(" ");
+        patient_height.setText(" ");
+        patient_weight.setText(" ");
+        patient_medicalCondition.setText(" ");
+        currentUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                patient_firstName.setText(dataSnapshot.child("First Name").getValue().toString());
+                patient_lastName.setText(dataSnapshot.child("Last Name").getValue().toString());
+                patient_gender.setText(dataSnapshot.child("Gender").getValue().toString());
+                patient_height.setText(dataSnapshot.child("Height").getValue().toString());
+                patient_weight.setText(dataSnapshot.child("Weight").getValue().toString());
+                patient_medicalCondition.setText(dataSnapshot.child("Medical Condition").getValue().toString());
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                patient_firstName.setText("ERROR");
+            }
+        });
+
+
+
     }
 
     @OnClick(R.id.swapButton)

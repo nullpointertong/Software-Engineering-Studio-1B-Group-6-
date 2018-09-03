@@ -50,7 +50,7 @@
                         android:textSize="18sp" />
 
                     <EditText
-                        android:id="@+id/patient_firstName"
+                        android:id="@+id/patient_firstNameU"
                         android:layout_column="2"
                         android:inputType="textPersonName|textCapWords" />
 
@@ -68,7 +68,7 @@
                         android:textSize="18sp" />
 
                     <EditText
-                        android:id="@+id/patient_lastName"
+                        android:id="@+id/patient_lastNameU"
                         android:layout_column="2"
                         android:inputType="textPersonName|textCapWords" />
 
@@ -86,12 +86,13 @@
                         android:textSize="18sp" />
 
                     <Spinner
-                        android:id="@+id/spinner"
+                        android:id="@+id/spinnerU"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:padding="10dp" />
+                        android:padding="10dp"
+                        android:entries="@array/gender_array" />
 
                 </TableRow>
 
@@ -107,7 +108,7 @@
                         android:textSize="18sp" />
 
                     <EditText
-                        android:id="@+id/patient_height"
+                        android:id="@+id/patient_heightU"
                         android:layout_column="2"
                         android:inputType="numberDecimal" />
 
@@ -125,7 +126,7 @@
                         android:textSize="18sp" />
 
                     <EditText
-                        android:id="@+id/patient_weight"
+                        android:id="@+id/patient_weightU"
                         android:layout_column="2"
                         android:inputType="numberDecimal" />
 
@@ -143,7 +144,7 @@
                         android:textSize="18sp" />
 
                     <EditText
-                        android:id="@+id/patient_medicalCondition"
+                        android:id="@+id/patient_medicalConditionU"
                         android:layout_column="2"
                         android:inputType="text" />
 
