@@ -137,14 +137,12 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
     }
 
     @OnClick(R.id.forgot_password)
     public void ForgotPassword() {
-
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.sendPasswordResetEmail(""); //Insert Email here
     }
 
 
