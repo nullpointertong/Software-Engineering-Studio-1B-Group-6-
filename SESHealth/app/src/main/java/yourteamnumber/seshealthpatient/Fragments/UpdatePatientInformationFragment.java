@@ -15,9 +15,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.api.client.util.NullValue;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +53,10 @@ public class UpdatePatientInformationFragment extends Fragment {
     private TextView patient_heightU;  //Initailization of Variables required
     private TextView patient_weightU;
     private TextView patient_medicalConditionU;
-    private Button updateButton;
+
+    private TextView patient_firstName;   //Initailization of Variables required
+    private TextView patient_lastName;
+    private TextView patient_gender;
 
     private FirebaseAuth firebaseAuth;
 
@@ -98,6 +105,44 @@ public class UpdatePatientInformationFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        patient_firstNameU = getActivity().findViewById(R.id.patient_firstNameU);
+
+        patient_lastNameU = getActivity().findViewById(R.id.patient_lastNameU);
+
+        patient_gender = getActivity().findViewById(R.id.patient_gender);
+
+        patient_heightU = getActivity().findViewById(R.id.patient_heightU);
+
+        patient_weightU = getActivity().findViewById(R.id.patient_weightU);
+
+        patient_medicalConditionU = getActivity().findViewById(R.id.patient_medicalConditionU);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        String userId = firebaseAuth.getUid();
+        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
+        patient_firstNameU.setText(" ");
+        patient_lastNameU.setText(" ");
+        patient_gender.setText(" ");
+        patient_heightU.setText(" ");
+        patient_weightU.setText(" ");
+        patient_medicalConditionU.setText(" ");
+        currentUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                patient_firstNameU.setText(dataSnapshot.child("First Name").getValue().toString());
+                patient_lastNameU.setText(dataSnapshot.child("Last Name").getValue().toString());
+                //spinnerU.setSelection(dataSnapshot.child("Gender").getValue().toString());
+                patient_heightU.setText(dataSnapshot.child("Height").getValue().toString());
+                patient_weightU.setText(dataSnapshot.child("Weight").getValue().toString());
+                patient_medicalConditionU.setText(dataSnapshot.child("Medical Condition").getValue().toString());
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                patient_firstName.setText("ERROR");
+            }
+        });
+
         super.onViewCreated(view, savedInstanceState);
         patient_firstNameU = getActivity().findViewById(R.id.patient_firstNameU);
         patient_lastNameU = getActivity().findViewById(R.id.patient_lastNameU);
@@ -127,14 +172,16 @@ public class UpdatePatientInformationFragment extends Fragment {
         String weight = patient_weightU.getText().toString();
         String medicalCondition = patient_medicalConditionU.getText().toString();
 
+
+
         hashMap.put("First Name", firstName); //Type specifier maybe required here
         hashMap.put("Last Name", lastName);
         hashMap.put("Gender", gender);
         hashMap.put("Height", height);
         hashMap.put("Weight", weight);
         hashMap.put("Medical Condition", medicalCondition);
-        currentUser.setValue(hashMap);
 
+        currentUser.setValue(hashMap);
 
         Fragment fragment = new PatientInformationFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
