@@ -142,5 +142,10 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    @OnClick(R.id.forgot_password)
+    public void ForgotPassword() {
+
+    }
+
 
 }

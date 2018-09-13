@@ -36,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private Button register_btn;
 
-    private TextView textView4;
+    private TextView textView7;
     private TextView textView5;
 
     private FirebaseAuth firebaseAuth;
@@ -56,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         register_btn = (Button) findViewById(R.id.register_btn);
 
-        textView4 = (TextView) findViewById(R.id.textView4);
+        textView7 = (TextView) findViewById(R.id.textView7);
         textView5 = (TextView) findViewById(R.id.textView5);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -131,7 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.textView4)
+    @OnClick(R.id.textView7)
     public void switchToLogin() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);

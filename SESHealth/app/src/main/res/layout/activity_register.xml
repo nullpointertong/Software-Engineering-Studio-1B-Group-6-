@@ -150,7 +150,7 @@
                 style="@style/LoginStyles"
                 android:layout_width="168dp"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/textView3"
+                android:layout_above="@id/forgot_password"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/round_button"
