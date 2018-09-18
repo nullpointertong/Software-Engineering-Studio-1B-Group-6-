@@ -20,10 +20,12 @@ import android.widget.Button;
 
 
 import yourteamnumber.seshealthpatient.Fragments.DataPacketFragment;
+import yourteamnumber.seshealthpatient.Fragments.DoctorInformationFragment;
 import yourteamnumber.seshealthpatient.Fragments.HeartRateFragment;
 import yourteamnumber.seshealthpatient.Fragments.ListDataPacketFragment;
 import yourteamnumber.seshealthpatient.Fragments.MapFragment;
 import yourteamnumber.seshealthpatient.Fragments.PatientInformationFragment;
+import yourteamnumber.seshealthpatient.Fragments.UpdateDoctorInformationFragment;
 import yourteamnumber.seshealthpatient.Fragments.UpdatePatientInformationFragment;
 import yourteamnumber.seshealthpatient.Fragments.RecordVideoFragment;
 import yourteamnumber.seshealthpatient.Fragments.SendFileFragment;
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, LIST_DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, UPDATE_PATIENT_INFO
+        PATIENT_INFO, DATA_PACKET, LIST_DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, UPDATE_PATIENT_INFO, DOCTOR_INFO, UPDATE_DOCTOR_INFO
     }
 
     /**
@@ -135,6 +137,18 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.nav_update_patient_info:
                                 if (currentState != MenuStates.UPDATE_PATIENT_INFO) {
                                     ChangeFragment(MenuStates.UPDATE_PATIENT_INFO);
+                                }
+                                break;
+                            case R.id.nav_doctor_info:
+                                // If the user clicked on a different item than the current item
+                                if (currentState != MenuStates.DOCTOR_INFO) {
+                                    // change the fragment to the new fragment
+                                    ChangeFragment(MenuStates.DOCTOR_INFO);
+                                }
+                                break;
+                            case R.id.nav_update_doctor_info:
+                                if (currentState != MenuStates.UPDATE_DOCTOR_INFO) {
+                                    ChangeFragment(MenuStates.UPDATE_DOCTOR_INFO);
                                 }
                                 break;
                             case R.id.nav_data_packet:
@@ -241,6 +255,10 @@ public class MainActivity extends AppCompatActivity {
                 return new PatientInformationFragment();
             case UPDATE_PATIENT_INFO:
                 return new UpdatePatientInformationFragment();
+            case DOCTOR_INFO:
+                return new DoctorInformationFragment();
+            case UPDATE_DOCTOR_INFO:
+                return new UpdateDoctorInformationFragment();
             case NAVIGATION_MAP:
                 return new MapFragment();
             default:
@@ -260,6 +278,10 @@ public class MainActivity extends AppCompatActivity {
                 return getString(R.string.patient_information);
             case UPDATE_PATIENT_INFO:
                 return getString(R.string.update_patient_information);
+            case DOCTOR_INFO:
+                return getString(R.string.doctor_information);
+            case UPDATE_DOCTOR_INFO:
+                return getString(R.string.update_doctor_information);
             case NAVIGATION_MAP:
                 return getString(R.string.facilities_map);
             default:

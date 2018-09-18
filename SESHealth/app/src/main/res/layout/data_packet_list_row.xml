@@ -41,19 +41,19 @@
             android:layout_below="@id/data_packet_description"
             android:text="Data packet id: %1$s"/>
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/data_packet_button"
-        android:layout_width="60dp"
-        android:layout_height="45dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="true">
-            <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            android:textColor="@color/whiteColor"
-            android:text="view"/>
-    </LinearLayout>
+    <!--<LinearLayout-->
+        <!--android:id="@+id/data_packet_button"-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="45dp"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerInParent="true">-->
+            <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@color/colorAccent"-->
+            <!--android:textColor="@color/whiteColor"-->
+            <!--android:text="view"/>-->
+    <!--</LinearLayout>-->
 
 
 </RelativeLayout>
