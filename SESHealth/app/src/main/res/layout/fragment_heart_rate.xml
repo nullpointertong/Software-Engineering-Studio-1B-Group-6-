@@ -6,11 +6,14 @@
     android:layout_height="match_parent"
     android:id="@+id/heartRateLayout">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/login_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="13dp"
+        android:background="#031E3C"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
 
-
-
-
-
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
