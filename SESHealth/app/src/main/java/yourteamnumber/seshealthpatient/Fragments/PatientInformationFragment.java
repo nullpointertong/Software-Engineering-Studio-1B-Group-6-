@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import yourteamnumber.seshealthpatient.Activities.RegisterActivity;
 import yourteamnumber.seshealthpatient.R;
 
 /**
@@ -82,15 +84,10 @@ public class PatientInformationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // Now that the view has been created, we can use butter knife functionality
         patient_firstName = getActivity().findViewById(R.id.patient_firstName);
-
         patient_lastName = getActivity().findViewById(R.id.patient_lastName);
-
         patient_gender = getActivity().findViewById(R.id.patient_gender);
-
         patient_height = getActivity().findViewById(R.id.patient_height);
-
         patient_weight = getActivity().findViewById(R.id.patient_weight);
-
         patient_medicalCondition = getActivity().findViewById(R.id.patient_medicalCondition);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -115,7 +112,7 @@ public class PatientInformationFragment extends Fragment {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                patient_firstName.setText("ERROR");
+                Toast.makeText(getContext(), "ERROR!", Toast.LENGTH_SHORT).show();
             }
         });
 

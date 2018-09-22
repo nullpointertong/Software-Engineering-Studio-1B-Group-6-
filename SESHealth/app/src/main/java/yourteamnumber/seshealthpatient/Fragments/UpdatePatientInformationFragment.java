@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.api.client.util.NullValue;
 import com.google.firebase.auth.FirebaseAuth;
@@ -139,7 +140,7 @@ public class UpdatePatientInformationFragment extends Fragment {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                patient_firstName.setText("ERROR");
+                Toast.makeText(getContext(), "ERROR!", Toast.LENGTH_SHORT).show();
             }
         });
 

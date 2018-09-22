@@ -19,6 +19,12 @@ import android.view.View;
 import android.widget.Button;
 
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import yourteamnumber.seshealthpatient.Fragments.DataPacketFragment;
 import yourteamnumber.seshealthpatient.Fragments.DoctorInformationFragment;
 import yourteamnumber.seshealthpatient.Fragments.HeartRateFragment;
@@ -202,6 +208,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager = getFragmentManager();
 
         // Add the default Fragment once the user logged in
+
+
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(R.id.fragment_container, new PatientInformationFragment());
         ft.commit();
