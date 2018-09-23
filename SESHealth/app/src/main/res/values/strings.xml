@@ -31,6 +31,7 @@
     <string name="text_input_hint">Describe your problem</string>
     <string name="text_input_label">Description</string>
     <string name="map_location_label">Location</string>
+    <string name="add_doctor_label">Select Doctor</string>
     <string name="heart_rate_label">Heart Rate</string>
     <string name="supp_files_label">Supplementary Files</string>
 
