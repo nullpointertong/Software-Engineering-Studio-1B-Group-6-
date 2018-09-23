@@ -127,6 +127,7 @@ public class ViewMyDoctorsFragment extends Fragment {
                 String doctorId = mDoctorID.getText().toString().trim();
                 if(patientId != null && doctorId != null) {
                     mFirebaseDatabase.child(patientId).child("MyDoctors").child(mResult.getText().toString()).setValue(doctorId);
+                    mFirebaseDatabase.child(doctorId).child("MyPatients").child(patientId).setValue(patientId);
                 }
 
             }
