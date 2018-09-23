@@ -29,7 +29,7 @@ import yourteamnumber.seshealthpatient.R;
 
 
 public class ListPatientFragment extends Fragment {
-    private ArrayList<Patient> mPatientList = new ArrayList<>();
+    public ArrayList<Patient> mPatientList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private PatientAdapter mAdapter;
     public ListPatientFragment() {
@@ -51,27 +51,7 @@ public class ListPatientFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        /*recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_view);
-        mAdapter = new DataPacketAdapter(this.getContext(), mDataPacketList, new CustomItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                Log.d(TAG, "clicked position:" + position);
-                Fragment viewDataPacketFragment = new ViewDataPacketFragment();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("data_packet", mDataPacketList.get(position));
-                viewDataPacketFragment.setArguments(bundle);
-                getActivity().getFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, viewDataPacketFragment)
-                        .addToBackStack(null)
-                        .commit();
 
-            }});
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(mAdapter);
-        */
         mRecyclerView = (RecyclerView) view.findViewById(R.id.patient_recycler_view);
 
         mAdapter = new PatientAdapter(this.getContext(), mPatientList, new CustomItemClickListener() {
@@ -92,9 +72,11 @@ public class ListPatientFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mAdapter);
-        getPatientData();
+        getAllPatientData();
+
     }
-    private void getPatientData() {
+    private void getAllPatientData() {
+        mPatientList.clear();
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         String userUid = currentFirebaseUser.getUid();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -106,35 +88,10 @@ public class ListPatientFragment extends Fragment {
 
                 for (DataSnapshot patientIDSnapshot : dataSnapshot.getChildren())
                 {
+                    ArrayList<Patient> patientList = new ArrayList<Patient> ();
                     String patientID = patientIDSnapshot.getValue(String.class);
-                    ref.child("Users").child("user_id").child(patientID).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            String firstName = "";
-                            String lastName = "";
-                            String gender = "";
-                            String medicalCondition = "";
-                            double height = 0;
-                            double weight = 0;
 
-                            for (DataSnapshot info : snapshot.getChildren())
-                            {
-                                if (info.getKey().toString().equals("First Name")) { firstName = info.getValue().toString(); }
-                                if (info.getKey().toString().equals("Last Name")) { lastName = info.getValue().toString(); }
-                                if (info.getKey().toString().equals("Gender")) { gender = info.getValue().toString(); }
-                                if (info.getKey().toString().equals("Medical Condition")) { medicalCondition = info.getValue().toString(); }
-                                if (info.getKey().toString().equals("Height")) { height = Double.parseDouble(info.getValue().toString()); }
-                                if (info.getKey().toString().equals("Weight")) { weight = Double.parseDouble(info.getValue().toString()); }
-
-                            }
-                            mPatientList.add(new Patient(patientID, firstName, lastName, medicalCondition, gender, height, weight));
-                            Log.d("FUCK", firstName + lastName + gender + medicalCondition);
-
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError firebaseError) {
-                        }
-                    });
+                    getPatientInfo(patientID);
                 }
             }
 
@@ -143,6 +100,38 @@ public class ListPatientFragment extends Fragment {
 
             }
         });
-        mPatientList.add(new Patient("2322", "DSJI", "DSJAI", "DSJI", "DSJI", 12, 6));
+    }
+
+    private void getPatientInfo(String patientID)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference();
+        ref.child("Users").child("user_id").child(patientID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String firstName = "";
+                String lastName = "";
+                String gender = "";
+                String medicalCondition = "";
+                double height = 0;
+                double weight = 0;
+
+                for (DataSnapshot info : snapshot.getChildren())
+                {
+                    if (info.getKey().toString().equals("First Name")) { firstName = info.getValue().toString(); }
+                    if (info.getKey().toString().equals("Last Name")) { lastName = info.getValue().toString(); }
+                    if (info.getKey().toString().equals("Gender")) { gender = info.getValue().toString(); }
+                    if (info.getKey().toString().equals("Medical Condition")) { medicalCondition = info.getValue().toString(); }
+                    if (info.getKey().toString().equals("Height")) { height = Double.parseDouble(info.getValue().toString()); }
+                    if (info.getKey().toString().equals("Weight")) { weight = Double.parseDouble(info.getValue().toString()); }
+                }
+                mPatientList.add(new Patient(snapshot.getKey().toString(), firstName, lastName, medicalCondition, gender, height, weight));
+                mAdapter.notifyDataSetChanged();
+
+            }
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+            }
+        });
     }
 }
