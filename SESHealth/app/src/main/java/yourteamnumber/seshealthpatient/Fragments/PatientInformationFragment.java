@@ -115,9 +115,6 @@ public class PatientInformationFragment extends Fragment {
                 Toast.makeText(getContext(), "ERROR!", Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
     }
 
     @OnClick(R.id.swapButton)

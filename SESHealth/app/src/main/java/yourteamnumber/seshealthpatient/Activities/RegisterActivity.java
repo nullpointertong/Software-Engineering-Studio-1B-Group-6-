@@ -113,12 +113,22 @@ public class RegisterActivity extends AppCompatActivity {
                         hashMap.put("UserType", userType); //Type specifier maybe required here
                         hashMap.put("First Name", ""); //Type specifier maybe required here
                         hashMap.put("Last Name", "");
-                        hashMap.put("Gender", "");
-                        hashMap.put("Height", "");
-                        hashMap.put("Weight", "");
-                        hashMap.put("Medical Condition", "");
-                        currentUser.setValue(hashMap);
 
+                        if(userType.equals("Patient")) {
+                            hashMap.put("Gender", "");
+                            hashMap.put("Height", "");
+                            hashMap.put("Weight", "");
+                            hashMap.put("Medical Condition", "");
+                            currentUser.updateChildren(hashMap);
+                        }
+                        else if(userType.equals("Doctor"))
+                        {
+                            hashMap.put("Occupation", "");
+                            hashMap.put("Specialty", "");
+                            hashMap.put("Hospital", "");
+                            hashMap.put("Department", "");
+                            currentUser.updateChildren(hashMap);
+                        }
 
                         Toast.makeText(RegisterActivity.this, "Registration Sucessful!", Toast.LENGTH_SHORT).show();
                         startActivity(intent);

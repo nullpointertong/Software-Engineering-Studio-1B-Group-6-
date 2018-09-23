@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -91,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
      * The current fragment being displayed.
      */
     private MenuStates currentState;
+
+    private FirebaseAuth firebaseAuth;
 
 
     @Override
@@ -212,13 +215,33 @@ public class MainActivity extends AppCompatActivity {
 
         // More on this code, check the tutorial at http://www.vogella.com/tutorials/AndroidFragments/article.html
         fragmentManager = getFragmentManager();
-
         // Add the default Fragment once the user logged in
+        firebaseAuth = FirebaseAuth.getInstance();
+                    String userId = firebaseAuth.getUid();
+                    DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
+                    currentUser.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.child("UserType").getValue().toString().equals("Patient"))
+                            {
+                                FragmentTransaction ft = fragmentManager.beginTransaction();
+                                ft.add(R.id.fragment_container, new PatientInformationFragment());
+                                ft.commit();
+                            }
+                            else if(dataSnapshot.child("UserType").getValue().toString().equals("Doctor"))
+                            {
+                                FragmentTransaction ft = fragmentManager.beginTransaction();
+                                ft.add(R.id.fragment_container, new DoctorInformationFragment());
+                                ft.commit();
+                            }
+                        }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.add(R.id.fragment_container, new PatientInformationFragment());
-        ft.commit();
+                        }
+                    });
+
     }
 
     /**
