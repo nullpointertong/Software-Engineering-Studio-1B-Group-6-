@@ -12,6 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.CustomItemClickListener;
@@ -84,13 +92,57 @@ public class ListPatientFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mAdapter);
-        if (mPatientList.size() == 0) preparePatientData();
+        getPatientData();
     }
-    private void preparePatientData() {
-        Patient patient = new Patient("No3rPDJhZWWqx9l9fuOBCASUW5K2", "Jimmy", "Rhee", "medical condition", "male", 123, 70);
-        mPatientList.add(patient);
-        Patient patient1 = new Patient("prUzSlAKEUgCvlsY9mViuR8np3m1", "Jimmy", "Rhee", "medical condition", "male", 123, 70);
-        mPatientList.add(patient1);
-    }
+    private void getPatientData() {
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        String userUid = currentFirebaseUser.getUid();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference();
 
+        ref.child("Users").child("user_id").child("C55Zfl4kK7YG5epI1I1ub04rdGR2").child("MyPatients").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot patientIDSnapshot : dataSnapshot.getChildren())
+                {
+                    String patientID = patientIDSnapshot.getValue(String.class);
+                    ref.child("Users").child("user_id").child(patientID).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            String firstName = "";
+                            String lastName = "";
+                            String gender = "";
+                            String medicalCondition = "";
+                            double height = 0;
+                            double weight = 0;
+
+                            for (DataSnapshot info : snapshot.getChildren())
+                            {
+                                if (info.getKey().toString().equals("First Name")) { firstName = info.getValue().toString(); }
+                                if (info.getKey().toString().equals("Last Name")) { lastName = info.getValue().toString(); }
+                                if (info.getKey().toString().equals("Gender")) { gender = info.getValue().toString(); }
+                                if (info.getKey().toString().equals("Medical Condition")) { medicalCondition = info.getValue().toString(); }
+                                if (info.getKey().toString().equals("Height")) { height = Double.parseDouble(info.getValue().toString()); }
+                                if (info.getKey().toString().equals("Weight")) { weight = Double.parseDouble(info.getValue().toString()); }
+
+                            }
+                            mPatientList.add(new Patient(patientID, firstName, lastName, medicalCondition, gender, height, weight));
+                            Log.d("FUCK", firstName + lastName + gender + medicalCondition);
+
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mPatientList.add(new Patient("2322", "DSJI", "DSJAI", "DSJI", "DSJI", 12, 6));
+    }
 }
