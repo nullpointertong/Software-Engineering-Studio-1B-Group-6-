@@ -83,7 +83,9 @@ public class ViewMyDoctorsFragment extends Fragment {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                String value = "name: " + dataSnapshot.getKey() + "\nid: " + dataSnapshot.getValue(String.class);
+                Doctor.add(value);
+                arrayAdapter.notifyDataSetChanged();
             }
 
             @Override
