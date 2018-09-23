@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,7 +17,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -24,15 +29,15 @@ import yourteamnumber.seshealthpatient.R;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText register_usernameET;
+    private EditText register_usernameET;   //Initailization of Variables required
     private EditText register_passwordET;
     private EditText  register_passwordET2;
+    private Spinner spinner;
 
+    private Button register_btn;
 
-    private Button register_btn;   //Buttons
-
-    private TextView textView4;  //Textviews within the program
-    private TextView textView5;  //
+    private TextView textView7;
+    private TextView textView5;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase database;
@@ -47,10 +52,11 @@ public class RegisterActivity extends AppCompatActivity {
         register_usernameET = (EditText) findViewById(R.id.register_usernameET);
         register_passwordET = (EditText) findViewById(R.id.register_passwordET);
         register_passwordET2 = (EditText) findViewById(R.id.register_passwordET2);
+        spinner = (Spinner) findViewById(R.id.spinner);
 
         register_btn = (Button) findViewById(R.id.register_btn);
 
-        textView4 = (TextView) findViewById(R.id.textView4);
+        textView7 = (TextView) findViewById(R.id.textView7);
         textView5 = (TextView) findViewById(R.id.textView5);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -90,7 +96,6 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "The username and password cannot be empty.", Toast.LENGTH_SHORT).show();
             return;
         }
-
         final Intent intent = new Intent(this, LoginActivity.class);
         if(!password.equals(confirmPassword)) {
             Toast.makeText(RegisterActivity.this,"Passwords don't match" , Toast.LENGTH_SHORT).show();
@@ -100,9 +105,25 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
+                        Map hashMap = new HashMap();
+                        String userId = firebaseAuth.getUid();
+                        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
+                        String userType = spinner.getSelectedItem().toString();
+
+                        hashMap.put("UserType", userType); //Type specifier maybe required here
+                        hashMap.put("First Name", ""); //Type specifier maybe required here
+                        hashMap.put("Last Name", "");
+                        hashMap.put("Gender", "");
+                        hashMap.put("Height", "");
+                        hashMap.put("Weight", "");
+                        hashMap.put("Medical Condition", "");
+                        currentUser.setValue(hashMap);
+
+
                         Toast.makeText(RegisterActivity.this, "Registration Sucessful!", Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                     } else {
+                        Log.d("RegistrationFailed", task.getException().getMessage());
                         Toast.makeText(RegisterActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -110,7 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.textView4)
+    @OnClick(R.id.textView7)
     public void switchToLogin() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);

@@ -1,35 +1,25 @@
 package yourteamnumber.seshealthpatient.Fragments;
 
-
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.view.KeyEvent;
-import java.util.Timer;
-import java.util.TimerTask;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.content.res.Configuration;
@@ -40,28 +30,26 @@ import android.widget.Toast;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.HeartRate;
 import yourteamnumber.seshealthpatient.R;
+import yourteamnumber.seshealthpatient.Tools.ProgressBarAnimation;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class HeartRateFragment extends Fragment {
 
-    public static int samplesTaken;
-    public static int SAMPLES_REQUIRED = 5;
-
     // private static final String TAG = "HeartRateMonitor";
     private static final AtomicBoolean processing = new AtomicBoolean(false);
     private static SurfaceView preview = null;
     private static SurfaceHolder previewHolder = null;
     private static Camera camera = null;
-    private static LinearLayout layout;
     // private static View image = null;
-    private static TextView text = null;
-    private static Button startButton;
+    private static TextView heartRateText;
+    private static TextView heartRateTipText;
+    private static LinearLayout layout;
     private static Context context;
     private static Activity activity;
     private static DataPacket datapacket;
-
+    private static ProgressBar progressBar;
 
     private static int averageIndex = 0;
     private static final int averageArraySize = 4;
@@ -71,8 +59,6 @@ public class HeartRateFragment extends Fragment {
         GREEN, RED
     }
 
-    ;
-
     private static TYPE currentType = TYPE.GREEN;
 
     private static int beatsIndex = 0;
@@ -80,6 +66,7 @@ public class HeartRateFragment extends Fragment {
     private static final int[] beatsArray = new int[beatsArraySize];
     private static double beats = 0;
     private static long startTime = 0;
+    private static int progress;
 
     public HeartRateFragment() {
         // Required empty public constructor
@@ -94,6 +81,11 @@ public class HeartRateFragment extends Fragment {
         // Inflate the layout for this fragment
 
 
+
+                /*Message message = Message.obtain();
+                message.what = HANDLER_MESSAGE;
+                handler.sendMessage(message);*/
+
         return v;
     }
 
@@ -101,28 +93,30 @@ public class HeartRateFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        startButton = view.findViewById(R.id.btnStart);
         layout = view.findViewById(R.id.heartRateLayout);
+        preview = (SurfaceView) view.findViewById(R.id.preview);
+        heartRateText = (TextView) view.findViewById(R.id.txtHeartRate);
+        heartRateTipText = (TextView) view.findViewById(R.id.txtHeartRateTip);
+        progressBar = view.findViewById(R.id.pbrHeartRate);
 
         datapacket = getArguments() != null ? (DataPacket) getArguments().getSerializable("data_packet") : null;
-
-        samplesTaken = 0;
 
         context = getContext();
         activity = getActivity();
 
+        progress = 0;
+
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
-            preview = (SurfaceView) view.findViewById(R.id.preview);
 
             previewHolder = preview.getHolder();
             previewHolder.addCallback(surfaceCallback);
             previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-            text = (TextView) view.findViewById(R.id.text);
         } else {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.CAMERA}, 1);//1 can be another integer
         }
+
     }
 
     @Override
@@ -213,9 +207,8 @@ public class HeartRateFragment extends Fragment {
             if (dpm < 30 || dpm > 180 || imgAvg < 200) {
 
                 startTime = System.currentTimeMillis();
-
+                heartRateTipText.setVisibility(View.VISIBLE);
                 beats = 0;
-                text.setText("Finger not on");
                 processing.set(false);
                 return;
             }
@@ -234,11 +227,17 @@ public class HeartRateFragment extends Fragment {
                 }
             }
             int beatsAvg = (beatsArrayAvg / beatsArrayCnt);
-            String heartRate = String.valueOf(beatsAvg) + " BPM";
-            text.setText(heartRate + " - " + samplesTaken + "/5 samples taken.");
-            samplesTaken++;
 
-            if (samplesTaken > SAMPLES_REQUIRED && datapacket != null)
+            heartRateTipText.setVisibility(View.INVISIBLE);
+            String heartRate = String.valueOf(beatsAvg) + " BPM";
+            progress += 25;
+            heartRateText.setText(heartRate + " - " + progress + "% complete.");
+            ProgressBarAnimation anim = new ProgressBarAnimation(progressBar, progress - 25, progress);
+            anim.setDuration(1000);
+            progressBar.startAnimation(anim);
+            progressBar.setProgress(progress);
+
+            if (progress == 125)
             {
                 camera.stopPreview();
                 camera.release();
@@ -248,7 +247,10 @@ public class HeartRateFragment extends Fragment {
 
                 Fragment newFragment = new DataPacketFragment();
                 Bundle bundle = new Bundle();
-                datapacket.addHeartRate(new HeartRate(beatsAvg));
+                HeartRate heartRate1 = new HeartRate();
+                heartRate1.setHeartRate(beatsAvg);
+
+                datapacket.addHeartRate(heartRate1);
                 bundle.putSerializable("data_packet", datapacket);
                 newFragment.setArguments(bundle);
                 FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();

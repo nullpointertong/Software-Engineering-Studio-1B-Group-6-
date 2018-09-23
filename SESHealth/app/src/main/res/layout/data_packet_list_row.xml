@@ -19,41 +19,41 @@
         >
 
         <TextView
-            android:id="@+id/data_packet_id"
+            android:id="@+id/data_packet_num"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:textSize="16dp"
             android:textStyle="bold"
-            android:text="Data packet 001"/>
+            android:text="Data packet %1$d"/>
 
         <TextView
             android:id="@+id/data_packet_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/data_packet_id"
+            android:layout_below="@id/data_packet_num"
             android:text="This is the first data packet. Please write any contents here."/>
 
         <TextView
-            android:id="@+id/data_packet_date"
+            android:id="@+id/data_packet_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/data_packet_description"
-            android:text="Created: 25 / 08 / 2018"/>
+            android:text="Data packet id: %1$s"/>
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/data_packet_button"
-        android:layout_width="60dp"
-        android:layout_height="45dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="true">
-            <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            android:textColor="@color/whiteColor"
-            android:text="send"/>
-    </LinearLayout>
+    <!--<LinearLayout-->
+        <!--android:id="@+id/data_packet_button"-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="45dp"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerInParent="true">-->
+            <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@color/colorAccent"-->
+            <!--android:textColor="@color/whiteColor"-->
+            <!--android:text="view"/>-->
+    <!--</LinearLayout>-->
 
 
 </RelativeLayout>

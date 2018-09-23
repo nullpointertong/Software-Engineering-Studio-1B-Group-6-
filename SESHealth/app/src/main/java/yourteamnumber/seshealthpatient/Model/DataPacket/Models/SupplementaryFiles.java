@@ -1,19 +1,33 @@
 package yourteamnumber.seshealthpatient.Model.DataPacket.Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SupplementaryFiles {
+public class SupplementaryFiles implements Serializable{
 
     ArrayList<String> filePaths;
+    ArrayList<String> fileNames;
 
-    public SupplementaryFiles(ArrayList<String> filePaths)
+    public SupplementaryFiles()
     {
+    }
+
+    public void setFilePaths(ArrayList<String> filePaths) {
         this.filePaths = filePaths;
+    }
+
+    public void setFileNames(ArrayList<String> fileNames) {
+        this.fileNames = fileNames;
     }
 
     public ArrayList<String> getFilePaths()
     {
         return filePaths;
+    }
+
+    public ArrayList<String> getFileNames()
+    {
+        return fileNames;
     }
 
     @Override

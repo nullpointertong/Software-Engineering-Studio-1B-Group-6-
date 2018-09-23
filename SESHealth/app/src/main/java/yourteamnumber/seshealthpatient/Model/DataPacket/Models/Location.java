@@ -2,7 +2,9 @@ package yourteamnumber.seshealthpatient.Model.DataPacket.Models;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class Location {
+import java.io.Serializable;
+
+public class Location implements Serializable{
 
     private double latitude;
     private double longitude;
@@ -21,6 +23,10 @@ public class Location {
         this.address = address;
         this.latitude = latLng.latitude;
         this.longitude = latLng.longitude;
+    }
+    public Location()
+    {
+
     }
 
     public double getLatitude () { return latitude; }
@@ -42,7 +48,9 @@ public class Location {
 
     @Override
     public String toString() {
-        return name + ", " + address + ", " + latitude + ", " + longitude;
+        return ((name != null && name != "")? name + ", " : "") +
+                ((address != null && address != "")? address + ", " : "")+
+                latitude + ", " + longitude;
     }
 
 }

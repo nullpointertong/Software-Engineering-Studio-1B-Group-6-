@@ -5,18 +5,23 @@
             android:id="@+id/nav_patient_info"
             android:title="@string/patient_information" />
         <item
+            android:id="@+id/nav_update_patient_info"
+            android:title="@string/update_patient_information" />
+        <item
+            android:id="@+id/nav_viewdoctors"
+            android:title="@string/view_mydoctors" />
+        <item
+            android:id="@+id/nav_doctor_info"
+            android:title="@string/doctor_information" />
+        <item
+            android:id="@+id/nav_update_doctor_info"
+            android:title="@string/update_doctor_information" />
+        <item
             android:id="@+id/nav_data_packet"
             android:title="@string/create_data_packet" />
         <item
-            android:id="@+id/nav_heartrate"
-            android:title="@string/heart_rate" />
-        <item
-            android:id="@+id/nav_recordvideo"
-            android:title="@string/record_video" />
-        <item
-            android:id="@+id/nav_sendfile"
-            android:title="@string/send_local_file" />
-
+            android:id="@+id/nav_list_data_packet"
+            android:title="@string/list_data_packet" />
         <item
             android:id="@+id/nav_map"
             android:title="@string/facilities_map" />

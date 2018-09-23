@@ -10,11 +10,19 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="patient_information">Patient Information</string>
+    <string name="update_patient_information">Update Patient Information</string>
+    <string name="view_mydoctors">My Doctors</string>
+    <string name="doctor_information">Doctor Information</string>
+    <string name="update_doctor_information">Update Doctor Information</string>
     <string name="create_data_packet">Create Data Packet</string>
+    <string name="list_data_packet">List Data Packet</string>
     <string name="heart_rate">Heart Rate</string>
     <string name="record_video">Record Video</string>
     <string name="send_local_file">Send Local File</string>
     <string name="facilities_map">Facilities Map</string>
+    <string name="doctor_ID">Doctor ID here!</string>
+    <string name="addDoctor">Add</string>
+    <string name="searchDoctor">Search</string>
 
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
@@ -43,6 +51,10 @@
     <string-array name="usertype_array">
         <item>Patient</item>
         <item>Doctor</item>
+    </string-array>
+    <string-array name="gender_array">
+        <item>Male</item>
+        <item>Female</item>
     </string-array>
     <string name="title_activity_maps">Map</string>
 </resources>

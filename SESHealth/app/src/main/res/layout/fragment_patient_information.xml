@@ -5,10 +5,178 @@
     tools:context="yourteamnumber.seshealthpatient.Fragments.PatientInformationFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/blank_frag_msg"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        tools:context=".MainActivity">
+
+        <ImageView
+            android:id="@+id/patient_image_view"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_below="@+id/welcome_text_view"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/patient_icon" />
+
+        <ScrollView
+            android:id="@+id/patient_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/patient_buttons_layout"
+            android:layout_below="@+id/patient_image_view">
+
+            <TableLayout
+                android:id="@+id/table_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40dp"
+                android:gravity="center"
+                android:padding="20dp"
+                android:shrinkColumns="1"
+                android:stretchColumns="2">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:text="First Name"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/patient_firstName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:text="Last Name"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/patient_lastName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:text="Gender"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/patient_gender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:text="Height"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/patient_height"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:text="Weight"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/patient_weight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:text="Medical Condition"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/patient_medicalCondition"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        />
+
+                </TableRow>
+
+            </TableLayout>
+
+        </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/patient_buttons_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/swapButton"
+                android:layout_width="152dp"
+                android:layout_height="wrap_content"
+                android:background="@color/dark_navy"
+                android:text="edit"
+                android:textColor="@color/whiteColor"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
 
 </FrameLayout>

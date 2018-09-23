@@ -20,11 +20,16 @@ import android.widget.Button;
 
 
 import yourteamnumber.seshealthpatient.Fragments.DataPacketFragment;
+import yourteamnumber.seshealthpatient.Fragments.DoctorInformationFragment;
 import yourteamnumber.seshealthpatient.Fragments.HeartRateFragment;
+import yourteamnumber.seshealthpatient.Fragments.ListDataPacketFragment;
 import yourteamnumber.seshealthpatient.Fragments.MapFragment;
 import yourteamnumber.seshealthpatient.Fragments.PatientInformationFragment;
+import yourteamnumber.seshealthpatient.Fragments.UpdateDoctorInformationFragment;
+import yourteamnumber.seshealthpatient.Fragments.UpdatePatientInformationFragment;
 import yourteamnumber.seshealthpatient.Fragments.RecordVideoFragment;
 import yourteamnumber.seshealthpatient.Fragments.SendFileFragment;
+import yourteamnumber.seshealthpatient.Fragments.ViewMyDoctorsFragment;
 import yourteamnumber.seshealthpatient.R;
 
 
@@ -73,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP
+        PATIENT_INFO, DATA_PACKET, LIST_DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, UPDATE_PATIENT_INFO, DOCTOR_INFO, UPDATE_DOCTOR_INFO,VIEW_MYDOCTORS
     }
 
     /**
@@ -130,24 +135,36 @@ public class MainActivity extends AppCompatActivity {
                                     ChangeFragment(MenuStates.PATIENT_INFO);
                                 }
                                 break;
+                            case R.id.nav_update_patient_info:
+                                if (currentState != MenuStates.UPDATE_PATIENT_INFO) {
+                                    ChangeFragment(MenuStates.UPDATE_PATIENT_INFO);
+                                }
+                                break;
+                            case R.id.nav_viewdoctors:
+                                if (currentState != MenuStates.VIEW_MYDOCTORS) {
+                                    ChangeFragment(MenuStates.VIEW_MYDOCTORS);
+                                }
+                                break;
+                            case R.id.nav_doctor_info:
+                                // If the user clicked on a different item than the current item
+                                if (currentState != MenuStates.DOCTOR_INFO) {
+                                    // change the fragment to the new fragment
+                                    ChangeFragment(MenuStates.DOCTOR_INFO);
+                                }
+                                break;
+                            case R.id.nav_update_doctor_info:
+                                if (currentState != MenuStates.UPDATE_DOCTOR_INFO) {
+                                    ChangeFragment(MenuStates.UPDATE_DOCTOR_INFO);
+                                }
+                                break;
                             case R.id.nav_data_packet:
                                 if (currentState != MenuStates.DATA_PACKET) {
                                     ChangeFragment(MenuStates.DATA_PACKET);
                                 }
                                 break;
-                            case R.id.nav_heartrate:
-                                if (currentState != MenuStates.HEARTRATE) {
-                                    ChangeFragment(MenuStates.HEARTRATE);
-                                }
-                                break;
-                            case R.id.nav_recordvideo:
-                                if (currentState != MenuStates.RECORD_VIDEO) {
-                                    ChangeFragment(MenuStates.RECORD_VIDEO);
-                                }
-                                break;
-                            case R.id.nav_sendfile:
-                                if (currentState != MenuStates.SEND_FILE) {
-                                    ChangeFragment(MenuStates.SEND_FILE);
+                            case R.id.nav_list_data_packet:
+                                if (currentState != MenuStates.LIST_DATA_PACKET) {
+                                    ChangeFragment(MenuStates.LIST_DATA_PACKET);
                                 }
                                 break;
                             case R.id.nav_map:
@@ -236,18 +253,22 @@ public class MainActivity extends AppCompatActivity {
     {
         switch (menuState)
         {
-            case HEARTRATE:
-                return new HeartRateFragment();
-            case SEND_FILE:
-                return new SendFileFragment();
             case DATA_PACKET:
                 return new DataPacketFragment();
+            case LIST_DATA_PACKET:
+                return new ListDataPacketFragment();
             case PATIENT_INFO:
                 return new PatientInformationFragment();
+            case VIEW_MYDOCTORS:
+                return new ViewMyDoctorsFragment();
+            case UPDATE_PATIENT_INFO:
+                return new UpdatePatientInformationFragment();
+            case DOCTOR_INFO:
+                return new DoctorInformationFragment();
+            case UPDATE_DOCTOR_INFO:
+                return new UpdateDoctorInformationFragment();
             case NAVIGATION_MAP:
                 return new MapFragment();
-            case RECORD_VIDEO:
-                return new RecordVideoFragment();
             default:
                 return null;
         }
@@ -257,18 +278,22 @@ public class MainActivity extends AppCompatActivity {
     {
         switch (currentState)
         {
-            case HEARTRATE:
-                return getString(R.string.heart_rate);
-            case SEND_FILE:
-                return getString(R.string.send_local_file);
             case DATA_PACKET:
                 return getString(R.string.create_data_packet);
+            case LIST_DATA_PACKET:
+                return getString(R.string.list_data_packet);
             case PATIENT_INFO:
                 return getString(R.string.patient_information);
+            case UPDATE_PATIENT_INFO:
+                return getString(R.string.update_patient_information);
+            case VIEW_MYDOCTORS:
+                return getString(R.string.view_mydoctors);
+            case DOCTOR_INFO:
+                return getString(R.string.doctor_information);
+            case UPDATE_DOCTOR_INFO:
+                return getString(R.string.update_doctor_information);
             case NAVIGATION_MAP:
                 return getString(R.string.facilities_map);
-            case RECORD_VIDEO:
-                return getString(R.string.record_video);
             default:
                 return null;
         }

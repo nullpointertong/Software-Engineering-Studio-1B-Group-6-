@@ -1,16 +1,27 @@
 package yourteamnumber.seshealthpatient.Fragments;
 
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import yourteamnumber.seshealthpatient.R;
 
 /**
@@ -28,7 +39,14 @@ public class PatientInformationFragment extends Fragment {
 
 
     // Note how Butter Knife also works on Fragments, but here it is a little different
+    private TextView patient_firstName;   //Initailization of Variables required
+    private TextView patient_lastName;
+    private TextView patient_gender;
+    private TextView patient_height;  //Initailization of Variables required
+    private TextView patient_weight;
+    private TextView patient_medicalCondition;
 
+    private FirebaseAuth firebaseAuth;
 
     public PatientInformationFragment() {
         // Required empty public constructor
@@ -37,9 +55,14 @@ public class PatientInformationFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ButterKnife.bind(getActivity());
         //TODO: Instead of hardcoding the title perhaps take the user name from somewhere?
         // Note the use of getActivity() to reference the Activity holding this fragment
+
         getActivity().setTitle("Username Information");
+
+
+
     }
 
     @Override
@@ -54,10 +77,58 @@ public class PatientInformationFragment extends Fragment {
         return v;
     }
 
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Now that the view has been created, we can use butter knife functionality
+        patient_firstName = getActivity().findViewById(R.id.patient_firstName);
+
+        patient_lastName = getActivity().findViewById(R.id.patient_lastName);
+
+        patient_gender = getActivity().findViewById(R.id.patient_gender);
+
+        patient_height = getActivity().findViewById(R.id.patient_height);
+
+        patient_weight = getActivity().findViewById(R.id.patient_weight);
+
+        patient_medicalCondition = getActivity().findViewById(R.id.patient_medicalCondition);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        String userId = firebaseAuth.getUid();
+        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
+        patient_firstName.setText(" ");
+        patient_lastName.setText(" ");
+        patient_gender.setText(" ");
+        patient_height.setText(" ");
+        patient_weight.setText(" ");
+        patient_medicalCondition.setText(" ");
+        currentUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                patient_firstName.setText(dataSnapshot.child("First Name").getValue().toString());
+                patient_lastName.setText(dataSnapshot.child("Last Name").getValue().toString());
+                patient_gender.setText(dataSnapshot.child("Gender").getValue().toString());
+                patient_height.setText(dataSnapshot.child("Height").getValue().toString());
+                patient_weight.setText(dataSnapshot.child("Weight").getValue().toString());
+                patient_medicalCondition.setText(dataSnapshot.child("Medical Condition").getValue().toString());
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                patient_firstName.setText("ERROR");
+            }
+        });
+
+
+
+    }
+
+    @OnClick(R.id.swapButton)
+    public void switchToEdit() {
+        Fragment newFragment = new UpdatePatientInformationFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
