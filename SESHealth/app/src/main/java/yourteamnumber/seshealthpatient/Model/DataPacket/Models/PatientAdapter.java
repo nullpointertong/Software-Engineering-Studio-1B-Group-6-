@@ -51,7 +51,12 @@ public class PatientAdapter  extends RecyclerView.Adapter<PatientAdapter.ViewHol
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.patient_list_row, parent, false);
 
-        return new ViewHolder(itemView);
+        final ViewHolder mViewHolder = new ViewHolder(itemView);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View v) { listener.onItemClick(v, mViewHolder.getPosition());}
+        });
+        return mViewHolder;
     }
 
     @Override

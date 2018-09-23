@@ -40,8 +40,8 @@ public class ListDataPacketFragment extends Fragment {
     private RecyclerView recyclerView;
     private DataPacketAdapter mAdapter;
     private DataPacket dataPacket;
-    private String userUid;
-    private final static String TAG = "Faild";
+    private String patientID;
+    private final static String TAG = "Failed";
 
     public ListDataPacketFragment() {
         // Required empty public constructor
@@ -50,7 +50,15 @@ public class ListDataPacketFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (getArguments() != null && getArguments().getString("PatientID") != null)
+        {
+            patientID = getArguments().getString("PatientID");
+        }
+        else
+        {
+            FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            patientID = currentFirebaseUser.getUid();
+        }
     }
 
     @Override
@@ -63,8 +71,7 @@ public class ListDataPacketFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        userUid = currentFirebaseUser.getUid();
+
         recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_view);
         mAdapter = new DataPacketAdapter(this.getContext(), mDataPacketList, new CustomItemClickListener() {
             @Override
@@ -89,7 +96,7 @@ public class ListDataPacketFragment extends Fragment {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference();
 
-        ref.child("DataPackets").child(userUid).addValueEventListener(new ValueEventListener() {
+        ref.child("DataPackets").child(patientID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mDataPacketList.clear();

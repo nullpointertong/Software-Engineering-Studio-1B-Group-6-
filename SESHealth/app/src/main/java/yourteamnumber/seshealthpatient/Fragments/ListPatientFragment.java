@@ -21,7 +21,7 @@ import yourteamnumber.seshealthpatient.R;
 
 
 public class ListPatientFragment extends Fragment {
-    private ArrayList<Patient> mPatientyList = new ArrayList<>();
+    private ArrayList<Patient> mPatientList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private PatientAdapter mAdapter;
     public ListPatientFragment() {
@@ -43,17 +43,39 @@ public class ListPatientFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.patient_recycler_view);
-
-        mAdapter = new PatientAdapter(this.getContext(), mPatientyList, new CustomItemClickListener() {
+        /*recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_view);
+        mAdapter = new DataPacketAdapter(this.getContext(), mDataPacketList, new CustomItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                Log.d("TAG", "clicked position:" + position);
+                Log.d(TAG, "clicked position:" + position);
                 Fragment viewDataPacketFragment = new ViewDataPacketFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("TAG", mPatientyList.get(position).getPatientId());
+                bundle.putSerializable("data_packet", mDataPacketList.get(position));
+                viewDataPacketFragment.setArguments(bundle);
                 getActivity().getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, viewDataPacketFragment)
+                        .addToBackStack(null)
+                        .commit();
+
+            }});
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(mAdapter);
+        */
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.patient_recycler_view);
+
+        mAdapter = new PatientAdapter(this.getContext(), mPatientList, new CustomItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Log.d("List Patient Button", "clicked position:" + position);
+                Fragment listDataPacketFragment = new ListDataPacketFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("PatientID", mPatientList.get(position).getPatientId());
+                listDataPacketFragment.setArguments(bundle);
+                getActivity().getFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, listDataPacketFragment)
                         .addToBackStack(null)
                         .commit();
 
@@ -62,13 +84,13 @@ public class ListPatientFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mAdapter);
-        preparePatientData();
+        if (mPatientList.size() == 0) preparePatientData();
     }
     private void preparePatientData() {
-        Patient patient = new Patient("prUzSlAKEUgCvlsY9mViuR8np3m1", "Jimmy", "Rhee", "medical condition", "male", 123, 70);
-        mPatientyList.add(patient);
-        Patient patient1 = new Patient("2222", "Jimmy", "Rhee", "medical condition", "male", 123, 70);
-        mPatientyList.add(patient1);
+        Patient patient = new Patient("No3rPDJhZWWqx9l9fuOBCASUW5K2", "Jimmy", "Rhee", "medical condition", "male", 123, 70);
+        mPatientList.add(patient);
+        Patient patient1 = new Patient("prUzSlAKEUgCvlsY9mViuR8np3m1", "Jimmy", "Rhee", "medical condition", "male", 123, 70);
+        mPatientList.add(patient1);
     }
 
 }
