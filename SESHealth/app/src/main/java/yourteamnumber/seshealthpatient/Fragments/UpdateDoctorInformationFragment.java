@@ -113,7 +113,8 @@ public class UpdateDoctorInformationFragment extends Fragment {
         hashMap.put("Hospital", hospital);
         hashMap.put("Department", department);
 
-        currentUser.setValue(hashMap);
+        currentUser.updateChildren(hashMap);
+
         Fragment fragment = new DoctorInformationFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
