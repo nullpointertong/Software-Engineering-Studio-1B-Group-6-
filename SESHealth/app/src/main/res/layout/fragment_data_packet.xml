@@ -15,12 +15,57 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
+            <RelativeLayout
+                android:id="@+id/doctorIdContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.github.captain_miao.optroundcardview.OptRoundCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    app:optRoundCardBottomEdges="true"
+                    app:optRoundCardCornerRadius="8dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp">
+
+                        <TextView
+                            android:id="@+id/lblAddDoctor"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/rounded_corner"
+                            android:elevation="1dp"
+                            android:fontFamily="@font/opensans_bold"
+                            android:paddingTop="5dp"
+                            android:text="@string/add_doctor_label"
+                            android:textAlignment="center"
+                            android:textColor="@color/whiteColor"
+                            android:textSize="20dp" />
+
+                        <Spinner
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/spnSelectDoctor"
+                            android:layout_below="@id/lblAddDoctor">
+
+                        </Spinner>
+
+                    </RelativeLayout>
+                </com.github.captain_miao.optroundcardview.OptRoundCardView>
+            </RelativeLayout>
+
             <yourteamnumber.seshealthpatient.Model.DataPacket.CustomComponents.TextInputComponent
                 android:id="@+id/textInputComponent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
+                android:layout_below="@id/doctorIdContainer"
                 android:visibility="visible">
 
             </yourteamnumber.seshealthpatient.Model.DataPacket.CustomComponents.TextInputComponent>

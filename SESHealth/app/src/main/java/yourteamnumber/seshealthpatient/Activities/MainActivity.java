@@ -35,6 +35,7 @@ import yourteamnumber.seshealthpatient.Fragments.UpdateDoctorInformationFragment
 import yourteamnumber.seshealthpatient.Fragments.UpdatePatientInformationFragment;
 import yourteamnumber.seshealthpatient.Fragments.RecordVideoFragment;
 import yourteamnumber.seshealthpatient.Fragments.SendFileFragment;
+import yourteamnumber.seshealthpatient.Fragments.ViewMyDoctorsFragment;
 import yourteamnumber.seshealthpatient.R;
 
 
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, LIST_DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, UPDATE_PATIENT_INFO, DOCTOR_INFO, UPDATE_DOCTOR_INFO
+        PATIENT_INFO, DATA_PACKET, LIST_DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, UPDATE_PATIENT_INFO, DOCTOR_INFO, UPDATE_DOCTOR_INFO,VIEW_MYDOCTORS
     }
 
     /**
@@ -143,6 +144,11 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.nav_update_patient_info:
                                 if (currentState != MenuStates.UPDATE_PATIENT_INFO) {
                                     ChangeFragment(MenuStates.UPDATE_PATIENT_INFO);
+                                }
+                                break;
+                            case R.id.nav_viewdoctors:
+                                if (currentState != MenuStates.VIEW_MYDOCTORS) {
+                                    ChangeFragment(MenuStates.VIEW_MYDOCTORS);
                                 }
                                 break;
                             case R.id.nav_doctor_info:
@@ -261,6 +267,8 @@ public class MainActivity extends AppCompatActivity {
                 return new ListDataPacketFragment();
             case PATIENT_INFO:
                 return new PatientInformationFragment();
+            case VIEW_MYDOCTORS:
+                return new ViewMyDoctorsFragment();
             case UPDATE_PATIENT_INFO:
                 return new UpdatePatientInformationFragment();
             case DOCTOR_INFO:
@@ -286,6 +294,8 @@ public class MainActivity extends AppCompatActivity {
                 return getString(R.string.patient_information);
             case UPDATE_PATIENT_INFO:
                 return getString(R.string.update_patient_information);
+            case VIEW_MYDOCTORS:
+                return getString(R.string.view_mydoctors);
             case DOCTOR_INFO:
                 return getString(R.string.doctor_information);
             case UPDATE_DOCTOR_INFO:
