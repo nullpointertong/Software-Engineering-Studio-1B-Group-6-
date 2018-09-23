@@ -90,6 +90,8 @@ public class RegisterActivity extends AppCompatActivity {
         String confirmPassword = register_passwordET2.getText().toString().trim();
 
         boolean passwordConfirmation = false;
+
+
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "The username and password cannot be empty.", Toast.LENGTH_SHORT).show();
             return;
@@ -111,12 +113,22 @@ public class RegisterActivity extends AppCompatActivity {
                         hashMap.put("UserType", userType); //Type specifier maybe required here
                         hashMap.put("First Name", ""); //Type specifier maybe required here
                         hashMap.put("Last Name", "");
-                        hashMap.put("Gender", "");
-                        hashMap.put("Height", "");
-                        hashMap.put("Weight", "");
-                        hashMap.put("Medical Condition", "");
-                        currentUser.setValue(hashMap);
 
+                        if(userType.equals("Patient")) {
+                            hashMap.put("Gender", "");
+                            hashMap.put("Height", "");
+                            hashMap.put("Weight", "");
+                            hashMap.put("Medical Condition", "");
+                            currentUser.updateChildren(hashMap);
+                        }
+                        else if(userType.equals("Doctor"))
+                        {
+                            hashMap.put("Occupation", "");
+                            hashMap.put("Specialty", "");
+                            hashMap.put("Hospital", "");
+                            hashMap.put("Department", "");
+                            currentUser.updateChildren(hashMap);
+                        }
 
                         Toast.makeText(RegisterActivity.this, "Registration Sucessful!", Toast.LENGTH_SHORT).show();
                         startActivity(intent);
