@@ -90,8 +90,6 @@ public class RegisterActivity extends AppCompatActivity {
         String confirmPassword = register_passwordET2.getText().toString().trim();
 
         boolean passwordConfirmation = false;
-
-
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "The username and password cannot be empty.", Toast.LENGTH_SHORT).show();
             return;

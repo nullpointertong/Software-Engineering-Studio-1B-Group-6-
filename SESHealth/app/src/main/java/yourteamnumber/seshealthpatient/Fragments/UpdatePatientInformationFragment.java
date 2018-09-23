@@ -173,8 +173,6 @@ public class UpdatePatientInformationFragment extends Fragment {
         String weight = patient_weightU.getText().toString();
         String medicalCondition = patient_medicalConditionU.getText().toString();
 
-
-
         hashMap.put("First Name", firstName); //Type specifier maybe required here
         hashMap.put("Last Name", lastName);
         hashMap.put("Gender", gender);
@@ -182,7 +180,7 @@ public class UpdatePatientInformationFragment extends Fragment {
         hashMap.put("Weight", weight);
         hashMap.put("Medical Condition", medicalCondition);
 
-        currentUser.setValue(hashMap);
+        currentUser.updateChildren(hashMap);
 
         Fragment fragment = new PatientInformationFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
