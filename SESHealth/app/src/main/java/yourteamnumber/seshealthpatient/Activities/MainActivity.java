@@ -30,6 +30,7 @@ import yourteamnumber.seshealthpatient.Fragments.DataPacketFragment;
 import yourteamnumber.seshealthpatient.Fragments.DoctorInformationFragment;
 import yourteamnumber.seshealthpatient.Fragments.HeartRateFragment;
 import yourteamnumber.seshealthpatient.Fragments.ListDataPacketFragment;
+import yourteamnumber.seshealthpatient.Fragments.ListPatientFragment;
 import yourteamnumber.seshealthpatient.Fragments.MapFragment;
 import yourteamnumber.seshealthpatient.Fragments.PatientInformationFragment;
 import yourteamnumber.seshealthpatient.Fragments.UpdateDoctorInformationFragment;
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, LIST_DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, UPDATE_PATIENT_INFO, DOCTOR_INFO, UPDATE_DOCTOR_INFO,VIEW_MYDOCTORS
+        PATIENT_INFO, DATA_PACKET, LIST_DATA_PACKET, LIST_PATIENT, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, UPDATE_PATIENT_INFO, DOCTOR_INFO, UPDATE_DOCTOR_INFO,VIEW_MYDOCTORS
     }
 
     /**
@@ -174,6 +175,10 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.nav_list_data_packet:
                                 if (currentState != MenuStates.LIST_DATA_PACKET) {
                                     ChangeFragment(MenuStates.LIST_DATA_PACKET);
+                                }
+                            case R.id.nav_list_patient:
+                                if (currentState != MenuStates.LIST_PATIENT) {
+                                    ChangeFragment(MenuStates.LIST_PATIENT);
                                 }
                                 break;
                             case R.id.nav_map:
@@ -288,6 +293,8 @@ public class MainActivity extends AppCompatActivity {
                 return new DataPacketFragment();
             case LIST_DATA_PACKET:
                 return new ListDataPacketFragment();
+            case LIST_PATIENT:
+                return new ListPatientFragment();
             case PATIENT_INFO:
                 return new PatientInformationFragment();
             case VIEW_MYDOCTORS:
@@ -313,6 +320,8 @@ public class MainActivity extends AppCompatActivity {
                 return getString(R.string.create_data_packet);
             case LIST_DATA_PACKET:
                 return getString(R.string.list_data_packet);
+            case LIST_PATIENT:
+                return getString(R.string.list_patient);
             case PATIENT_INFO:
                 return getString(R.string.patient_information);
             case UPDATE_PATIENT_INFO:

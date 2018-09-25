@@ -23,6 +23,9 @@
             android:id="@+id/nav_list_data_packet"
             android:title="@string/list_data_packet" />
         <item
+            android:id="@+id/nav_list_patient"
+            android:title="@string/list_patient" />
+        <item
             android:id="@+id/nav_map"
             android:title="@string/facilities_map" />
     </group>

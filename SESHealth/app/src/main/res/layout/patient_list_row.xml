@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/vertical_margin"
+    android:paddingLeft="@dimen/horizontal_margin"
+    android:paddingRight="@dimen/horizontal_margin"
+    android:paddingTop="@dimen/row_padding_vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/patient_num"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:text="Patient %1$d"/>
+
+        <TextView
+            android:id="@+id/patient_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Patient id: %1$s"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/patient_firstName_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="First name: %1$s"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/patient_lastName_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last name: %1$s"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/patient_gender_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender: %1$s"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/patient_height_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Height: %1$d"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/patient_weight_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/patient_medical_condition_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Medical Condtion: %1$s"/>
+    </LinearLayout>
+    <!--<LinearLayout-->
+    <!--android:id="@+id/data_packet_button"-->
+    <!--android:layout_width="60dp"-->
+    <!--android:layout_height="45dp"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_centerInParent="true">-->
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/colorAccent"-->
+    <!--android:textColor="@color/whiteColor"-->
+    <!--android:text="view"/>-->
+    <!--</LinearLayout>-->
+
+
+</RelativeLayout>
