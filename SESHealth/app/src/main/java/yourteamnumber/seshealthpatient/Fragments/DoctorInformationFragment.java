@@ -1,5 +1,6 @@
 package yourteamnumber.seshealthpatient.Fragments;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import butterknife.OnClick;
 import yourteamnumber.seshealthpatient.R;
 
 public class DoctorInformationFragment extends Fragment {
@@ -85,8 +90,21 @@ public class DoctorInformationFragment extends Fragment {
             }
         });
 
+        getActivity().findViewById(R.id.edit_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchToEdit();
+            }
+        });
+    }
 
-
+    @OnClick(R.id.edit_button)
+    public void switchToEdit() {
+        Fragment newFragment = new UpdateDoctorInformationFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
 }

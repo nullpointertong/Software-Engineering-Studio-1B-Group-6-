@@ -8,6 +8,9 @@
             android:id="@+id/nav_update_patient_info"
             android:title="@string/update_patient_information" />
         <item
+            android:id="@+id/nav_viewdoctors"
+            android:title="@string/view_mydoctors" />
+        <item
             android:id="@+id/nav_doctor_info"
             android:title="@string/doctor_information" />
         <item
