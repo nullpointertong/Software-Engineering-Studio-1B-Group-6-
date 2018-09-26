@@ -63,22 +63,22 @@ public class PatientAdapter  extends RecyclerView.Adapter<PatientAdapter.ViewHol
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Patient patient = mPatientList.get(position);
 
-        holder.patientNum.setText(""+position+1);
-        holder.patientId.setText(patient.getPatientId());
-        holder.firstName.setText(String.format(holder.firstName.getText().toString(), patient.getFirstName().toString()));
-        holder.lastName.setText(String.format(holder.lastName.getText().toString(), patient.getLastName().toString()));
-        holder.gender.setText(String.format(holder.gender.getText().toString(), patient.getGender().toString()));
-        holder.height.setText(""+patient.getHeight());
-        holder.weight.setText(""+patient.getWeight());
+        holder.patientNum.setText(String.format(holder.patientNum.getText().toString(),position+1));
+        holder.patientId.setText(String.format(holder.patientId.getText().toString(), patient.getPatientId()));
+        holder.firstName.setText(String.format(holder.firstName.getText().toString(), patient.getFirstName()));
+        holder.lastName.setText(String.format(holder.lastName.getText().toString(), patient.getLastName()));
+        holder.gender.setText(String.format(holder.gender.getText().toString(), patient.getGender()));
+        holder.height.setText(String.format(holder.height.getText().toString(), Math.round(patient.getHeight())));
+        holder.weight.setText(String.format(holder.weight.getText().toString(), Math.round(patient.getWeight())));
 
         if (patient.getMedicalCondition() == null) {
             holder.medicalCondition.setText("");
         } else {
             String temp = patient.getMedicalCondition();
             if (temp.length() < 20) {
-                holder.medicalCondition.setText(patient.getMedicalCondition());
+                holder.medicalCondition.setText(String.format(holder.medicalCondition.getText().toString(),patient.getMedicalCondition()));
             } else {
-                holder.medicalCondition.setText(patient.getMedicalCondition().substring(0, 18) + "...");
+                holder.medicalCondition.setText(String.format(holder.medicalCondition.getText().toString(),patient.getMedicalCondition().substring(0,18) + "..."));
             }
         }
 
