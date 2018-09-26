@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ public class ViewDataPacketFragment extends Fragment {
     private DataPacket dataPacket;
     private MapView map;
     private GoogleMap mMap;
+    private String patientName = null;
 
     public ViewDataPacketFragment() {
         // Required empty public constructor
@@ -35,16 +37,16 @@ public class ViewDataPacketFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().getSerializable("data_packet") != null)
-        {
-            dataPacket = (DataPacket) getArguments().getSerializable("data_packet");
+        if (getArguments() != null) {
+            if (getArguments().getSerializable("data_packet") != null) {
+                dataPacket = (DataPacket) getArguments().getSerializable("data_packet");
+            } else {
+                Toast.makeText(this.getContext(), "Error: Data packet cannot be read", Toast.LENGTH_SHORT);
+                this.getFragmentManager().popBackStackImmediate();
+            }
+
+            patientName = getArguments().getString("patient_name");
         }
-        else
-        {
-            Toast.makeText(this.getContext(), "Error: Data packet cannot be read", Toast.LENGTH_SHORT);
-            this.getFragmentManager().popBackStackImmediate();
-        }
-        //Log.d("Data Packet: ", dataPacket.toString());
 
     }
 
@@ -59,6 +61,13 @@ public class ViewDataPacketFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        /** Display patient name on top of the packet (if doctor side) **/
+        if (patientName != null) {
+            ((TextView)getActivity().findViewById(R.id.patient_name)).setText(patientName);
+        }
+        else {
+            getActivity().findViewById(R.id.patient_name).setVisibility(View.GONE);
+        }
         /**
           Display the information from the patient's data packet
           **/
@@ -76,10 +85,16 @@ public class ViewDataPacketFragment extends Fragment {
             getActivity().findViewById(R.id.mapContainer).setVisibility(View.GONE);
         ((TextView)getActivity().findViewById(R.id.data_packet_heartrate_tv))
                 .setText(dataPacket.getHeartRate() != null ? dataPacket.getHeartRate().toString() : "N.A.");
-        ((TextView)getActivity().findViewById(R.id.data_packet_video_bool_tv))
-                .setText(dataPacket.getVideoSnippet() != null ? "Yes" : "No");
-        ((TextView)getActivity().findViewById(R.id.data_packet_file_bool_tv))
-                .setText(dataPacket.getSupplementaryFiles() != null ? "Yes" : "No");
+        Button videoSnippetBtn = ((Button)getActivity().findViewById(R.id.data_packet_video_button));
+        if (dataPacket.getVideoSnippet() != null) {
+            videoSnippetBtn.setText("DOWNLOAD");
+            videoSnippetBtn.setClickable(true);
+        }
+        Button suppFilesBtn = ((Button)getActivity().findViewById(R.id.data_packet_file_button));
+        if (dataPacket.getSupplementaryFiles() != null) {
+            suppFilesBtn.setText("DOWNLOAD");
+            videoSnippetBtn.setClickable(true);
+        }
 
     }
 

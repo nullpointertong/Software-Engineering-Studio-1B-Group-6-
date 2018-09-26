@@ -48,8 +48,8 @@ public class Location implements Serializable{
 
     @Override
     public String toString() {
-        return ((name != null && name != "")? name + ", " : "") +
-                ((address != null && address != "")? address + ", " : "")+
+        return ((name != null && name != "")? "" : name + ", ") +
+                ((address != null && address != "")? "" :  address + ", ")+
                 latitude + ", " + longitude;
     }
 

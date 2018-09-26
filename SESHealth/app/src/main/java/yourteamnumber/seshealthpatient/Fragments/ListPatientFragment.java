@@ -61,6 +61,7 @@ public class ListPatientFragment extends Fragment {
                 Fragment listDataPacketFragment = new ListDataPacketFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("PatientID", mPatientList.get(position).getPatientId());
+                bundle.putString("patientName", mPatientList.get(position).getLastName() + ", " + mPatientList.get(position).getFirstName());
                 listDataPacketFragment.setArguments(bundle);
                 getActivity().getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, listDataPacketFragment)
