@@ -84,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
         mProgress = new ProgressDialog(RegisterActivity.this);
-        mProgress.setTitle("Registering in process...");
+        mProgress.setTitle("Registering...");
         mProgress.setMessage("Please wait until finished..");
         mProgress.setCancelable(false);
         mProgress.setIndeterminate(true);

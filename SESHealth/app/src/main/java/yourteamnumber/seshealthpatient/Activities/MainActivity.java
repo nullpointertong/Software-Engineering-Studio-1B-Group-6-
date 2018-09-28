@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 
-
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
      * The current fragment being displayed.
      */
     private MenuStates currentState;
+    private Menu menu;
 
     private FirebaseAuth firebaseAuth;
 
@@ -218,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-
+        menu = navigationView.getMenu();
         // More on this code, check the tutorial at http://www.vogella.com/tutorials/AndroidFragments/article.html
         fragmentManager = getFragmentManager();
         // Add the default Fragment once the user logged in
@@ -230,12 +231,32 @@ public class MainActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.child("UserType").getValue().toString().equals("Patient"))
                             {
+                                MenuItem nav_doctor_info = menu.findItem(R.id.nav_doctor_info);
+                                MenuItem nav_update_doctor_info = menu.findItem(R.id.nav_update_doctor_info);
+                                MenuItem nav_list_patient = menu.findItem(R.id.nav_list_patient);
+
+                                nav_doctor_info.setVisible(false);
+                                nav_update_doctor_info.setVisible(false);
+                                nav_list_patient.setVisible(false);
+
                                 FragmentTransaction ft = fragmentManager.beginTransaction();
                                 ft.add(R.id.fragment_container, new PatientInformationFragment());
                                 ft.commit();
                             }
                             else if(dataSnapshot.child("UserType").getValue().toString().equals("Doctor"))
                             {
+                                MenuItem nav_patient_info = menu.findItem(R.id.nav_patient_info);
+                                MenuItem nav_update_patient_info = menu.findItem(R.id.nav_update_patient_info);
+                                MenuItem nav_my_doctors = menu.findItem(R.id.nav_viewdoctors);
+                                MenuItem nav_create_data_packet = menu.findItem(R.id.nav_data_packet);
+                                MenuItem nav_list_data_packet = menu.findItem(R.id.nav_list_data_packet);
+
+                                nav_patient_info.setVisible(false);
+                                nav_update_patient_info.setVisible(false);
+                                nav_my_doctors.setVisible(false);
+                                nav_create_data_packet.setVisible(false);
+                                nav_list_data_packet.setVisible(false);
+
                                 FragmentTransaction ft = fragmentManager.beginTransaction();
                                 ft.add(R.id.fragment_container, new DoctorInformationFragment());
                                 ft.commit();
