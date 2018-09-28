@@ -1,5 +1,6 @@
 package yourteamnumber.seshealthpatient.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private TextView textView7;
     private TextView textView5;
+    private ProgressDialog mProgress;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase database;
@@ -81,10 +83,16 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+        mProgress = new ProgressDialog(RegisterActivity.this);
+        mProgress.setTitle("Registering in process...");
+        mProgress.setMessage("Please wait until finished..");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
     }
 
     @OnClick(R.id.register_btn)
     public void registerUser() {
+        mProgress.show();
         String email = register_usernameET.getText().toString().trim();
         String password = register_passwordET.getText().toString().trim();
         String confirmPassword = register_passwordET2.getText().toString().trim();
@@ -93,13 +101,14 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         if (email.isEmpty() || password.isEmpty()) {
+            mProgress.dismiss();
             Toast.makeText(this, "The username and password cannot be empty.", Toast.LENGTH_SHORT).show();
             return;
         }
         final Intent intent = new Intent(this, LoginActivity.class);
         if(!password.equals(confirmPassword)) {
+            mProgress.dismiss();
             Toast.makeText(RegisterActivity.this,"Passwords don't match" , Toast.LENGTH_SHORT).show();
-
         } else {
             firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
@@ -129,10 +138,11 @@ public class RegisterActivity extends AppCompatActivity {
                             hashMap.put("Department", "");
                             currentUser.updateChildren(hashMap);
                         }
-
+                        mProgress.dismiss();
                         Toast.makeText(RegisterActivity.this, "Registration Sucessful!", Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                     } else {
+                        mProgress.dismiss();
                         Log.d("RegistrationFailed", task.getException().getMessage());
                         Toast.makeText(RegisterActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
                     }

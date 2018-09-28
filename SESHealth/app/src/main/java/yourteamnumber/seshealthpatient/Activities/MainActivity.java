@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.LIST_DATA_PACKET) {
                                     ChangeFragment(MenuStates.LIST_DATA_PACKET);
                                 }
+                                break;
                             case R.id.nav_list_patient:
                                 if (currentState != MenuStates.LIST_PATIENT) {
                                     ChangeFragment(MenuStates.LIST_PATIENT);

@@ -1,5 +1,6 @@
 package yourteamnumber.seshealthpatient.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -56,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     private EditText email_editText;
     final Context context = this;
+    ProgressDialog mProgress;
 
     DatabaseReference users;
     /**
@@ -101,6 +103,12 @@ public class LoginActivity extends AppCompatActivity {
         });
         // Please try to use more String resources (values -> strings.xml) vs hardcoded Strings.
         setTitle(R.string.login_activity_title);
+
+        mProgress = new ProgressDialog(context);
+        mProgress.setTitle("Logging in...");
+        mProgress.setMessage("Please wait until finished..");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
     }
 
 
@@ -110,12 +118,14 @@ public class LoginActivity extends AppCompatActivity {
      */
     @OnClick(R.id.login_btn)
     public void LogIn() {
+        mProgress.show();
         final String username = usernameEditText.getText().toString();
         final String password = passwordEditText.getText().toString();
 
         if (username.isEmpty() || password.isEmpty())
         {
             Toast.makeText(this, "The username and password cannot be empty.", Toast.LENGTH_SHORT).show();
+            mProgress.dismiss();
             return;
         }
 
@@ -134,10 +144,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful())
                 {
+                    mProgress.dismiss();
                     startActivity(intent);
                 }
                 else
                 {
+                    mProgress.dismiss();
                     Toast.makeText(LoginActivity.this, "Wrong Username or Password", Toast.LENGTH_SHORT).show();
                 }
             }

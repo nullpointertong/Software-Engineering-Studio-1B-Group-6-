@@ -24,6 +24,7 @@
     <string name="doctor_ID">Doctor ID here!</string>
     <string name="addDoctor">Add</string>
     <string name="searchDoctor">Search</string>
+    <string name="login_message">Logging in ...</string>
 
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
