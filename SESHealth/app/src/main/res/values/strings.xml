@@ -49,6 +49,7 @@
     <string name="read_failed">Failed to read metadata</string>
 
     <string name="data_packet_empty_hint">The data packet is currently empty, tap \"≡\" to add data.</string>
+    <string name="storage_bucket_url">gs://seshealth-8fd07.appspot.com</string>
     <string-array name="usertype_array">
         <item>Patient</item>
         <item>Doctor</item>
