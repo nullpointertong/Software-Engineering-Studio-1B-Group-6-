@@ -3,6 +3,7 @@ package yourteamnumber.seshealthpatient.Activities;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -187,6 +188,10 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.NAVIGATION_MAP) {
                                     ChangeFragment(MenuStates.NAVIGATION_MAP);
                                 }
+                                break;
+                            case R.id.nav_logout:
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                startActivity(intent);
                                 break;
                         }
 
