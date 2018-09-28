@@ -1,5 +1,6 @@
 package yourteamnumber.seshealthpatient.Fragments;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.fitness.data.DataUpdateNotification;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +37,9 @@ public class ViewMyDoctorsFragment extends Fragment {
     private DatabaseReference mFirebaseDatabase;
     private ListView mDoctorList;
     private ArrayList<String> Doctor = new ArrayList<>();
+    private TextView mName;
+    private TextView mUID;
+    private DatabaseReference patientInformation;
 
     public ViewMyDoctorsFragment() {
         // Required empty public constructor
@@ -63,7 +68,11 @@ public class ViewMyDoctorsFragment extends Fragment {
         mSearchDoctor =getActivity().findViewById(R.id.searchDoctor_btn);
         mResult = getActivity().findViewById(R.id.result_txt);
         mDoctorList = getActivity().findViewById(R.id.doctor_list);
+        mName = getActivity().findViewById(R.id.Name_txt);
+        mUID = getActivity().findViewById(R.id.ID_txt);
 
+        mName.setText(" ");
+        mUID.setText(" ");
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_activated_1, Doctor);
         mDoctorList.setAdapter(arrayAdapter);
 
@@ -71,6 +80,20 @@ public class ViewMyDoctorsFragment extends Fragment {
 
         String patientId = mFirebaseAuth.getUid();
         mFirebaseDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id");
+        patientInformation = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(patientId);
+
+        patientInformation.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mName.setText(dataSnapshot.child("First Name").getValue().toString());
+                mUID.setText(patientId);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getContext(), "ERROR!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         mFirebaseDatabase.child(patientId).child("MyDoctors").addChildEventListener(new ChildEventListener() {
             @Override
@@ -126,10 +149,19 @@ public class ViewMyDoctorsFragment extends Fragment {
         mAddDoctor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                 Fragment newFragment = new PatientInformationFragment();
+                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                 transaction.replace(R.id.fragment_container, newFragment);
+                 transaction.addToBackStack(null);
+                 transaction.commit();
                 String doctorId = mDoctorID.getText().toString().trim();
+                String patientName = mName.getText().toString().trim();
                 if(patientId != null && doctorId != null) {
                     mFirebaseDatabase.child(patientId).child("MyDoctors").child(mResult.getText().toString()).setValue(doctorId);
-                    mFirebaseDatabase.child(doctorId).child("MyPatients").child(patientId).setValue(patientId);
+                    mFirebaseDatabase.child(doctorId).child("MyPatients").child(patientName).setValue(patientId);
+                    Toast.makeText(getContext(),
+                                    "Add successfully, now you can create and send datapackets.",
+                                    Toast.LENGTH_SHORT).show();
                 }
 
             }
