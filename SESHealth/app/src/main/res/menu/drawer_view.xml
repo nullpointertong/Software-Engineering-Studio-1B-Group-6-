@@ -3,30 +3,43 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_patient_info"
-            android:title="@string/patient_information" />
+            android:title="@string/patient_information"
+            android:icon="@drawable/patient_menu_icon"/>
         <item
             android:id="@+id/nav_update_patient_info"
-            android:title="@string/update_patient_information" />
+            android:title="@string/update_patient_information"
+            android:icon="@drawable/edit_icon"/>
         <item
             android:id="@+id/nav_viewdoctors"
-            android:title="@string/view_mydoctors" />
+            android:title="@string/view_mydoctors"
+            android:icon="@drawable/doctor_menu_icon"/>
         <item
             android:id="@+id/nav_doctor_info"
-            android:title="@string/doctor_information" />
+            android:title="@string/doctor_information"
+            android:icon="@drawable/doctor_menu_icon"/>
         <item
             android:id="@+id/nav_update_doctor_info"
-            android:title="@string/update_doctor_information" />
+            android:title="@string/update_doctor_information"
+            android:icon="@drawable/edit_icon"/>
         <item
             android:id="@+id/nav_data_packet"
-            android:title="@string/create_data_packet" />
+            android:title="@string/create_data_packet"
+            android:icon="@drawable/create_data_packet"/>
         <item
             android:id="@+id/nav_list_data_packet"
-            android:title="@string/list_data_packet" />
+            android:title="@string/list_data_packet"
+            android:icon="@drawable/list_data_icon"/>
         <item
             android:id="@+id/nav_list_patient"
-            android:title="@string/list_patient" />
+            android:title="@string/list_patient"
+            android:icon="@drawable/people_icon"/>
         <item
             android:id="@+id/nav_map"
-            android:title="@string/facilities_map" />
+            android:title="@string/facilities_map"
+            android:icon="@drawable/map_icon"/>
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/logout_icon"
+            android:title="Logout" />
     </group>
 </menu>
