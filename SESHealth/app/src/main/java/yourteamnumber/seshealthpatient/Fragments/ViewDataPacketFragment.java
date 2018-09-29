@@ -90,8 +90,8 @@ public class ViewDataPacketFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((TextView)getActivity().findViewById(R.id.data_packet_id_tv))
-                .setText(dataPacket.getDataPackedId());
+        ((TextView)getActivity().findViewById(R.id.date_sent_tv))
+                .setText(dataPacket.getDateSent().toString());
         ((TextView)getActivity().findViewById(R.id.data_packet_desc_tv))
                 .setText(dataPacket.getTextData() != null ? dataPacket.getTextData().getData() : "N.A.");
         ((TextView)getActivity().findViewById(R.id.data_packet_location_tv))

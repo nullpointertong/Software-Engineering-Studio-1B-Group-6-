@@ -3,6 +3,7 @@ package yourteamnumber.seshealthpatient.Fragments;
 
 import android.Manifest;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -23,10 +24,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,20 +62,32 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.common.io.ByteStreams;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import yourteamnumber.seshealthpatient.Model.DataPacket.CustomComponents.TextInputComponent;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.Location;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.SupplementaryFiles;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.VideoSnippet;
+import yourteamnumber.seshealthpatient.Model.User;
 import yourteamnumber.seshealthpatient.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -97,6 +112,9 @@ public class DataPacketFragment extends Fragment {
     private ImageButton heartRateButton;
     private ImageButton recordVideoButton;
     private ImageButton sendButton;
+    private Spinner selectDoctorsSpinner;
+    private Context context;
+    private Map<String, String> doctors = new HashMap<>();
 
     private MapView map;
     private GoogleMap mMap;
@@ -115,7 +133,8 @@ public class DataPacketFragment extends Fragment {
 
     private DriveResourceClient mDriveResourceClient;
 
-    protected GoogleApiClient mGoogleApiClient;
+    private FirebaseAuth mFirebaseAuth;
+    private DatabaseReference mFirebaseDatabase;
 
 
     public DataPacketFragment() {
@@ -147,8 +166,11 @@ public class DataPacketFragment extends Fragment {
         recordVideoButton = view.findViewById(R.id.btnRecordVideo);
         suppFiles = view.findViewById(R.id.suppList);
         heartRateText = view.findViewById(R.id.txtHeartRate);
+        selectDoctorsSpinner = view.findViewById(R.id.spnSelectDoctor);
+        List<String> spinnerArray =  new ArrayList<String>();
 
         dataPacket = new DataPacket();
+        context = getContext();
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
 
@@ -230,6 +252,56 @@ public class DataPacketFragment extends Fragment {
                 Send(v);
             }
         });
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
+        String patientId = mFirebaseAuth.getUid();
+        mFirebaseDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id");
+
+        DatabaseReference doctorsRef = mFirebaseDatabase.child(patientId).child("MyDoctors");
+
+        doctorsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> user = (Map<String, Object>) dataSnapshot.getValue();
+                //do what you want with the email
+
+                spinnerArray.add("Select Doctor");
+
+                for  (String key : user.keySet())
+                {
+                    spinnerArray.add("Dr. " + key);
+
+                    doctors.put(key,(String) user.get(key));
+                }
+
+                ArrayAdapter<String> doctorsAdapter = new ArrayAdapter<String>(
+                        getContext(), android.R.layout.simple_spinner_item, spinnerArray);
+
+                doctorsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                selectDoctorsSpinner.setAdapter(doctorsAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        selectDoctorsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(context, (String) selectDoctorsSpinner.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     // region Drive API
@@ -542,6 +614,13 @@ public class DataPacketFragment extends Fragment {
         if (locationAdded)
         {
             dataPacket.addLocation(new Location("", "", currentLocation.latitude, currentLocation.longitude));
+        }
+
+        if (!selectDoctorsSpinner.getSelectedItem().toString().equals("Select Doctor"))
+        {
+            String selectedDoctor = selectDoctorsSpinner.getSelectedItem().toString();
+            dataPacket.setDoctorId(doctors.get(selectedDoctor.substring(4, selectedDoctor.length())));
+            dataPacket.setDoctorName(selectedDoctor);
         }
 
         if (!addedFilesFullPathList.isEmpty())

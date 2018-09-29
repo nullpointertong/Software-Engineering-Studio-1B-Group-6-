@@ -6,8 +6,11 @@
     <color name="whiteColor">#FFFF</color>
     <color name="redColor">#f46464</color>
     <color name="lightRedColor">#f59b9b</color>
+    <color name="orangeColor">#ff9f46</color>
     <color name="lightGrayColor">#c4c4c4</color>
     <color name="lightGreenColor">#93e992</color>
+
+    <color name="locationColor">#74d624</color>
 
     <color name="greenColor">#53df46</color>
     <color name="greenColorPressed">#2b7124</color>

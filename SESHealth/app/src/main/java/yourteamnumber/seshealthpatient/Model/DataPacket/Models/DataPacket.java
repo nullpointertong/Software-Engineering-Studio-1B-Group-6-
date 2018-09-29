@@ -23,16 +23,20 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 public class DataPacket implements Serializable{
 
     private String dataPackedId;
     private String userId;
+    private String doctorId;
+    private String doctorName;
     private String userEmail;
     private TextData textData;
     private Location location;
     private VideoSnippet videoSnippet;
+    private Date dateSent;
     private SupplementaryFiles supplementaryFiles;
     private HeartRate heartRate;
 
@@ -62,6 +66,8 @@ public class DataPacket implements Serializable{
         return "DataPacket{" +
                 "\ndataPackedId=" + dataPackedId +
                 ", \nUserId=" + userId +
+                ", \nDoctorId=" + doctorId +
+                ", \nDoctorName=" + doctorName +
                 ", \nUserEmail=" + userEmail +
                 ", \ntextData=" + textData +
                 ", \nlocation=" + locationString +
@@ -74,6 +80,7 @@ public class DataPacket implements Serializable{
     public boolean send(Context context)
     {
         Toast.makeText(context, "Sending...", Toast.LENGTH_SHORT).show();
+        this.setDateSent(new Date());
 
         try {
             database = FirebaseDatabase.getInstance();
@@ -181,6 +188,8 @@ public class DataPacket implements Serializable{
     public void showDataPacketDialog(Context context)
     {
         String dataPacketSummary = "Description: " + getTextData() +
+                                   "\nDate Sent: " + getDateSent() +
+                                   "\nDoctor: " + getDoctorName() +
                                    "\nLocation: " + getLocation() +
                                    "\nFiles: " + (getSupplementaryFiles() == null ? "null" : getSupplementaryFiles().getFileNames()) +
                                    "\nHeart Rate: " + getHeartRate() +
@@ -200,6 +209,31 @@ public class DataPacket implements Serializable{
     }
 
     //region Getters and Setters
+
+
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public String getDoctorName() {
+        return doctorName;
+    }
+
+    public void setDoctorName(String doctorName) {
+        this.doctorName = doctorName;
+    }
+
+    public Date getDateSent() {
+        return dateSent;
+    }
+
+    public void setDateSent(Date dateSent) {
+        this.dateSent = dateSent;
+    }
 
     public String getDataPackedId() {
         return dataPackedId;

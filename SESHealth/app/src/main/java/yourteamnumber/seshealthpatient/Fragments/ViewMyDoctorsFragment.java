@@ -85,7 +85,9 @@ public class ViewMyDoctorsFragment extends Fragment {
         patientInformation.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mName.setText(dataSnapshot.child("First Name").getValue().toString());
+                String firstName = dataSnapshot.child("First Name").getValue().toString();
+                String lastName = dataSnapshot.child("Last Name").getValue().toString();
+                mName.setText(firstName + " " + lastName);
                 mUID.setText(patientId);
             }
 
