@@ -5,136 +5,240 @@
     tools:context="yourteamnumber.seshealthpatient.Fragments.ViewDataPacketFragment">
 
 
-        <ScrollView
-            android:id="@+id/data_packet_scrollview"
+    <ScrollView
+        android:id="@+id/data_packet_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableLayout
+            android:id="@+id/data_packet_table_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:gravity="center"
+            android:padding="25dp"
+            android:shrinkColumns="2"
+            android:stretchColumns="1">
 
-            <TableLayout
-                android:id="@+id/data_packet_table_layout"
+            <TableRow
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:text="Data packet ID"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/data_packet_id_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:text="Description"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/data_packet_desc_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:text="Location"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/data_packet_location_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:text="Heart rate"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/data_packet_heartrate_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:text="Video snippet?"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/data_packet_video_bool_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:text="Supplementary files? "
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/data_packet_file_bool_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2" />
+
+            </TableRow>
+
+
+        </TableLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="250dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/view_data_packet_Txt1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="50dp"
-                android:gravity="center"
-                android:padding="25dp"
-                android:shrinkColumns="2"
-                android:stretchColumns="1">
+                android:text="Choose a Doctor: "
+                android:visibility="invisible"/>
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+            <Spinner
+                android:id="@+id/patient_choose_doctor_sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:text="Data packet ID"
-                        android:textSize="18sp" />
+        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/data_packet_id_tv"
-                        android:layout_column="2" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-                </TableRow>
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose file type: "/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:text="Description"
-                        android:textSize="18sp" />
+            <Spinner
+                android:id="@+id/dataType_sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/data_packet_desc_tv"
-                        android:layout_column="2" />
-
-                </TableRow>
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:text="Location"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/data_packet_location_tv"
-                        android:layout_column="2" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:text="Heart rate"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/data_packet_heartrate_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="2" />
-
-                </TableRow>
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:text="Video snippet?"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/data_packet_video_bool_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="2" />
-
-                </TableRow>
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:text="Supplementary files? "
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/data_packet_file_bool_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="2" />
-
-                </TableRow>
+        </LinearLayout>
 
 
 
-            </TableLayout>
+        <TextView
+            android:id="@+id/feedbackFromDoctors_Tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="10"
+            android:textSize="18sp"
+            android:visibility="gone"
+            android:text="No feedback for this selection!"/>
 
-        </ScrollView>
+
+        <EditText
+            android:id="@+id/feedback_Txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/feedback_txt"
+            android:visibility="gone"
+            android:textSize="18sp"/>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/passed_patient_id_Tv"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Patient ID: "
+                android:visibility="gone"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:id="@+id/patientID_Txt"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+        <Button
+            android:id="@+id/sendFeedback_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="200dp"
+            android:text="Send to the Patient"
+            android:visibility="gone"/>
+
+
+
+
+    </LinearLayout>
+
+
 
 
 

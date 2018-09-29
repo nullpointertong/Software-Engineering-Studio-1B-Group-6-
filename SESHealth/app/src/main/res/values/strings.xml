@@ -25,6 +25,7 @@
     <string name="addDoctor">Add</string>
     <string name="searchDoctor">Search</string>
     <string name="login_message">Logging in ...</string>
+    <string name="feedback_txt">Feedback for this datapacket!</string>
 
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>

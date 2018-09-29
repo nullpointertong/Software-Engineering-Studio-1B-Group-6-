@@ -131,10 +131,10 @@ public class ViewMyDoctorsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String doctorId = mDoctorID.getText().toString().trim();
-                mFirebaseDatabase.child(doctorId).child("First Name").addValueEventListener(new ValueEventListener() {
+                mFirebaseDatabase.child(doctorId).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        String doctorName = dataSnapshot.getValue().toString();
+                        String doctorName = dataSnapshot.child("First Name").getValue().toString() + " " + dataSnapshot.child("Last Name").getValue().toString();
                         mResult.setText(doctorName);
                     }
 
@@ -161,7 +161,7 @@ public class ViewMyDoctorsFragment extends Fragment {
                     mFirebaseDatabase.child(doctorId).child("MyPatients").child(patientName).setValue(patientId);
                     Toast.makeText(getContext(),
                                     "Add successfully, now you can create and send datapackets.",
-                                    Toast.LENGTH_SHORT).show();
+                                    Toast.LENGTH_LONG).show();
                 }
 
             }
