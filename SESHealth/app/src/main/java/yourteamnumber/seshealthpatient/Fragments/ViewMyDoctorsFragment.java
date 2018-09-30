@@ -41,6 +41,7 @@ public class ViewMyDoctorsFragment extends Fragment {
     private TextView mUID;
     private DatabaseReference patientInformation;
 
+
     public ViewMyDoctorsFragment() {
         // Required empty public constructor
     }
@@ -169,4 +170,5 @@ public class ViewMyDoctorsFragment extends Fragment {
             }
         });
     }
+
 }
