@@ -19,5 +19,6 @@
 
     <color name="data_packet_bg">#f3f3f3</color>
     <color name="dark_navy">#031E3C</color>
+    <color name="hint_gray">#868686</color>
 
 </resources>
