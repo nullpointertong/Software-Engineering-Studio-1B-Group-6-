@@ -40,6 +40,7 @@ public class ViewDataPacketFragment extends Fragment {
     private MapView map;
     private GoogleMap mMap;
     private String patientName = null;
+    private String patientID = null;
     private StorageReference storageRef;
 
     public ViewDataPacketFragment() {
@@ -58,9 +59,10 @@ public class ViewDataPacketFragment extends Fragment {
             }
 
             patientName = getArguments().getString("patient_name");
+            patientID = getArguments().getString("patient_id");
         }
 
-        storageRef = FirebaseStorage.getInstance().getReference();
+        storageRef = FirebaseStorage.getInstance().getReference().child(patientID).child(dataPacket.getDataPackedId());
 
     }
 
@@ -106,8 +108,9 @@ public class ViewDataPacketFragment extends Fragment {
             videoSnippetBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    StorageReference videoRef = storageRef.child(dataPacket.getDataPackedId().toString()).child("videos");
-                    //downloadFile(videoRef);
+//                    storageRef.child("videos").
+
+                    //downloadFile(videoRef, dataPacket.getDataPackedId() + "_video.mp4");
 
                 }
             });
@@ -148,14 +151,14 @@ public class ViewDataPacketFragment extends Fragment {
         });
     }
 
-    private void downloadFile(StorageReference storageRef) {
+    private void downloadFile(StorageReference storageRef, String filename) {
 
-        File rootPath = new File(Environment.getExternalStorageDirectory(), "imageName.txt");
+        File rootPath = new File(Environment.getExternalStorageDirectory(), filename);
         if(!rootPath.exists()) {
             rootPath.mkdirs();
         }
 
-        final File localFile = new File(rootPath,"imageName.txt");
+        final File localFile = new File(rootPath, filename);
 
         storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override

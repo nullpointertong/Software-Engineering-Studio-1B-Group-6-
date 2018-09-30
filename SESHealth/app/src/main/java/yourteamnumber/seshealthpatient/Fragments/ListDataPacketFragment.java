@@ -84,6 +84,7 @@ public class ListDataPacketFragment extends Fragment {
                 bundle.putSerializable("data_packet", mDataPacketList.get(position));
                 if (patientName != null)
                     bundle.putString("patient_name", patientName);
+                bundle.putString("patient_id", patientID);
                 viewDataPacketFragment.setArguments(bundle);
                 getActivity().getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, viewDataPacketFragment)
