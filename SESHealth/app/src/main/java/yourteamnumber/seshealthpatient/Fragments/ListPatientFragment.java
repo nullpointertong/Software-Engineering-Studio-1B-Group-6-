@@ -104,6 +104,7 @@ public class ListPatientFragment extends Fragment {
 
     private void getPatientInfo(String patientID)
     {
+        Log.d("ListPatientFragment", "Getting patient info from ID");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference();
         ref.child("Users").child("user_id").child(patientID).addListenerForSingleValueEvent(new ValueEventListener() {

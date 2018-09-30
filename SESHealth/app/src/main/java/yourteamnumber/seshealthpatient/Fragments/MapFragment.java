@@ -6,9 +6,11 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,8 @@ import android.view.ViewGroup;
 
 import android.location.LocationListener;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -24,6 +28,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,6 +55,7 @@ public class MapFragment extends Fragment {
     MapView mMapView;
     private GoogleMap mMap;
     private Location mLastKnownLocation;
+    private FusedLocationProviderClient mFusedLocationClient;
     private boolean mLocationPermissionGranted;
     private static final int DEFAULT_ZOOM = 14;
     private final LatLng mDefaultLocation = new LatLng(-33.8840504, 151.1992254);
@@ -93,6 +99,7 @@ public class MapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mLocationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
 
 
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
@@ -151,13 +158,21 @@ public class MapFragment extends Fragment {
                 } catch (Exception e) {
                     Log.d(TAG, e.toString());
                 }
-                // For dropping a marker at a point on the Map
-                LatLng currentLoc = mDefaultLocation;//new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude());
-                //mMap.addMarker(new MarkerOptions().position(currentLoc).title("Current location").snippet("You are here"));
 
-                // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(currentLoc).zoom(DEFAULT_ZOOM).build();
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                if ( ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
+
+                    mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override @NonNull
+                        public void onSuccess(android.location.Location location) {
+                            LatLng currentLoc = new LatLng(location.getLatitude(), location.getLongitude());
+
+                            // For zooming automatically to the location of the marker
+                            CameraPosition cameraPosition = new CameraPosition.Builder().target(currentLoc).zoom(DEFAULT_ZOOM).build();
+                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        }
+                    });
+                }
+
             }
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
