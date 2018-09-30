@@ -95,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private MenuStates currentState;
     private Menu menu;
+    private MenuItem nav_create_datapacket;
+
 
     private FirebaseAuth firebaseAuth;
 
@@ -239,10 +241,15 @@ public class MainActivity extends AppCompatActivity {
                                 MenuItem nav_doctor_info = menu.findItem(R.id.nav_doctor_info);
                                 MenuItem nav_update_doctor_info = menu.findItem(R.id.nav_update_doctor_info);
                                 MenuItem nav_list_patient = menu.findItem(R.id.nav_list_patient);
+                                nav_create_datapacket = menu.findItem(R.id.nav_data_packet);
 
                                 nav_doctor_info.setVisible(false);
                                 nav_update_doctor_info.setVisible(false);
                                 nav_list_patient.setVisible(false);
+                                if (!dataSnapshot.hasChild("MyDoctors")) disableCreateDatapacket();
+                                else {
+                                    enableCreateDatapacket();
+                                }
 
                                 FragmentTransaction ft = fragmentManager.beginTransaction();
                                 ft.add(R.id.fragment_container, new PatientInformationFragment());
@@ -365,4 +372,12 @@ public class MainActivity extends AppCompatActivity {
                 return null;
         }
     }
+
+
+    public void disableCreateDatapacket() {
+        nav_create_datapacket.setVisible(false);
+    }
+    public void enableCreateDatapacket() {
+        nav_create_datapacket.setVisible(true);
+    };
 }
