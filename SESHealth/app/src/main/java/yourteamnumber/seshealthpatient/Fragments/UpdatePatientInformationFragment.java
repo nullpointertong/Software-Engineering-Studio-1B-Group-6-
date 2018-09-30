@@ -1,8 +1,10 @@
 package yourteamnumber.seshealthpatient.Fragments;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -23,6 +25,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.jaredrummler.materialspinner.MaterialSpinner;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +37,7 @@ import yourteamnumber.seshealthpatient.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link UpdatePatientInformationFragment#newInstance} factory method to
+ * Use the {@link UpdatePatientInformationFragment#} factory method to
  * create an instance of this fragment.
  */
 public class UpdatePatientInformationFragment extends Fragment {
@@ -48,16 +52,16 @@ public class UpdatePatientInformationFragment extends Fragment {
 
     private String mParam2;
 
-    private TextView patient_firstNameU;   //Possible Bug in code as this should be edit text may have been caused by sharing the same name of var
-    private TextView patient_lastNameU;
-    private Spinner spinnerU;
-    private TextView patient_heightU;  //Initailization of Variables required
-    private TextView patient_weightU;
-    private TextView patient_medicalConditionU;
+    private MaterialEditText patient_firstNameU;   //Possible Bug in code as this should be edit text may have been caused by sharing the same name of var
+    private MaterialEditText patient_lastNameU;
+    private MaterialSpinner spinnerU;
+    private MaterialEditText patient_heightU;  //Initailization of Variables required
+    private MaterialEditText patient_weightU;
+    private MaterialEditText patient_medicalConditionU;
 
     private TextView patient_firstName;   //Initailization of Variables required
     private TextView patient_lastName;
-    private TextView patient_gender;
+//    private TextView patient_gender;
 
     private FirebaseAuth firebaseAuth;
 
@@ -110,8 +114,6 @@ public class UpdatePatientInformationFragment extends Fragment {
 
         patient_lastNameU = getActivity().findViewById(R.id.patient_lastNameU);
 
-        patient_gender = getActivity().findViewById(R.id.patient_gender);
-
         patient_heightU = getActivity().findViewById(R.id.patient_heightU);
 
         patient_weightU = getActivity().findViewById(R.id.patient_weightU);
@@ -124,7 +126,6 @@ public class UpdatePatientInformationFragment extends Fragment {
         DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
         patient_firstNameU.setText(" ");
         patient_lastNameU.setText(" ");
-        patient_gender.setText(" ");
         patient_heightU.setText(" ");
         patient_weightU.setText(" ");
         patient_medicalConditionU.setText(" ");
@@ -152,12 +153,68 @@ public class UpdatePatientInformationFragment extends Fragment {
         patient_weightU = getActivity().findViewById(R.id.patient_weightU);
         patient_medicalConditionU = getActivity().findViewById(R.id.patient_medicalConditionU);
 
+        spinnerU.setItems("Male", "Female", "Flesh Eating Bacteria");
+
         getActivity().findViewById(R.id.updateButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switchToEdit();
+                if (allFieldsCompleted())
+                {
+                    switchToEdit();
+                }
             }
         });
+
+    }
+
+    private boolean allFieldsCompleted() {
+        String errorMessage = "The following fields do not meet the length requirements: ";
+
+        if (!patient_firstNameU.isCharactersCountValid())
+        {
+            errorMessage += "\nFirst Name";
+        }
+        if (!patient_lastNameU.isCharactersCountValid())
+        {
+            errorMessage += "\nLast Name";
+        }
+        if (!patient_heightU.isCharactersCountValid())
+        {
+            errorMessage += "\nHeight";
+        }
+        if (!patient_weightU.isCharactersCountValid())
+        {
+            errorMessage += "\nWeight";
+        }
+        if (!patient_medicalConditionU.isCharactersCountValid())
+        {
+            errorMessage += "\nMedical Condition";
+        }
+
+        if (!errorMessage.equals("The following fields do not meet the length requirements: "))
+        {
+            ShowAlertDialog(errorMessage);
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    private void ShowAlertDialog(String message)
+    {
+        android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
+                new android.support.v7.app.AlertDialog.Builder(getContext())
+                        .setTitle("Error: ")
+                        .setMessage(message)
+                        .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+        alertDialogBuilder.show();
     }
 
     @OnClick(R.id.updateButton)
@@ -168,7 +225,7 @@ public class UpdatePatientInformationFragment extends Fragment {
 
         String firstName = patient_firstNameU.getText().toString();
         String lastName = patient_lastNameU.getText().toString();
-        String gender = spinnerU.getSelectedItem().toString();
+        String gender = (String) spinnerU.getItems().get(spinnerU.getSelectedIndex());
         String height = patient_heightU.getText().toString();
         String weight = patient_weightU.getText().toString();
         String medicalCondition = patient_medicalConditionU.getText().toString();

@@ -62,6 +62,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.github.captain-miao:optroundcardview:1.0.0'
     implementation 'com.github.wangjiegulu:rfab:2.0.0'
+    implementation 'com.jaredrummler:material-spinner:1.2.5'
 
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 

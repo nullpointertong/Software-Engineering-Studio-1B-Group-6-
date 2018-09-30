@@ -4,6 +4,11 @@
     <string name="email_example_com">email@example.com</string>
     <string name="password_txt">Password</string>
     <string name="log_in_txt">Log In</string>
+    <string name="first_name_hint">First Name</string>
+    <string name="last_name_hint">Last Name</string>
+    <string name="height_hint">Height</string>
+    <string name="weight_hint">Weight</string>
+    <string name="medical_condition_hint">Medical Condition</string>
     <string name="login_activity_title">Log In</string>
 
     <!-- TODO: Remove or change this placeholder text -->

@@ -28,129 +28,134 @@
             android:layout_above="@+id/patient_buttons_layout"
             android:layout_below="@+id/patient_image_view">
 
-            <TableLayout
-                android:id="@+id/table_layout"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/patient_firstNameU"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="40dp"
-                android:gravity="center"
-                android:padding="20dp"
-                android:shrinkColumns="1"
-                android:stretchColumns="2">
+                android:layout_below="@id/txtInputTopBar"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/opensans_light"
+                android:hint="@string/first_name_hint"
+                android:typeface="sans"
+                app:met_textColorHint="@color/hint_gray"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAnimating="true"
+                app:met_floatingLabelText="@string/first_name_hint"
+                app:met_clearButton="true"
+                app:met_maxCharacters="30"
+                app:met_minCharacters="1"
+                app:met_primaryColor="@color/colorAccent" />
 
-                <TableRow
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/patient_lastNameU"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/patient_firstNameU"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/opensans_light"
+                android:hint="@string/last_name_hint"
+                android:typeface="sans"
+                app:met_textColorHint="@color/hint_gray"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAnimating="true"
+                app:met_floatingLabelText="@string/last_name_hint"
+                app:met_clearButton="true"
+                app:met_maxCharacters="50"
+                app:met_minCharacters="1"
+                app:met_primaryColor="@color/colorAccent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvGender"
+                    android:layout_marginTop="30dp"
+                    android:layout_below="@id/patient_lastNameU"
+                    android:layout_alignStart="@id/patient_lastNameU"
+                    android:fontFamily="@font/opensans_light"
+                    android:textSize="20dp"
+                    android:text="I am a"/>
+                
+                <com.jaredrummler.materialspinner.MaterialSpinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerU"
+                    android:layout_toRightOf="@id/tvGender"
+                    android:layout_alignBottom="@id/tvGender"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"/>
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/patient_heightU"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvGender"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/opensans_light"
+                    android:hint="@string/height_hint"
+                    android:typeface="sans"
+                    android:inputType="numberDecimal"
+                    app:met_textColorHint="@color/hint_gray"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelAnimating="true"
+                    app:met_floatingLabelText="@string/height_hint"
+                    app:met_clearButton="true"
+                    app:met_maxCharacters="3"
+                    app:met_minCharacters="2"
+                    app:met_primaryColor="@color/colorAccent" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:text="First Name"
-                        android:textSize="18sp" />
-
-                    <EditText
-                        android:id="@+id/patient_firstNameU"
-                        android:layout_column="2"
-                        android:inputType="textPersonName|textCapWords" />
-
-                </TableRow>
-
-                <TableRow
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/patient_weightU"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/patient_heightU"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/opensans_light"
+                    android:hint="@string/weight_hint"
+                    android:typeface="sans"
+                    android:inputType="numberDecimal"
+                    app:met_textColorHint="@color/hint_gray"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelAnimating="true"
+                    app:met_floatingLabelText="@string/weight_hint"
+                    app:met_clearButton="true"
+                    app:met_maxCharacters="3"
+                    app:met_minCharacters="2"
+                    app:met_primaryColor="@color/colorAccent" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:text="Last Name"
-                        android:textSize="18sp" />
-
-                    <EditText
-                        android:id="@+id/patient_lastNameU"
-                        android:layout_column="2"
-                        android:inputType="textPersonName|textCapWords" />
-
-                </TableRow>
-
-                <TableRow
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/patient_medicalConditionU"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/patient_weightU"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/opensans_light"
+                    android:hint="@string/medical_condition_hint"
+                    android:typeface="sans"
+                    app:met_textColorHint="@color/hint_gray"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelAnimating="true"
+                    app:met_floatingLabelText="@string/medical_condition_hint"
+                    app:met_clearButton="true"
+                    app:met_maxCharacters="200"
+                    app:met_minCharacters="1"
+                    app:met_primaryColor="@color/colorAccent" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:text="Gender"
-                        android:textSize="18sp" />
-
-                    <Spinner
-                        android:id="@+id/spinnerU"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        android:padding="10dp"
-                        android:entries="@array/gender_array" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:text="Height"
-                        android:textSize="18sp" />
-
-                    <EditText
-                        android:id="@+id/patient_heightU"
-                        android:layout_column="2"
-                        android:inputType="numberDecimal" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:text="Weight"
-                        android:textSize="18sp" />
-
-                    <EditText
-                        android:id="@+id/patient_weightU"
-                        android:layout_column="2"
-                        android:inputType="numberDecimal" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:text="Medical Condition"
-                        android:textSize="18sp" />
-
-                    <EditText
-                        android:id="@+id/patient_medicalConditionU"
-                        android:layout_column="2"
-                        android:inputType="text" />
-
-                </TableRow>
-
-            </TableLayout>
+            </RelativeLayout>
 
         </ScrollView>
 
