@@ -73,7 +73,9 @@ public class ListDataPacketFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        patientID = firebaseAuth.getUid();
         recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_view);
         mAdapter = new DataPacketAdapter(this.getContext(), mDataPacketList, new CustomItemClickListener() {
             @Override
