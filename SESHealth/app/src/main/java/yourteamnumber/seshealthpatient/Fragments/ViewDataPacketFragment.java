@@ -133,10 +133,10 @@ public class ViewDataPacketFragment extends Fragment {
                 }
                 else {
                     UserType = "Patient";
-                    mDoctorsSp.setVisibility(View.VISIBLE);
+                
                     mTypeSp.setVisibility(View.VISIBLE);
                     mFeedbackFromDoctors.setVisibility(View.VISIBLE);
-                    mViewDataPacketTV.setVisibility(View.VISIBLE);
+                    
                 }
             }
 
