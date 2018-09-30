@@ -57,7 +57,7 @@ public class UpdatePatientInformationFragment extends Fragment {
 
     private TextView patient_firstName;   //Initailization of Variables required
     private TextView patient_lastName;
-    private TextView patient_gender;
+//    private TextView patient_gender;
 
     private FirebaseAuth firebaseAuth;
 
@@ -110,7 +110,7 @@ public class UpdatePatientInformationFragment extends Fragment {
 
         patient_lastNameU = getActivity().findViewById(R.id.patient_lastNameU);
 
-        patient_gender = getActivity().findViewById(R.id.patient_gender);
+        spinnerU = getActivity().findViewById(R.id.spinnerU);
 
         patient_heightU = getActivity().findViewById(R.id.patient_heightU);
 
@@ -124,7 +124,6 @@ public class UpdatePatientInformationFragment extends Fragment {
         DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
         patient_firstNameU.setText(" ");
         patient_lastNameU.setText(" ");
-        patient_gender.setText(" ");
         patient_heightU.setText(" ");
         patient_weightU.setText(" ");
         patient_medicalConditionU.setText(" ");
@@ -133,7 +132,10 @@ public class UpdatePatientInformationFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 patient_firstNameU.setText(dataSnapshot.child("First Name").getValue().toString());
                 patient_lastNameU.setText(dataSnapshot.child("Last Name").getValue().toString());
-                //spinnerU.setSelection(dataSnapshot.child("Gender").getValue().toString());
+
+                
+//                spinnerU.setSelection(dataSnapshot.child("Gender").getValue().toString());
+
                 patient_heightU.setText(dataSnapshot.child("Height").getValue().toString());
                 patient_weightU.setText(dataSnapshot.child("Weight").getValue().toString());
                 patient_medicalConditionU.setText(dataSnapshot.child("Medical Condition").getValue().toString());
@@ -168,14 +170,14 @@ public class UpdatePatientInformationFragment extends Fragment {
 
         String firstName = patient_firstNameU.getText().toString();
         String lastName = patient_lastNameU.getText().toString();
-        String gender = spinnerU.getSelectedItem().toString();
+//        String gender = spinnerU.getSelectedItem().toString();
         String height = patient_heightU.getText().toString();
         String weight = patient_weightU.getText().toString();
         String medicalCondition = patient_medicalConditionU.getText().toString();
 
         hashMap.put("First Name", firstName); //Type specifier maybe required here
         hashMap.put("Last Name", lastName);
-        hashMap.put("Gender", gender);
+        hashMap.put("Gender", "");
         hashMap.put("Height", height);
         hashMap.put("Weight", weight);
         hashMap.put("Medical Condition", medicalCondition);

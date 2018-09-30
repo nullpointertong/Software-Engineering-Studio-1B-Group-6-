@@ -152,7 +152,6 @@ public class DataPacketFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         init(view, savedInstanceState);
     }
 
@@ -267,6 +266,7 @@ public class DataPacketFragment extends Fragment {
                 //do what you want with the email
 
                 spinnerArray.add("Select Doctor");
+
 
                 for  (String key : user.keySet())
                 {
