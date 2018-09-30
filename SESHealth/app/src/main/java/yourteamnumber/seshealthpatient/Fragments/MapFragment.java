@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.location.LocationListener;
+import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -40,6 +42,8 @@ import java.io.StringReader;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.lang.StringBuilder;
+import java.util.ArrayList;
+import java.util.List;
 
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.MedicalFacility;
 import yourteamnumber.seshealthpatient.R;
@@ -125,8 +129,30 @@ public class MapFragment extends Fragment {
                 requestLocationPermission();
 
                 initiateDeviceLocation();
+                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        String address = marker.getTitle();
+                        String[] info = marker.getSnippet().split(";");
+                        getActivity().findViewById(R.id.recommend_panel).setVisibility(View.VISIBLE);
+                        ((TextView)getActivity().findViewById(R.id.facility_info_name)).setText(info[0]);
+                        ((TextView)getActivity().findViewById(R.id.facility_info_address)).setText(address);
+                        ((TextView)getActivity().findViewById(R.id.facility_info_rating)).setText("Rating: " + info[1]);
+                        try {
+                            ((TextView) getActivity().findViewById(R.id.facility_info_type)).setText("Tags: " + info[2] + "nearby");
+                        } catch (Exception e) {
+                            ((TextView) getActivity().findViewById(R.id.facility_info_type)).setText("");
+                        }
+                        return true;
+                    }
+                });
 
-
+                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        getActivity().findViewById(R.id.recommend_panel).setVisibility(View.GONE);
+                    }
+                });
             }
         });
         return rootView;
@@ -203,10 +229,17 @@ public class MapFragment extends Fragment {
                     String name = place.getString("name");
                     String address = place.getString("vicinity");
                     int rating = place.getInt("rating");
+                    JSONArray types = place.getJSONArray("types");
+                    int j;
+                    String facilityTypes = "";
+                    for (j = 0; j < types.length(); j++)
+                    {
+                        String type = types.get(j).toString();
+                        if (!type.equals("establishment") && !type.equals("point_of_interest"))
+                            facilityTypes += type + ", ";
+                    }
                     mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
-                            .title(name)
-                            .snippet(address));
-
+                            .title(address).snippet(name + ";" + rating + ";" + facilityTypes));
                 }
             }
         } catch (Exception e) {
@@ -300,7 +333,7 @@ public class MapFragment extends Fragment {
             try {
 
                 StringReader is = new StringReader(data);
-//                InputStream is = getActivity().getResources().openRawResource(R.raw.place_search_response); // For testing without internet
+
                 reader = new BufferedReader(is);
 
                 StringBuffer buffer = new StringBuffer();
@@ -308,10 +341,8 @@ public class MapFragment extends Fragment {
 
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line+"\n");
-//                    Log.d("Response: ", "> " + line);
                 }
                 jsonPlaceList = new JSONObject(buffer.toString());
-                //Log.d("JSON Object >", jsonPlaceList.toString());
                 updateMap();
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
