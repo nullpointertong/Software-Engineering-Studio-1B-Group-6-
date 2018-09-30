@@ -1,6 +1,7 @@
 package yourteamnumber.seshealthpatient.Fragments;
 
 import android.app.Fragment;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -74,7 +76,8 @@ public class ViewDataPacketFragment extends Fragment {
     private String patientName = null;
     private String patientID = null;
     private StorageReference storageRef;
-
+    private VideoView VideoPlay;
+    private TextView UrlHint;
     public ViewDataPacketFragment() {
         // Required empty public constructor
     }
@@ -139,9 +142,21 @@ public class ViewDataPacketFragment extends Fragment {
             videoSnippetBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    storageRef.child("videos").
-
-                    //downloadFile(videoRef, dataPacket.getDataPackedId() + "_video.mp4");
+                    storageRef = FirebaseStorage.getInstance().getReference();
+                    //String VideoUri = storageRef.child("/" + patientID.toString() + "/" + dataPacketID + "/" + "videos/Video - 1.mp4").getDownloadUrl().toString();
+                    storageRef.child(patientID).child(dataPacketID).child("videos").child("Video - 1.mp4").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            UrlHint.setText(uri.toString());
+                            VideoPlay.setVideoURI(uri);
+                            VideoPlay.start();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception  e) {
+                            Toast.makeText(getContext(), "Can not play this Video", Toast.LENGTH_LONG).show();
+                        }
+                    });
 
                 }
             });
@@ -166,6 +181,9 @@ public class ViewDataPacketFragment extends Fragment {
         mSendBtn = (Button) getActivity().findViewById(R.id.sendFeedback_btn);
         mPasseedPatientIDTV = (TextView) getActivity().findViewById(R.id.passed_patient_id_Tv);
         mViewDataPacketTV = (TextView) getActivity().findViewById(R.id.view_data_packet_Txt1);
+        VideoPlay = (VideoView) getActivity().findViewById(R.id.video_container);
+        UrlHint = (TextView) getActivity().findViewById(R.id.Url_hint);
+
 
         mFeedbackFromDoctors = (TextView) getActivity().findViewById(R.id.feedbackFromDoctors_Tv);
         mDoctorsSp = (Spinner) getActivity().findViewById(R.id.patient_choose_doctor_sp);
