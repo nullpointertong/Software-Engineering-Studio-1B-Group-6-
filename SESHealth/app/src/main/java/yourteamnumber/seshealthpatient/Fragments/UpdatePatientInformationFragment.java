@@ -61,7 +61,7 @@ public class UpdatePatientInformationFragment extends Fragment {
 
     private TextView patient_firstName;   //Initailization of Variables required
     private TextView patient_lastName;
-    private TextView patient_gender;
+//    private TextView patient_gender;
 
     private FirebaseAuth firebaseAuth;
 
@@ -114,8 +114,6 @@ public class UpdatePatientInformationFragment extends Fragment {
 
         patient_lastNameU = getActivity().findViewById(R.id.patient_lastNameU);
 
-        patient_gender = getActivity().findViewById(R.id.patient_gender);
-
         patient_heightU = getActivity().findViewById(R.id.patient_heightU);
 
         patient_weightU = getActivity().findViewById(R.id.patient_weightU);
@@ -128,7 +126,6 @@ public class UpdatePatientInformationFragment extends Fragment {
         DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
         patient_firstNameU.setText(" ");
         patient_lastNameU.setText(" ");
-        patient_gender.setText(" ");
         patient_heightU.setText(" ");
         patient_weightU.setText(" ");
         patient_medicalConditionU.setText(" ");
