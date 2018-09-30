@@ -71,6 +71,7 @@
                 android:id="@+id/patient_weight_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Weight: %1$d"
                 android:layout_weight="1"/>
         </LinearLayout>
 

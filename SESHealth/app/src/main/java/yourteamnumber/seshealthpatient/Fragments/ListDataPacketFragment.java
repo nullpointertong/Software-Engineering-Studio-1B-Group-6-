@@ -41,6 +41,7 @@ public class ListDataPacketFragment extends Fragment {
     private DataPacketAdapter mAdapter;
     private DataPacket dataPacket;
     private String patientID;
+    private String patientName;
     private final static String TAG = "Failed";
 
     public ListDataPacketFragment() {
@@ -50,14 +51,15 @@ public class ListDataPacketFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().getString("PatientID") != null)
-        {
-            patientID = getArguments().getString("PatientID");
-        }
-        else
-        {
-            FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-            patientID = currentFirebaseUser.getUid();
+        if (getArguments() != null) {
+            if (getArguments().getString("PatientID") != null)
+                patientID = getArguments().getString("PatientID");
+            else {
+                FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                patientID = currentFirebaseUser.getUid();
+            }
+
+            patientName = getArguments().getString("patientName");
         }
     }
 
@@ -80,7 +82,9 @@ public class ListDataPacketFragment extends Fragment {
                 Fragment viewDataPacketFragment = new ViewDataPacketFragment();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("data_packet", mDataPacketList.get(position));
-                bundle.putString("patientID", patientID);
+                if (patientName != null)
+                    bundle.putString("patient_name", patientName);
+                bundle.putString("patient_id", patientID);
                 viewDataPacketFragment.setArguments(bundle);
                 getActivity().getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, viewDataPacketFragment)

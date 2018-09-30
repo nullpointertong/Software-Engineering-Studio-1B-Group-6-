@@ -2,6 +2,8 @@ package yourteamnumber.seshealthpatient.Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,14 +23,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.w3c.dom.Text;
 
 import java.net.Authenticator;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.io.File;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
+import yourteamnumber.seshealthpatient.Model.DataPacket.Models.Location;
 import yourteamnumber.seshealthpatient.R;
 
 public class ViewDataPacketFragment extends Fragment {
@@ -42,7 +56,6 @@ public class ViewDataPacketFragment extends Fragment {
     private FirebaseAuth currentUser;
     private Button mSendBtn;
     private TextView mPatientIdTV;
-    private String patientID;
     private String dataPacketID;
     private DatabaseReference swithchLayout;
     private TextView mPasseedPatientIDTV;
@@ -56,6 +69,11 @@ public class ViewDataPacketFragment extends Fragment {
     private DatabaseReference mDatabaseReference1;
     private DatabaseReference mDatabaseReference2;
     private String UserType;
+    private MapView map;
+    private GoogleMap mMap;
+    private String patientName = null;
+    private String patientID = null;
+    private StorageReference storageRef;
 
     public ViewDataPacketFragment() {
         // Required empty public constructor
@@ -64,18 +82,19 @@ public class ViewDataPacketFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().getSerializable("data_packet") != null && getArguments().getString("patientID") != null)
-        {
-            dataPacket = (DataPacket) getArguments().getSerializable("data_packet");
-            patientID = getArguments().getString("patientID");
-            //Toast.makeText(getContext(), " " + patientID, Toast.LENGTH_SHORT).show();
+        if (getArguments() != null) {
+            if (getArguments().getSerializable("data_packet") != null) {
+                dataPacket = (DataPacket) getArguments().getSerializable("data_packet");
+            } else {
+                Toast.makeText(this.getContext(), "Error: Data packet read error", Toast.LENGTH_SHORT);
+                this.getFragmentManager().popBackStackImmediate();
+            }
+
+            patientName = getArguments().getString("patient_name");
+            patientID = getArguments().getString("patient_id");
         }
-        else
-        {
-            Toast.makeText(this.getContext(), "Error: Data packet cannot be read", Toast.LENGTH_SHORT);
-            this.getFragmentManager().popBackStackImmediate();
-        }
-        //Log.d("Data Packet: ", dataPacket.toString());
+
+        storageRef = FirebaseStorage.getInstance().getReference().child(patientID).child(dataPacket.getDataPackedId());
 
     }
 
@@ -89,19 +108,55 @@ public class ViewDataPacketFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        /** Display patient name on top of the packet (if doctor side) **/
+        if (patientName != null)
+            ((TextView)getActivity().findViewById(R.id.patient_name)).setText(patientName);
+        else
+            getActivity().findViewById(R.id.patient_name).setVisibility(View.GONE);
+        /**
+          Display the information from the patient's data packet
+          **/
         ((TextView)getActivity().findViewById(R.id.date_sent_tv))
                 .setText(dataPacket.getDateSent().toString());
         ((TextView)getActivity().findViewById(R.id.data_packet_desc_tv))
                 .setText(dataPacket.getTextData() != null ? dataPacket.getTextData().getData() : "N.A.");
         ((TextView)getActivity().findViewById(R.id.data_packet_location_tv))
-                .setText(dataPacket.getLocation() != null ? dataPacket.getLocation().toString() : "N.A.");
+                .setText(dataPacket.getLocation() != null ? "" : "N.A.");
+
+        if (dataPacket.getLocation() != null)
+            /** Show the patient location in a map container **/
+            showLocation(view, savedInstanceState, dataPacket.getLocation());
+        else
+            /** If location not available, Hide the map container **/
+            getActivity().findViewById(R.id.mapContainer).setVisibility(View.GONE);
+
         ((TextView)getActivity().findViewById(R.id.data_packet_heartrate_tv))
                 .setText(dataPacket.getHeartRate() != null ? dataPacket.getHeartRate().toString() : "N.A.");
-        ((TextView)getActivity().findViewById(R.id.data_packet_video_bool_tv))
-                .setText(dataPacket.getVideoSnippet() != null ? "Yes" : "No");
-        ((TextView)getActivity().findViewById(R.id.data_packet_file_bool_tv))
-                .setText(dataPacket.getSupplementaryFiles() != null ? "Yes" : "No");
+        Button videoSnippetBtn = ((Button)getActivity().findViewById(R.id.data_packet_video_button));
+        if (dataPacket.getVideoSnippet() != null) {
+            videoSnippetBtn.setText("DOWNLOAD");
+            videoSnippetBtn.setClickable(true);
+            videoSnippetBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                    storageRef.child("videos").
+
+                    //downloadFile(videoRef, dataPacket.getDataPackedId() + "_video.mp4");
+
+                }
+            });
+        }
+        Button suppFilesBtn = ((Button)getActivity().findViewById(R.id.data_packet_file_button));
+        if (dataPacket.getSupplementaryFiles() != null) {
+            suppFilesBtn.setText("DOWNLOAD");
+            suppFilesBtn.setClickable(true);
+            suppFilesBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+        }
 
         dataPacketID = dataPacket.getDataPackedId();
         mTypeSp = (Spinner) getActivity().findViewById(R.id.dataType_sp);
@@ -244,6 +299,51 @@ public class ViewDataPacketFragment extends Fragment {
                     }
                 });
 
+            }
+        });
+    }
+
+    private void showLocation(View view, Bundle savedInstanceState, Location location)
+    {
+        /** Show the location of the patient shared in the data packet in a map container **/
+        map = view.findViewById(R.id.mapViewPatient);
+        map.onCreate(savedInstanceState);
+
+        map.onResume(); /** needed to get the map to display immediately **/
+
+        map.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                mMap = googleMap;
+
+                // Move camera to Sydney
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+                mMap.addMarker(new MarkerOptions().position(latLng));
+            }
+        });
+    }
+
+    private void downloadFile(StorageReference storageRef, String filename) {
+
+        File rootPath = new File(Environment.getExternalStorageDirectory(), filename);
+        if(!rootPath.exists()) {
+            rootPath.mkdirs();
+        }
+
+        final File localFile = new File(rootPath, filename);
+
+        storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                Log.e("firebase ",";local temp file created" +localFile.toString());
+                //  updateDb(timestamp,localFile.toString(),position);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.e("firebase ",";local temp file not created" +exception.toString());
             }
         });
     }
