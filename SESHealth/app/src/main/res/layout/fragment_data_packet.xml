@@ -48,13 +48,13 @@
                             android:textColor="@color/whiteColor"
                             android:textSize="20dp" />
 
-                        <Spinner
+                        <com.jaredrummler.materialspinner.MaterialSpinner
                             android:id="@+id/spnSelectDoctor"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_below="@id/lblAddDoctor">
 
-                        </Spinner>
+                        </com.jaredrummler.materialspinner.MaterialSpinner>
 
                     </RelativeLayout>
                 </com.github.captain_miao.optroundcardview.OptRoundCardView>

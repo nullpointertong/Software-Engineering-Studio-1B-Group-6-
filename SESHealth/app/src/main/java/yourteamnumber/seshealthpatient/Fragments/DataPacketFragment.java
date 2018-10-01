@@ -69,6 +69,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -112,7 +113,7 @@ public class DataPacketFragment extends Fragment {
     private ImageButton heartRateButton;
     private ImageButton recordVideoButton;
     private ImageButton sendButton;
-    private Spinner selectDoctorsSpinner;
+    private MaterialSpinner selectDoctorsSpinner;
     private Context context;
     private Map<String, String> doctors = new HashMap<>();
 
@@ -166,7 +167,6 @@ public class DataPacketFragment extends Fragment {
         suppFiles = view.findViewById(R.id.suppList);
         heartRateText = view.findViewById(R.id.txtHeartRate);
         selectDoctorsSpinner = view.findViewById(R.id.spnSelectDoctor);
-        List<String> spinnerArray =  new ArrayList<String>();
 
         dataPacket = new DataPacket();
         context = getContext();
@@ -264,19 +264,12 @@ public class DataPacketFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> user = (Map<String, Object>) dataSnapshot.getValue();
 
-
                 for  (String key : user.keySet())
                 {
-                    spinnerArray.add("Dr. " + key);
-
-                    doctors.put(key,(String) user.get(key));
+                    doctors.put("Dr. " + key,(String) user.get(key));
                 }
 
-                ArrayAdapter<String> doctorsAdapter = new ArrayAdapter<String>(
-                        getContext(), android.R.layout.simple_spinner_item, spinnerArray);
-
-                doctorsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                selectDoctorsSpinner.setAdapter(doctorsAdapter);
+                selectDoctorsSpinner.setItems(doctors.keySet().toArray());
             }
 
             @Override
@@ -284,21 +277,6 @@ public class DataPacketFragment extends Fragment {
 
             }
         });
-
-
-
-        selectDoctorsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(context, (String) selectDoctorsSpinner.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
     }
 
     // region Drive API
@@ -613,12 +591,9 @@ public class DataPacketFragment extends Fragment {
             dataPacket.addLocation(new Location("", "", currentLocation.latitude, currentLocation.longitude));
         }
 
-        if (!selectDoctorsSpinner.getSelectedItem().toString().equals("Select Doctor"))
-        {
-            String selectedDoctor = selectDoctorsSpinner.getSelectedItem().toString();
-            dataPacket.setDoctorId(doctors.get(selectedDoctor.substring(4, selectedDoctor.length())));
-            dataPacket.setDoctorName(selectedDoctor);
-        }
+        String selectedDoctor = (String) selectDoctorsSpinner.getItems().get(selectDoctorsSpinner.getSelectedIndex());
+        dataPacket.setDoctorId(doctors.get(selectedDoctor));
+        dataPacket.setDoctorName(selectedDoctor);
 
         if (!addedFilesFullPathList.isEmpty())
         {
