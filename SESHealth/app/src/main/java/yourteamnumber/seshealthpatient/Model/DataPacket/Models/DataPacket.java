@@ -44,6 +44,7 @@ public class DataPacket implements Serializable{
     private transient FirebaseUser mUser;
     private transient static FirebaseDatabase database;
     private transient DatabaseReference dataPacketStorageRef;
+    private transient DatabaseReference doctorsDataPacketStorageRef;
 
     private boolean dataPacketSuccess = true;
 
@@ -86,6 +87,9 @@ public class DataPacket implements Serializable{
             database = FirebaseDatabase.getInstance();
             dataPacketStorageRef = database.getReference().child("DataPackets");
             dataPacketStorageRef.child(userId).child(dataPackedId).setValue(this);
+
+            doctorsDataPacketStorageRef = database.getReference().child("Users").child("user_id").child(doctorId);
+            doctorsDataPacketStorageRef.child("DataPackets").child(userId).child(dataPackedId).setValue(this);
         }
         catch (Exception e) {
             Log.d("DataPacket", e.getMessage());

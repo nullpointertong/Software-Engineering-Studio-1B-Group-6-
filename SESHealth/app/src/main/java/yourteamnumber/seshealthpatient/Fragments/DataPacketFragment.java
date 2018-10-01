@@ -263,9 +263,6 @@ public class DataPacketFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> user = (Map<String, Object>) dataSnapshot.getValue();
-                //do what you want with the email
-
-                spinnerArray.add("Select Doctor");
 
 
                 for  (String key : user.keySet())
