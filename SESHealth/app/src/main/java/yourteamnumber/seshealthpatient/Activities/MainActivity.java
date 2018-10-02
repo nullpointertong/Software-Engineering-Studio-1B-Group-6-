@@ -149,11 +149,6 @@ public class MainActivity extends AppCompatActivity {
                                     ChangeFragment(MenuStates.PATIENT_INFO);
                                 }
                                 break;
-                            case R.id.nav_update_patient_info:
-                                if (currentState != MenuStates.UPDATE_PATIENT_INFO) {
-                                    ChangeFragment(MenuStates.UPDATE_PATIENT_INFO);
-                                }
-                                break;
                             case R.id.nav_viewdoctors:
                                 if (currentState != MenuStates.VIEW_MYDOCTORS) {
                                     ChangeFragment(MenuStates.VIEW_MYDOCTORS);
@@ -164,11 +159,6 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.DOCTOR_INFO) {
                                     // change the fragment to the new fragment
                                     ChangeFragment(MenuStates.DOCTOR_INFO);
-                                }
-                                break;
-                            case R.id.nav_update_doctor_info:
-                                if (currentState != MenuStates.UPDATE_DOCTOR_INFO) {
-                                    ChangeFragment(MenuStates.UPDATE_DOCTOR_INFO);
                                 }
                                 break;
                             case R.id.nav_data_packet:
@@ -239,12 +229,10 @@ public class MainActivity extends AppCompatActivity {
                             if (dataSnapshot.child("UserType").getValue().toString().equals("Patient"))
                             {
                                 MenuItem nav_doctor_info = menu.findItem(R.id.nav_doctor_info);
-                                MenuItem nav_update_doctor_info = menu.findItem(R.id.nav_update_doctor_info);
                                 MenuItem nav_list_patient = menu.findItem(R.id.nav_list_patient);
                                 nav_create_datapacket = menu.findItem(R.id.nav_data_packet);
 
                                 nav_doctor_info.setVisible(false);
-                                nav_update_doctor_info.setVisible(false);
                                 nav_list_patient.setVisible(false);
                                 if (!dataSnapshot.hasChild("MyDoctors")) disableCreateDatapacket();
                                 else {
@@ -258,13 +246,11 @@ public class MainActivity extends AppCompatActivity {
                             else if(dataSnapshot.child("UserType").getValue().toString().equals("Doctor"))
                             {
                                 MenuItem nav_patient_info = menu.findItem(R.id.nav_patient_info);
-                                MenuItem nav_update_patient_info = menu.findItem(R.id.nav_update_patient_info);
                                 MenuItem nav_my_doctors = menu.findItem(R.id.nav_viewdoctors);
                                 MenuItem nav_create_data_packet = menu.findItem(R.id.nav_data_packet);
                                 MenuItem nav_list_data_packet = menu.findItem(R.id.nav_list_data_packet);
 
                                 nav_patient_info.setVisible(false);
-                                nav_update_patient_info.setVisible(false);
                                 nav_my_doctors.setVisible(false);
                                 nav_create_data_packet.setVisible(false);
                                 nav_list_data_packet.setVisible(false);
