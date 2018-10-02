@@ -41,7 +41,9 @@ public class ListDataPacketFragment extends Fragment {
     private DataPacketAdapter mAdapter;
     private DataPacket dataPacket;
     private String patientID;
+    private String doctorID;
     private String patientName;
+    private boolean isDoctor = false;
     private final static String TAG = "Failed";
 
     public ListDataPacketFragment() {
@@ -51,15 +53,22 @@ public class ListDataPacketFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (getArguments() != null) {
-            if (getArguments().getString("PatientID") != null)
+            if (getArguments().getString("PatientID") != null) {
                 patientID = getArguments().getString("PatientID");
+                doctorID = currentFirebaseUser.getUid();
+                isDoctor = true;
+            }
             else {
-                FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                 patientID = currentFirebaseUser.getUid();
             }
 
             patientName = getArguments().getString("patientName");
+        }
+        else {
+            patientID = currentFirebaseUser.getUid();
         }
     }
 
@@ -75,7 +84,6 @@ public class ListDataPacketFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        patientID = firebaseAuth.getUid();
         recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_view);
         mAdapter = new DataPacketAdapter(this.getContext(), mDataPacketList, new CustomItemClickListener() {
             @Override
@@ -109,6 +117,11 @@ public class ListDataPacketFragment extends Fragment {
                 mDataPacketList.clear();
                 for (DataSnapshot datapacketDataSnapshot : dataSnapshot.getChildren()) {
                     DataPacket dataPacket = datapacketDataSnapshot.getValue(DataPacket.class);
+                    if (isDoctor)
+                    {
+                        if (!datapacketDataSnapshot.child("doctorId").getValue().toString().equals(doctorID))
+                            continue;
+                    }
                     mDataPacketList.add(dataPacket);
                 }
                 mAdapter.notifyDataSetChanged();
