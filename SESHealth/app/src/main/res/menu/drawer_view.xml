@@ -5,10 +5,10 @@
             android:id="@+id/nav_patient_info"
             android:title="@string/patient_information"
             android:icon="@drawable/patient_menu_icon"/>
-        <item
+<!--         <item
             android:id="@+id/nav_update_patient_info"
             android:title="@string/update_patient_information"
-            android:icon="@drawable/edit_icon"/>
+            android:icon="@drawable/edit_icon"/> -->
         <item
             android:id="@+id/nav_viewdoctors"
             android:title="@string/view_mydoctors"
@@ -17,10 +17,10 @@
             android:id="@+id/nav_doctor_info"
             android:title="@string/doctor_information"
             android:icon="@drawable/doctor_menu_icon"/>
-        <item
+<!--         <item
             android:id="@+id/nav_update_doctor_info"
             android:title="@string/update_doctor_information"
-            android:icon="@drawable/edit_icon"/>
+            android:icon="@drawable/edit_icon"/> -->
         <item
             android:id="@+id/nav_data_packet"
             android:title="@string/create_data_packet"
