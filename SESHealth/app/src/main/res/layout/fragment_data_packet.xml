@@ -4,6 +4,7 @@
     android:id="@+id/dataPacketContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/data_packet_bg"
     tools:context="yourteamnumber.seshealthpatient.Fragments.DataPacketFragment">
     <!-- TODO: Update blank fragment layout -->
@@ -143,32 +144,44 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/lblSuppFiles"
-                            android:layout_width="match_parent"
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:background="@drawable/rounded_corner_orange"
-                            android:elevation="1dp"
-                            android:fontFamily="@font/opensans_bold"
-                            android:paddingTop="5dp"
-                            android:text="@string/supp_files_label"
-                            android:textAlignment="center"
-                            android:textColor="@color/whiteColor"
-                            android:textSize="20dp" />
+                            android:id="@+id/suppFilesHeader">
+
+                            <TextView
+                                android:id="@+id/lblSuppFiles"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerHorizontal="true"
+                                android:background="@drawable/rounded_corner_orange"
+                                android:elevation="1dp"
+                                android:fontFamily="@font/opensans_bold"
+                                android:paddingTop="5dp"
+                                android:text="@string/supp_files_label"
+                                android:layout_alignBottom="@id/btnAddFiles"
+                                android:paddingStart="15dp"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="20dp" />
+
+                            <Button
+                                android:id="@+id/btnAddFiles"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:text="Add" />
+
+                        </RelativeLayout>
 
                         <ListView
                             android:id="@+id/suppList"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_below="@id/lblSuppFiles"></ListView>
+                            android:layout_below="@id/suppFilesHeader"/>
 
-                        <Button
-                            android:id="@+id/btnAddFiles"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:text="Add files" />
+
 
 
                     </RelativeLayout>
@@ -176,19 +189,78 @@
 
             </RelativeLayout>
 
-            <LinearLayout
-                android:id="@+id/heartvideo"
+
+            <RelativeLayout
+                android:id="@+id/recordVideosContainer"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="200dp"
                 android:layout_below="@id/suppFilesContainer"
-                android:orientation="horizontal">
+
+                android:layout_weight="1">
+
+                <com.github.captain_miao.optroundcardview.OptRoundCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    app:optRoundCardBackgroundColor="@color/whiteColor"
+                    app:optRoundCardBottomEdges="true"
+                    app:optRoundCardCornerRadius="8dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/recVideosHeader">
+
+                            <TextView
+                                android:id="@+id/lblRecordVideos"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerHorizontal="true"
+                                android:background="@drawable/rounded_corner_gray"
+                                android:elevation="1dp"
+                                android:fontFamily="@font/opensans_bold"
+                                android:paddingTop="5dp"
+                                android:text="@string/record_videos_label"
+                                android:layout_alignBottom="@id/btnRecordVideo"
+                                android:paddingStart="15dp"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="20dp" />
+
+                            <Button
+                                android:id="@+id/btnRecordVideo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:text="Add" />
+
+                        </RelativeLayout>
+
+                        <ListView
+                            android:id="@+id/suppVideos"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@id/recVideosHeader"/>
+
+                    </RelativeLayout>
+                </com.github.captain_miao.optroundcardview.OptRoundCardView>
+
+            </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/heartRateContainer"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-
-                    android:layout_weight="1">
+                    android:layout_below="@id/recordVideosContainer"
+                    >
 
                     <com.github.captain_miao.optroundcardview.OptRoundCardView
                         android:layout_width="match_parent"
@@ -230,71 +302,18 @@
 
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+            <com.unstoppable.submitbuttonview.SubmitButton
+                android:id="@+id/submitbutton"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/heartRateContainer"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                app:buttonColor="@color/dark_navy"
+                app:buttonTextSize="25dp"
+                app:buttonText="Send" />
 
-                    <com.github.captain_miao.optroundcardview.OptRoundCardView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginTop="5dp"
-                        app:optRoundCardBackgroundColor="@color/lightGrayColor"
-                        app:optRoundCardBottomEdges="true"
-                        app:optRoundCardCornerRadius="8dp">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <ImageButton
-                                android:id="@+id/btnRecordVideo"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@null"
-                                android:padding="15dp"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/ic_videocam_black_24dp" />
-
-                        </RelativeLayout>
-                    </com.github.captain_miao.optroundcardview.OptRoundCardView>
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/sendDataPacketContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-
-                    android:layout_weight="1">
-
-                    <com.github.captain_miao.optroundcardview.OptRoundCardView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginTop="5dp"
-                        app:optRoundCardBackgroundColor="@color/lightGreenColor"
-                        app:optRoundCardBottomEdges="true"
-                        app:optRoundCardCornerRadius="8dp">
-
-                        <ImageButton
-                            android:id="@+id/btnSend"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:padding="10dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_send_black_24dp" />
-
-                    </com.github.captain_miao.optroundcardview.OptRoundCardView>
-
-                </RelativeLayout>
-
-            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
+
 </RelativeLayout>

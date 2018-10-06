@@ -50,6 +50,7 @@
     <string name="add_doctor_label">Select Doctor</string>
     <string name="heart_rate_label">Heart Rate</string>
     <string name="supp_files_label">Supplementary Files</string>
+    <string name="record_videos_label">Video Snippets</string>
 
     <string name="select_file_title">Select a File</string>
     <string name="file_not_selected">No file selected.</string>

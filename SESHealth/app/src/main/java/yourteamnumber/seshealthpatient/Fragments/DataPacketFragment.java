@@ -37,7 +37,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveClient;
@@ -63,12 +62,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.common.io.ByteStreams;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.unstoppable.submitbuttonview.SubmitButton;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -80,14 +79,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import yourteamnumber.seshealthpatient.Model.DataPacket.CustomComponents.TextInputComponent;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.Location;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.SupplementaryFiles;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.VideoSnippet;
-import yourteamnumber.seshealthpatient.Model.User;
 import yourteamnumber.seshealthpatient.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -109,9 +106,10 @@ public class DataPacketFragment extends Fragment {
     private Button addFilesButton;
     private TextView heartRateText;
     private ListView suppFiles;
+    private ListView suppVideos;
     private ImageButton heartRateButton;
-    private ImageButton recordVideoButton;
-    private ImageButton sendButton;
+    private Button recordVideoButton;
+    private SubmitButton sendButton;
     private Spinner selectDoctorsSpinner;
     private Context context;
     private Map<String, String> doctors = new HashMap<>();
@@ -119,8 +117,10 @@ public class DataPacketFragment extends Fragment {
     private MapView map;
     private GoogleMap mMap;
 
-    ArrayAdapter<String> adapter;
+    ArrayAdapter<String> suppFilesAdapter;
+    ArrayAdapter<String> videoAdapter;
     ArrayList<String> addedFilesList = new ArrayList<String>();
+    ArrayList<String> addedVideosList = new ArrayList<String>();
     ArrayList<String> addedFilesFullPathList = new ArrayList<>();
 
     private static final String TAG = "DataPacketFragment" ;
@@ -159,11 +159,12 @@ public class DataPacketFragment extends Fragment {
     {
         textInputComponent = view.findViewById(R.id.textInputComponent);
         addLocationButton = view.findViewById(R.id.addLocationButton);
-        sendButton = view.findViewById(R.id.btnSend);
+        sendButton = view.findViewById(R.id.submitbutton);
         heartRateButton = view.findViewById(R.id.btnHeartRate);
         addFilesButton = view.findViewById(R.id.btnAddFiles);
         recordVideoButton = view.findViewById(R.id.btnRecordVideo);
         suppFiles = view.findViewById(R.id.suppList);
+        suppVideos = view.findViewById(R.id.suppVideos);
         heartRateText = view.findViewById(R.id.txtHeartRate);
         selectDoctorsSpinner = view.findViewById(R.id.spnSelectDoctor);
         List<String> spinnerArray =  new ArrayList<String>();
@@ -171,14 +172,21 @@ public class DataPacketFragment extends Fragment {
         dataPacket = new DataPacket();
         context = getContext();
 
+        sendButton.setProgress(0);
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
 
 
-        adapter = new ArrayAdapter<String>(getContext(),
+        suppFilesAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_list_item_1,
                 addedFilesList);
 
-        suppFiles.setAdapter(adapter);
+        videoAdapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_list_item_1,
+                addedVideosList);
+
+        suppFiles.setAdapter(suppFilesAdapter);
+        suppVideos.setAdapter(videoAdapter);
         heartRateText.setVisibility(View.INVISIBLE);
 
         if (getArguments() != null && getArguments().getSerializable("data_packet") != null)
@@ -245,7 +253,7 @@ public class DataPacketFragment extends Fragment {
             }
         });
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
+       sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Send(v);
@@ -425,7 +433,7 @@ public class DataPacketFragment extends Fragment {
                                                 fileOutputStream.close();
                                                 Log.d(TAG, newFile.getPath());
                                                 addedFilesFullPathList.add(newFile.getAbsolutePath());
-                                                adapter.add(newFile.getName());
+                                                suppFilesAdapter.add(newFile.getName());
                                             }
                                             catch (Exception e)
                                             {
@@ -548,7 +556,7 @@ public class DataPacketFragment extends Fragment {
         String fileTitle = "Video - " + videoSnippet.getNumVideoSnippets() + ".mp4";
         File newFile = new File(dir, fileTitle);
         videoSnippet.addVideoSnippets(newFile);
-
+        videoAdapter.add(fileTitle);
         return newFile;
     }
 
@@ -571,7 +579,7 @@ public class DataPacketFragment extends Fragment {
         {
             for (String fileName : dataPacket.getSupplementaryFiles().getFileNames())
             {
-                adapter.add(fileName);
+                suppFilesAdapter.add(fileName);
             }
         }
 
@@ -638,13 +646,13 @@ public class DataPacketFragment extends Fragment {
                 }
             });
 
-            successSnackbar.show();
+            //successSnackbar.show();
 
             textInputComponent.disable();
             heartRateButton.setEnabled(false);
             addFilesButton.setEnabled(false);
             recordVideoButton.setEnabled(false);
-            sendButton.setEnabled(false);
+            sendButton.doResult(true);
             suppFiles.setEnabled(false);
         }
     }
