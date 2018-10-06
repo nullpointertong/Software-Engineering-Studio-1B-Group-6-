@@ -71,6 +71,7 @@ public class ViewMyDoctorsFragment extends Fragment {
         mDoctorList = getActivity().findViewById(R.id.doctor_list);
         mName = getActivity().findViewById(R.id.Name_txt);
         mUID = getActivity().findViewById(R.id.ID_txt);
+        mAddDoctor.setEnabled(false);
 
         mName.setText(" ");
         mUID.setText(" ");
@@ -134,11 +135,32 @@ public class ViewMyDoctorsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String doctorId = mDoctorID.getText().toString().trim();
+                mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot UIDdataSnapshot : dataSnapshot.getChildren()) {
+                            if (doctorId.equals(UIDdataSnapshot.getKey())) {
+                                mAddDoctor.setEnabled(true);
+                            }
+                        }
+                        if (!mAddDoctor.isEnabled()) {
+                            Toast.makeText(getContext(), "Can not find this doctor!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
                 mFirebaseDatabase.child(doctorId).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        String doctorName = dataSnapshot.child("First Name").getValue().toString() + " " + dataSnapshot.child("Last Name").getValue().toString();
-                        mResult.setText(doctorName);
+                        if (mAddDoctor.isEnabled()) {
+                            String doctorName = dataSnapshot.child("First Name").getValue().toString() + " " + dataSnapshot.child("Last Name").getValue().toString();
+                            mResult.setText(doctorName);
+
+                        }
                     }
 
                     @Override
@@ -170,5 +192,4 @@ public class ViewMyDoctorsFragment extends Fragment {
             }
         });
     }
-
 }

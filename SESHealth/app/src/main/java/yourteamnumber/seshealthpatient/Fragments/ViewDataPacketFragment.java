@@ -259,37 +259,56 @@ public class ViewDataPacketFragment extends Fragment {
         });
 
         Typelist = new ArrayList<>();
-        Typelist.add("heartRate");
-        Typelist.add("location");
-        Typelist.add("supplementaryFiles");
-        Typelist.add("textData");
-        Typelist.add("videoSnippet");
+        Typelist.add("Choose File Type");
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                    String spinnerItem = itemSnapshot.getKey();
+                    if (spinnerItem.equals("textData") || spinnerItem.equals("videoSnippet") || spinnerItem.equals("location") ||
+                            spinnerItem.equals("heartRate") || spinnerItem.equals("supplementaryFiles")) {
+                        Typelist.add(spinnerItem);
+                    }
+                }
+            }
 
-        final ArrayAdapter<String> TypeAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, Typelist);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        ArrayAdapter<String> TypeAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, Typelist);
         TypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mTypeSp.setAdapter(TypeAdapter);
         mTypeSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFeedbackFromDoctors.setText("Nothing received.");
                 item = TypeAdapter.getItem(position);
-                mDatabaseReference2 = FirebaseDatabase.getInstance().getReference().child("DataPackets").child(patientID).child(dataPacketID).child(item);
-                mDatabaseReference2.child("Feedback").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (UserType.equals("Patient")) {
-                            if (dataSnapshot.child(doctorName).getValue() != null) {
-                                receivedFeedback = dataSnapshot.child(doctorName).getValue().toString();
-                                mFeedbackFromDoctors.setText(receivedFeedback);
+                if (!item.equals("Choose File Type")) {
+                    mDatabaseReference2 = FirebaseDatabase.getInstance().getReference().child("DataPackets").child(patientID).child(dataPacketID).child(item);
+                    mDatabaseReference2.child("Feedback").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (UserType.equals("Patient")) {
+                                if (dataSnapshot.getValue() != null) {
+                                    receivedFeedback = dataSnapshot.getValue().toString();
+                                    mFeedbackFromDoctors.setText(receivedFeedback);
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
-                //Toast.makeText(getContext(), "Feedback for " + item, Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    //Toast.makeText(getContext(), "Feedback for " + item, Toast.LENGTH_LONG).show();
+                }
+                else {
+                    mFeedbackFromDoctors.setText("Please choose a file type.");
+                }
 
             }
 
@@ -306,9 +325,20 @@ public class ViewDataPacketFragment extends Fragment {
                 mDatabaseReference1.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        String currentDoctorName = dataSnapshot.child("First Name").getValue().toString() + " " + dataSnapshot.child("Last Name").getValue().toString();
-                        String feedback = mFeedbackTxt.getText().toString().trim();
-                        mDatabaseReference.child(item).child("Feedback").child(currentDoctorName).setValue(feedback);
+                        if (item.equals("Choose File Type")) {
+                            Toast.makeText(getContext(), "Please choose a file type", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            //String currentDoctorName = dataSnapshot.child("First Name").getValue().toString() + " " + dataSnapshot.child("Last Name").getValue().toString();
+                            String feedback = mFeedbackTxt.getText().toString().trim();
+                            if (feedback.isEmpty()) {
+                                Toast.makeText(getContext(), "Feedback can not be empty", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                mDatabaseReference.child(item).child("Feedback").setValue(feedback);
+                                Toast.makeText(getContext(), "Send successfully", Toast.LENGTH_SHORT).show();
+                            }
+                        }
                     }
 
                     @Override
