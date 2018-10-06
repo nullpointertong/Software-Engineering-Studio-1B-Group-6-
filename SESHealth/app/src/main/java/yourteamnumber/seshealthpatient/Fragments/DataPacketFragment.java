@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveClient;
@@ -62,12 +64,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.common.io.ByteStreams;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.unstoppable.submitbuttonview.SubmitButton;
+import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -79,12 +83,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import yourteamnumber.seshealthpatient.Model.DataPacket.CustomComponents.TextInputComponent;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.Location;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.SupplementaryFiles;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.VideoSnippet;
+import yourteamnumber.seshealthpatient.Model.User;
 import yourteamnumber.seshealthpatient.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -107,10 +113,10 @@ public class DataPacketFragment extends Fragment {
     private TextView heartRateText;
     private ListView suppFiles;
     private ListView suppVideos;
-    private ImageButton heartRateButton;
+    private Button heartRateButton;
     private Button recordVideoButton;
     private SubmitButton sendButton;
-    private Spinner selectDoctorsSpinner;
+    private MaterialSpinner selectDoctorsSpinner;
     private Context context;
     private Map<String, String> doctors = new HashMap<>();
 
@@ -152,6 +158,8 @@ public class DataPacketFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+
         init(view, savedInstanceState);
     }
 
@@ -167,7 +175,6 @@ public class DataPacketFragment extends Fragment {
         suppVideos = view.findViewById(R.id.suppVideos);
         heartRateText = view.findViewById(R.id.txtHeartRate);
         selectDoctorsSpinner = view.findViewById(R.id.spnSelectDoctor);
-        List<String> spinnerArray =  new ArrayList<String>();
 
         dataPacket = new DataPacket();
         context = getContext();
@@ -275,16 +282,10 @@ public class DataPacketFragment extends Fragment {
 
                 for  (String key : user.keySet())
                 {
-                    spinnerArray.add("Dr. " + key);
-
-                    doctors.put(key,(String) user.get(key));
+                    doctors.put("Dr. " + key,(String) user.get(key));
                 }
 
-                ArrayAdapter<String> doctorsAdapter = new ArrayAdapter<String>(
-                        getContext(), android.R.layout.simple_spinner_item, spinnerArray);
-
-                doctorsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                selectDoctorsSpinner.setAdapter(doctorsAdapter);
+                selectDoctorsSpinner.setItems(doctors.keySet().toArray());
             }
 
             @Override
@@ -292,21 +293,6 @@ public class DataPacketFragment extends Fragment {
 
             }
         });
-
-
-
-        selectDoctorsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(context, (String) selectDoctorsSpinner.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
     }
 
     // region Drive API
@@ -556,7 +542,7 @@ public class DataPacketFragment extends Fragment {
         String fileTitle = "Video - " + videoSnippet.getNumVideoSnippets() + ".mp4";
         File newFile = new File(dir, fileTitle);
         videoSnippet.addVideoSnippets(newFile);
-        videoAdapter.add(fileTitle);
+
         return newFile;
     }
 
@@ -583,8 +569,15 @@ public class DataPacketFragment extends Fragment {
             }
         }
 
+        if (dataPacket.getVideoSnippet() != null)
+        {
+            for (String videoSnippet : dataPacket.getVideoSnippet().getVideoSnippetsNames())
+            {
+                videoAdapter.add(videoSnippet);
+            }
+        }
+
         heartRateText.setVisibility(View.VISIBLE);
-        heartRateButton.setVisibility(View.INVISIBLE);
         heartRateText.setText(dataPacket.getHeartRate().toString() + " BPM");
     }
 
@@ -621,12 +614,9 @@ public class DataPacketFragment extends Fragment {
             dataPacket.addLocation(new Location("", "", currentLocation.latitude, currentLocation.longitude));
         }
 
-        if (!selectDoctorsSpinner.getSelectedItem().toString().equals("Select Doctor"))
-        {
-            String selectedDoctor = selectDoctorsSpinner.getSelectedItem().toString();
-            dataPacket.setDoctorId(doctors.get(selectedDoctor.substring(4, selectedDoctor.length())));
-            dataPacket.setDoctorName(selectedDoctor);
-        }
+        String selectedDoctor = (String) selectDoctorsSpinner.getItems().get(selectDoctorsSpinner.getSelectedIndex());
+        dataPacket.setDoctorId(doctors.get(selectedDoctor));
+        dataPacket.setDoctorName(selectedDoctor);
 
         if (!addedFilesFullPathList.isEmpty())
         {
@@ -646,13 +636,13 @@ public class DataPacketFragment extends Fragment {
                 }
             });
 
-            //successSnackbar.show();
+            successSnackbar.show();
 
             textInputComponent.disable();
             heartRateButton.setEnabled(false);
             addFilesButton.setEnabled(false);
             recordVideoButton.setEnabled(false);
-            sendButton.doResult(true);
+            sendButton.setEnabled(false);
             suppFiles.setEnabled(false);
         }
     }

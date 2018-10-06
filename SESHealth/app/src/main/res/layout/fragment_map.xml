@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
@@ -13,60 +14,103 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/whiteColor"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TableLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:layout_weight="10">
+                android:layout_weight="3"
+                android:padding="12dp">
+
                 <TextView
                     android:id="@+id/facility_info_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="Facility Name"/>
+                    android:text="Facility Name"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/facility_info_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Facility Address"/>
+                    android:text="Facility Address" />
 
                 <TextView
                     android:id="@+id/facility_info_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Facility Rating"/>
+                    android:text="Facility Rating" />
 
                 <TextView
                     android:id="@+id/facility_info_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Facility Type"/>
+                    android:text="Facility Type" />
 
             </TableLayout>
+
             <TableLayout
+                android:id="@+id/doctor_recommend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="15dp"
-                android:layout_weight="2">
+                android:layout_weight="1"
+                android:padding="10dp">
 
-                <Spinner>
+                <TextView android:text="Recommend to Patient:" />
 
-                </Spinner>
+                <Spinner android:id="@+id/recommendee" />
+
 
                 <Button
+                    android:id="@+id/recommend_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="Send Location"/>
+                    android:text="Share" />
             </TableLayout>
         </LinearLayout>
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/patient_recommended_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:background="@color/whiteColor"
+        android:clickable="true"
+        android:padding="12dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Doctor's Recommendations"
+            android:textStyle="bold" />
+
+        <ScrollView
+            android:id="@+id/recommended_scrollview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="gone"
+            >
+
+            <LinearLayout
+                android:id="@+id/recommended_list"
+                android:orientation="vertical"
+                android:layout_margin="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+    </LinearLayout>
 </RelativeLayout>
