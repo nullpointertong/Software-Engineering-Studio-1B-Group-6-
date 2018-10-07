@@ -265,8 +265,8 @@ public class ViewDataPacketFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
                     String spinnerItem = itemSnapshot.getKey();
-                    if (spinnerItem.equals("textData") || spinnerItem.equals("videoSnippet") || spinnerItem.equals("location") ||
-                            spinnerItem.equals("heartRate") || spinnerItem.equals("supplementaryFiles")) {
+                    if ((spinnerItem.equals("textData") || spinnerItem.equals("videoSnippet") || spinnerItem.equals("location") ||
+                            spinnerItem.equals("heartRate") || spinnerItem.equals("supplementaryFiles") && (!Typelist.contains(spinnerItem)))) {
                         Typelist.add(spinnerItem);
                     }
                 }
@@ -294,6 +294,7 @@ public class ViewDataPacketFragment extends Fragment {
                             if (UserType.equals("Patient")) {
                                 if (dataSnapshot.getValue() != null) {
                                     receivedFeedback = dataSnapshot.getValue().toString();
+                                    mFeedbackFromDoctors.setText(receivedFeedback);
                                     mFeedbackFromDoctors.setText(receivedFeedback);
                                 }
                             }
