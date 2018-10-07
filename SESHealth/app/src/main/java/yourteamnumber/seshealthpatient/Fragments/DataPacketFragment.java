@@ -141,7 +141,7 @@ public class DataPacketFragment extends Fragment {
 
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mFirebaseDatabase;
-
+    private final LatLng mDefaultLocation = new LatLng(-33.8840504, 151.1992254);
 
     public DataPacketFragment() {
     }
@@ -248,7 +248,14 @@ public class DataPacketFragment extends Fragment {
                     mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<android.location.Location>() {
                         @Override @NonNull
                         public void onSuccess(android.location.Location location) {
-                            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            LatLng latLng;
+                            try {
+                                latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            }
+                            catch (Exception e)
+                            {
+                                latLng = mDefaultLocation;
+                            }
 
                             showLocation(view, savedInstanceState, latLng);
                             currentLocation = latLng;

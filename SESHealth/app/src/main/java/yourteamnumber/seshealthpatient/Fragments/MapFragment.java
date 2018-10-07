@@ -78,7 +78,7 @@ public class MapFragment extends Fragment {
 
     MapView mMapView;
     private GoogleMap mMap;
-    private Location mLastKnownLocation;
+    private LatLng mLastKnownLocation;
     private FusedLocationProviderClient mFusedLocationClient;
     private boolean mLocationPermissionGranted;
     private static final int DEFAULT_ZOOM = 14;
@@ -98,32 +98,32 @@ public class MapFragment extends Fragment {
     Map<String, String> myPatients = new HashMap<>();
     List<MedicalFacility> recommendedPlaces = new ArrayList<>();
 
-    private final LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(final Location location) {
-            mLastKnownLocation = location;
-//            Log.d(TAG, "My location: "+ mLastKnownLocation.toString());
-            if (mMap.isMyLocationEnabled() && mLocationPermissionGranted) {
-                createPlaceQuery();
-                runPlacesRequestTask();
-            }
-        }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-
-        }
-    };
+//    private final LocationListener mLocationListener = new LocationListener() {
+//        @Override
+//        public void onLocationChanged(final Location location) {
+//            mLastKnownLocation = location;
+////            Log.d(TAG, "My location: "+ mLastKnownLocation.toString());
+//            if (mMap.isMyLocationEnabled() && mLocationPermissionGranted) {
+//                createPlaceQuery();
+//
+//            }
+//        }
+//
+//        @Override
+//        public void onStatusChanged(String s, int i, Bundle bundle) {
+//
+//        }
+//
+//        @Override
+//        public void onProviderEnabled(String s) {
+//
+//        }
+//
+//        @Override
+//        public void onProviderDisabled(String s) {
+//
+//        }
+//    };
 
     public MapFragment() {
     }
@@ -369,7 +369,7 @@ public class MapFragment extends Fragment {
          */
         sbPlaceQuery = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
 
-        sbPlaceQuery.append("location=" + mLastKnownLocation.getLatitude() + "," + mLastKnownLocation.getLongitude());
+        sbPlaceQuery.append("location=" + mLastKnownLocation.latitude + "," + mLastKnownLocation.longitude);
         sbPlaceQuery.append("&radius=5000");
         sbPlaceQuery.append("&keyword=hospital+clinic+doctor+health");
         sbPlaceQuery.append("&sensor=true");
@@ -384,11 +384,11 @@ public class MapFragment extends Fragment {
 
                 // For showing a move to my location button
                 mMap.setMyLocationEnabled(true);
-                try {
-                    mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5, 1000, mLocationListener);
-                } catch (Exception e) {
-                    Log.d(TAG, e.toString());
-                }
+//                try {
+//                    mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5, 1000, mLocationListener);
+//                } catch (Exception e) {
+//                    Log.d(TAG, e.toString());
+//                }
 
                 if ( ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
 
@@ -400,7 +400,9 @@ public class MapFragment extends Fragment {
                                 currentLoc = new LatLng(location.getLatitude(), location.getLongitude());
                             else
                                 Toast.makeText(getActivity(), "Location could not be retrieved.", Toast.LENGTH_SHORT);
-
+                            mLastKnownLocation = currentLoc;
+                            createPlaceQuery();
+                            runPlacesRequestTask();
                             // For zooming automatically to the location of the marker
                             CameraPosition cameraPosition = new CameraPosition.Builder().target(currentLoc).zoom(DEFAULT_ZOOM).build();
                             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -531,6 +533,7 @@ public class MapFragment extends Fragment {
 
         Boolean getNearbyPlaces() {
             try {
+                Log.d(TAG, "Getting nearby medical facilities...");
                 URL url = new URL(placeQuery);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
@@ -545,12 +548,12 @@ public class MapFragment extends Fragment {
                 }
 
                 data = sb.toString();
-                //Log.d(TAG, data);
+                Log.d(TAG, data);
                 br.close();
                 return true;
 
             } catch (Exception e) {
-                Log.e("Exception: %s", e.toString());
+                Log.e(TAG, String.format("Exception: %s", e.toString()));
                 return false;
             }
         }
