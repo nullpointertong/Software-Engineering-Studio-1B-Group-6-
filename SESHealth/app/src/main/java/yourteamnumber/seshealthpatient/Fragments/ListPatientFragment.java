@@ -27,7 +27,10 @@ import yourteamnumber.seshealthpatient.Model.DataPacket.Models.Patient;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.PatientAdapter;
 import yourteamnumber.seshealthpatient.R;
 
-
+/**
+* This fragment lists the patients that has been connected to the doctor.
+* This fragment can only be accessed by doctors.
+*/
 public class ListPatientFragment extends Fragment {
     public ArrayList<Patient> mPatientList = new ArrayList<>();
     private RecyclerView mRecyclerView;
@@ -52,8 +55,10 @@ public class ListPatientFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // This recycler view is used to list the patient from the firebase.
         mRecyclerView = (RecyclerView) view.findViewById(R.id.patient_recycler_view);
 
+        // Setting adapter to the recycler view with onItemClick listener that directs user to data packet list.
         mAdapter = new PatientAdapter(this.getContext(), mPatientList, new CustomItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
@@ -75,6 +80,7 @@ public class ListPatientFragment extends Fragment {
         getAllPatientData();
 
     }
+    // This method retrieves the patients that has been paired with the doctor.
     private void getAllPatientData() {
         mPatientList.clear();
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -101,7 +107,8 @@ public class ListPatientFragment extends Fragment {
             }
         });
     }
-
+    
+    // This method retrieves the patients' information that has been paired with the doctor.
     private void getPatientInfo(String patientID)
     {
         Log.d("ListPatientFragment", "Getting patient info from ID");
