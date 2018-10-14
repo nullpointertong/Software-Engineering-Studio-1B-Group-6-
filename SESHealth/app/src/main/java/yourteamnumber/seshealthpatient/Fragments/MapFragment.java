@@ -98,33 +98,6 @@ public class MapFragment extends Fragment {
     Map<String, String> myPatients = new HashMap<>();
     List<MedicalFacility> recommendedPlaces = new ArrayList<>();
 
-//    private final LocationListener mLocationListener = new LocationListener() {
-//        @Override
-//        public void onLocationChanged(final Location location) {
-//            mLastKnownLocation = location;
-////            Log.d(TAG, "My location: "+ mLastKnownLocation.toString());
-//            if (mMap.isMyLocationEnabled() && mLocationPermissionGranted) {
-//                createPlaceQuery();
-//
-//            }
-//        }
-//
-//        @Override
-//        public void onStatusChanged(String s, int i, Bundle bundle) {
-//
-//        }
-//
-//        @Override
-//        public void onProviderEnabled(String s) {
-//
-//        }
-//
-//        @Override
-//        public void onProviderDisabled(String s) {
-//
-//        }
-//    };
-
     public MapFragment() {
     }
 
@@ -384,11 +357,6 @@ public class MapFragment extends Fragment {
 
                 // For showing a move to my location button
                 mMap.setMyLocationEnabled(true);
-//                try {
-//                    mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5, 1000, mLocationListener);
-//                } catch (Exception e) {
-//                    Log.d(TAG, e.toString());
-//                }
 
                 if ( ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
 
