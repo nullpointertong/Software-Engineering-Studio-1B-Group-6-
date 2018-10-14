@@ -55,12 +55,14 @@ public class ListDataPacketFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        // if app is access by the doctor, utilise patientId and current user(doctor)'s id.
         if (getArguments() != null) {
             if (getArguments().getString("PatientID") != null) {
                 patientID = getArguments().getString("PatientID");
                 doctorID = currentFirebaseUser.getUid();
                 isDoctor = true;
             }
+            //if app is access by the patient, utilise the current user(patient)'s id.
             else {
                 patientID = currentFirebaseUser.getUid();
             }
@@ -84,6 +86,7 @@ public class ListDataPacketFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        // this recyclerview will display the list of the data packets
         recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_view);
         mAdapter = new DataPacketAdapter(this.getContext(), mDataPacketList, new CustomItemClickListener() {
             @Override
@@ -111,6 +114,7 @@ public class ListDataPacketFragment extends Fragment {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference();
 
+        // retrieve datapackets of specific doctor from the patient.
         ref.child("DataPackets").child(patientID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
