@@ -62,7 +62,7 @@ public class ViewMyDoctorsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-`       // all widgets
+        // all widgets
         mDoctorList = getActivity().findViewById(R.id.doctor_list);
         mAddDoctor = getActivity().findViewById(R.id.addDoctor_btn);
         mDoctorID = getActivity().findViewById(R.id.doctorID_txt);
