@@ -39,7 +39,7 @@ import yourteamnumber.seshealthpatient.R;
  */
 public class PatientInformationFragment extends Fragment {
 
-
+    //Create Global Variables with the same name as XML Attributes
     // Note how Butter Knife also works on Fragments, but here it is a little different
     private TextView patient_firstName;   //Initailization of Variables required
     private TextView patient_lastName;
@@ -83,6 +83,7 @@ public class PatientInformationFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Now that the view has been created, we can use butter knife functionality
+        //Find XML ID and bind it to the global variable
         patient_firstName = getActivity().findViewById(R.id.patient_firstName);
         patient_lastName = getActivity().findViewById(R.id.patient_lastName);
         patient_gender = getActivity().findViewById(R.id.patient_gender);
@@ -100,9 +101,11 @@ public class PatientInformationFragment extends Fragment {
         patient_height.setText(" ");
         patient_weight.setText(" ");
         patient_medicalCondition.setText(" ");
+        //Set Edit Text to Blank(to prevent nullpointer)
         currentUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Override and Set Edittext field to branch in Firebase Tree
                 patient_firstName.setText(dataSnapshot.child("First Name").getValue().toString());
                 patient_lastName.setText(dataSnapshot.child("Last Name").getValue().toString());
                 patient_gender.setText(dataSnapshot.child("Gender").getValue().toString());
@@ -112,6 +115,7 @@ public class PatientInformationFragment extends Fragment {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                //If the operation is cancelled create an Error Message
                 Toast.makeText(getContext(), "ERROR!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -119,6 +123,7 @@ public class PatientInformationFragment extends Fragment {
 
     @OnClick(R.id.swapButton)
     public void switchToEdit() {
+        //Switch to Update Patient Information Fragment to allow for Editing
         Fragment newFragment = new UpdatePatientInformationFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, newFragment);

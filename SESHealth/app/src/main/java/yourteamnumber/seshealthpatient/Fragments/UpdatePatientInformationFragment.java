@@ -52,6 +52,7 @@ public class UpdatePatientInformationFragment extends Fragment {
 
     private String mParam2;
 
+    //Create Global Variables with the same name as XML Attributes
     private MaterialEditText patient_firstNameU;   //Possible Bug in code as this should be edit text may have been caused by sharing the same name of var
     private MaterialEditText patient_lastNameU;
     private MaterialSpinner spinnerU;
@@ -110,20 +111,18 @@ public class UpdatePatientInformationFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        //Find XML ID and bind it to the global variable
         patient_firstNameU = getActivity().findViewById(R.id.patient_firstNameU);
-
         patient_lastNameU = getActivity().findViewById(R.id.patient_lastNameU);
-
         patient_heightU = getActivity().findViewById(R.id.patient_heightU);
-
         patient_weightU = getActivity().findViewById(R.id.patient_weightU);
-
         patient_medicalConditionU = getActivity().findViewById(R.id.patient_medicalConditionU);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
         String userId = firebaseAuth.getUid();
         DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
+        //Set Edit Text to Blank(to prevent nullpointer)
         patient_firstNameU.setText(" ");
         patient_lastNameU.setText(" ");
         patient_heightU.setText(" ");
@@ -132,6 +131,7 @@ public class UpdatePatientInformationFragment extends Fragment {
         currentUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Override and Set Edittext field to branch in Firebase Tree
                 patient_firstNameU.setText(dataSnapshot.child("First Name").getValue().toString());
                 patient_lastNameU.setText(dataSnapshot.child("Last Name").getValue().toString());
                 //spinnerU.setSelection(dataSnapshot.child("Gender").getValue().toString());
@@ -141,11 +141,13 @@ public class UpdatePatientInformationFragment extends Fragment {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                //If the operation is cancelled create an Error Message
                 Toast.makeText(getContext(), "ERROR!", Toast.LENGTH_SHORT).show();
             }
         });
-
         super.onViewCreated(view, savedInstanceState);
+
+        //Bind code to XML
         patient_firstNameU = getActivity().findViewById(R.id.patient_firstNameU);
         patient_lastNameU = getActivity().findViewById(R.id.patient_lastNameU);
         spinnerU = getActivity().findViewById(R.id.spinnerU);
@@ -153,14 +155,16 @@ public class UpdatePatientInformationFragment extends Fragment {
         patient_weightU = getActivity().findViewById(R.id.patient_weightU);
         patient_medicalConditionU = getActivity().findViewById(R.id.patient_medicalConditionU);
 
-        spinnerU.setItems("Male", "Female", "Flesh Eating Bacteria");
+        spinnerU.setItems("Male", "Female");
+        //Set Gender to Female or Male
 
         getActivity().findViewById(R.id.updateButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (allFieldsCompleted())
                 {
-                    switchToEdit();
+                    //Switch to Update Patient Information Fragment to allow Information to update
+                    switchToView();
                 }
             }
         });
@@ -168,6 +172,7 @@ public class UpdatePatientInformationFragment extends Fragment {
     }
 
     private boolean allFieldsCompleted() {
+        //Error Handling in program
         String errorMessage = "The following fields do not meet the length requirements: ";
 
         if (!patient_firstNameU.isCharactersCountValid())
@@ -204,6 +209,7 @@ public class UpdatePatientInformationFragment extends Fragment {
 
     private void ShowAlertDialog(String message)
     {
+        //Handles Alerts
         android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
                 new android.support.v7.app.AlertDialog.Builder(getContext())
                         .setTitle("Error: ")
@@ -218,7 +224,7 @@ public class UpdatePatientInformationFragment extends Fragment {
     }
 
     @OnClick(R.id.updateButton)
-    public void switchToEdit() {
+    public void switchToView() {
         Map hashMap = new HashMap();
         String userId = firebaseAuth.getUid();
         DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
@@ -238,12 +244,14 @@ public class UpdatePatientInformationFragment extends Fragment {
         hashMap.put("Medical Condition", medicalCondition);
 
         currentUser.updateChildren(hashMap);
+        //Put contents of Edittext into Hashmap and update the Firebase Tree using the hashmap
 
         Fragment fragment = new PatientInformationFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+        //Return to Information Fragment
     }
 
 }

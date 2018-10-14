@@ -25,6 +25,7 @@ import butterknife.OnClick;
 import yourteamnumber.seshealthpatient.R;
 
 public class UpdateDoctorInformationFragment extends Fragment {
+    //Create Global Variables with the same name as XML Attributes
     private TextView doctor_firstName_et;   //Possible Bug in code as this should be edit text may have been caused by sharing the same name of var
     private TextView doctor_lastName_et;
     private TextView doctor_occupation_et;
@@ -34,6 +35,7 @@ public class UpdateDoctorInformationFragment extends Fragment {
 
 
     private FirebaseAuth firebaseAuth;
+
 
     public UpdateDoctorInformationFragment() {
         // Required empty public constructor
@@ -54,6 +56,7 @@ public class UpdateDoctorInformationFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        //Bind Text variables to XML
         doctor_firstName_et = getActivity().findViewById(R.id.doctor_firstName_et);
         doctor_lastName_et = getActivity().findViewById(R.id.doctor_lastName_et);
         doctor_occupation_et = getActivity().findViewById(R.id.doctor_occupation_et);
@@ -63,6 +66,7 @@ public class UpdateDoctorInformationFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         String userId = firebaseAuth.getUid();
         DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
+        //Set Edit Text to Blank(to prevent nullpointer)
         doctor_firstName_et.setText(" ");
         doctor_lastName_et.setText(" ");
         doctor_occupation_et.setText(" ");
@@ -72,6 +76,7 @@ public class UpdateDoctorInformationFragment extends Fragment {
         currentUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Override and Set Edittext field to branch in Firebase Tree
                 doctor_firstName_et.setText(dataSnapshot.child("First Name").getValue().toString());
                 doctor_lastName_et.setText(dataSnapshot.child("Last Name").getValue().toString());
                 doctor_occupation_et.setText(dataSnapshot.child("Occupation").getValue().toString());
@@ -81,20 +86,22 @@ public class UpdateDoctorInformationFragment extends Fragment {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                //If the operation is cancelled create an Error Message
                 Toast.makeText(getContext(), "ERROR!", Toast.LENGTH_SHORT).show();
             }
         });
 
         getActivity().findViewById(R.id.doctor_updateButton).setOnClickListener(new View.OnClickListener() {
+            //Switch to Update Patient Information Fragment to allow Information to update
             @Override
             public void onClick(View v) {
-                switchToEdit();
+                switchToView();
             }
         });
     }
 
     @OnClick(R.id.doctor_updateButton)
-    public void switchToEdit() {
+    public void switchToView() {
         Map hashMap = new HashMap();
         String userId = firebaseAuth.getUid();
         DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(userId);
@@ -114,11 +121,13 @@ public class UpdateDoctorInformationFragment extends Fragment {
         hashMap.put("Department", department);
 
         currentUser.updateChildren(hashMap);
+        //Put contents of Edittext into Hashmap and update the Firebase Tree using the hashmap
 
         Fragment fragment = new DoctorInformationFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+        //Return to Information Fragment
     }
 }

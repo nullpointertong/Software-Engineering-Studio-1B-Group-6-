@@ -27,6 +27,7 @@ import butterknife.OnClick;
 import yourteamnumber.seshealthpatient.R;
 
 public class DoctorInformationFragment extends Fragment {
+    //Create Global Variables with the same name as XML Attributes
     private TextView doctor_firstName;   //Possible Bug in code as this should be edit text may have been caused by sharing the same name of var
     private TextView doctor_lastName;
     private TextView doctor_occupation;  //Initailization of Variables required
@@ -56,7 +57,7 @@ public class DoctorInformationFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         firebaseAuth = FirebaseAuth.getInstance();
-
+       //Find XML ID and bind it to the global variable
         doctor_firstName = getActivity().findViewById(R.id.doctor_firstName);
         doctor_lastName = getActivity().findViewById(R.id.doctor_lastName);
         doctor_occupation = getActivity().findViewById(R.id.doctor_occupation);
@@ -72,9 +73,11 @@ public class DoctorInformationFragment extends Fragment {
         doctor_specialty.setText(" ");
         doctor_hospital.setText(" ");
         doctor_department.setText(" ");
+        //Set Edit Text to Blank(to prevent nullpointer)
         currentUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Override and Set Edittext field to branch in Firebase Tree
                 doctor_firstName.setText(dataSnapshot.child("First Name").getValue().toString());
                 doctor_lastName.setText(dataSnapshot.child("Last Name").getValue().toString());
                 doctor_occupation.setText(dataSnapshot.child("Occupation").getValue().toString());
@@ -84,11 +87,13 @@ public class DoctorInformationFragment extends Fragment {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                //If the operation is cancelled create an Error Message
                 Toast.makeText(getContext(), "ERROR!", Toast.LENGTH_SHORT).show();
             }
         });
 
         getActivity().findViewById(R.id.edit_button).setOnClickListener(new View.OnClickListener() {
+            //When Clicked SwitchToEdit function is triggered
             @Override
             public void onClick(View v) {
                 switchToEdit();
@@ -98,6 +103,7 @@ public class DoctorInformationFragment extends Fragment {
 
     @OnClick(R.id.edit_button)
     public void switchToEdit() {
+        //Switch to Update Doctor Information Fragment to allow for Editing
         Fragment newFragment = new UpdateDoctorInformationFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, newFragment);
