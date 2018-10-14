@@ -59,7 +59,9 @@ public class RecordVideoFragment extends Fragment {
     }
 
     public void recordVideo() {
+        //call the camera and record a video
         Intent camera_intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        //set the uri of the video 
         Uri video_uri = FileProvider.getUriForFile(getActivity(), "yourteamnumber.seshealthpatient.provider", getFilepath());
         camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, video_uri);
         camera_intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
@@ -68,6 +70,7 @@ public class RecordVideoFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //check if the video is stored successfully and show a toast to user
         if (requestCode == VIDEO_REQUEST_CODE) {
             if (resultCode == getActivity().RESULT_OK) {
                 Toast.makeText(getActivity(),
@@ -82,6 +85,7 @@ public class RecordVideoFragment extends Fragment {
     }
 
     public File getFilepath() {
+        //set the path of the video. create a directory and put the video in it.
         File sdCard = Environment.getExternalStorageDirectory();
 
         String dataPackerIdentifier = currentDataPacker.getDataPackedId().toString();
@@ -96,7 +100,8 @@ public class RecordVideoFragment extends Fragment {
         {
             videoSnippet = new VideoSnippet();
         }
-
+        //rename the video. the first one is named as Video-1, the second one is named as video-2.... 
+        //Avoid latest video cover previous video.
         String fileTitle = "Video - " + videoSnippet.getNumVideoSnippets() + ".mp4";
         File newFile = new File(dir, fileTitle);
         videoSnippet.addVideoSnippets(newFile);
