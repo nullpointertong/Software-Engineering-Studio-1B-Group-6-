@@ -62,7 +62,7 @@ public class ViewMyDoctorsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+`       // all widgets
         mDoctorList = getActivity().findViewById(R.id.doctor_list);
         mAddDoctor = getActivity().findViewById(R.id.addDoctor_btn);
         mDoctorID = getActivity().findViewById(R.id.doctorID_txt);
@@ -71,8 +71,10 @@ public class ViewMyDoctorsFragment extends Fragment {
         mDoctorList = getActivity().findViewById(R.id.doctor_list);
         mName = getActivity().findViewById(R.id.Name_txt);
         mUID = getActivity().findViewById(R.id.ID_txt);
+        
+        //The 'add' button can not be used before search doctors.
         mAddDoctor.setEnabled(false);
-
+        
         mName.setText(" ");
         mUID.setText(" ");
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_activated_1, Doctor);
@@ -87,6 +89,7 @@ public class ViewMyDoctorsFragment extends Fragment {
         patientInformation.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                // show doctor's name after searching.
                 String firstName = dataSnapshot.child("First Name").getValue().toString();
                 String lastName = dataSnapshot.child("Last Name").getValue().toString();
                 mName.setText(firstName + " " + lastName);
@@ -102,7 +105,7 @@ public class ViewMyDoctorsFragment extends Fragment {
         mFirebaseDatabase.child(patientId).child("MyDoctors").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+                //show patient's name and UID 
                 String value = "name: " + dataSnapshot.getKey() + "\nid: " + dataSnapshot.getValue(String.class);
                 Doctor.add(value);
                 arrayAdapter.notifyDataSetChanged();
@@ -110,6 +113,7 @@ public class ViewMyDoctorsFragment extends Fragment {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                //add doctor to the list, and show doctor's name and UID.
                 String value = "name: " + dataSnapshot.getKey() + "\nid: " + dataSnapshot.getValue(String.class);
                 Doctor.add(value);
                 arrayAdapter.notifyDataSetChanged();
@@ -138,6 +142,7 @@ public class ViewMyDoctorsFragment extends Fragment {
                 mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        //check all children in the user, check if the UID is existing.
                         for(DataSnapshot UIDdataSnapshot : dataSnapshot.getChildren()) {
                             if (doctorId.equals(UIDdataSnapshot.getKey())) {
                                 mAddDoctor.setEnabled(true);
@@ -154,6 +159,7 @@ public class ViewMyDoctorsFragment extends Fragment {
                     }
                 });
                 mFirebaseDatabase.child(doctorId).addValueEventListener(new ValueEventListener() {
+                    //enable the 'add' button until the doctor id has been found.
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (mAddDoctor.isEnabled()) {
@@ -172,6 +178,8 @@ public class ViewMyDoctorsFragment extends Fragment {
         });
 
         mAddDoctor.setOnClickListener(new View.OnClickListener() {
+            //upload changes to firebase.
+            //add doctors to mydoctors and add patients to mypatients.
             @Override
             public void onClick(View v) {
                  Fragment newFragment = new PatientInformationFragment();
