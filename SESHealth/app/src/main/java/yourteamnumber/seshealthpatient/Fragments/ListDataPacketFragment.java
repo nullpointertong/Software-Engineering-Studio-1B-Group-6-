@@ -33,7 +33,9 @@ import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacketAdapter;
 import yourteamnumber.seshealthpatient.R;
 
-
+/**
+* This fragment retrieves data packets from the firebase using patient id.
+*/
 public class ListDataPacketFragment extends Fragment {
 
     private List<DataPacket> mDataPacketList = new ArrayList<>();
