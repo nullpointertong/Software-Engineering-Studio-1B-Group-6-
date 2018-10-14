@@ -47,6 +47,10 @@ import yourteamnumber.seshealthpatient.Model.DataPacket.Models.DataPacket;
 import yourteamnumber.seshealthpatient.Model.DataPacket.Models.Location;
 import yourteamnumber.seshealthpatient.R;
 
+/**
+* This fragment display the data packet in easy graphic user interface.
+* The data packet information includes text input, files, heart rate, video, and location.
+*/
 public class ViewDataPacketFragment extends Fragment {
     private DataPacket dataPacket;
 
@@ -85,6 +89,7 @@ public class ViewDataPacketFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Retrieve data packet from previous fragment, i.e. ListDataPacketFragment
         if (getArguments() != null) {
             if (getArguments().getSerializable("data_packet") != null) {
                 dataPacket = (DataPacket) getArguments().getSerializable("data_packet");
@@ -143,7 +148,6 @@ public class ViewDataPacketFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     storageRef = FirebaseStorage.getInstance().getReference();
-                    //String VideoUri = storageRef.child("/" + patientID.toString() + "/" + dataPacketID + "/" + "videos/Video - 1.mp4").getDownloadUrl().toString();
                     storageRef.child(patientID).child(dataPacketID).child("videos").child("Video - 1.mp4").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -173,6 +177,7 @@ public class ViewDataPacketFragment extends Fragment {
             });
         }
 
+        // Data packet UI elements declaration.
         dataPacketID = dataPacket.getDataPackedId();
         mTypeSp = (Spinner) getActivity().findViewById(R.id.dataType_sp);
         mPatientIdTV = (TextView) getActivity().findViewById(R.id.patientID_Txt);
@@ -195,7 +200,7 @@ public class ViewDataPacketFragment extends Fragment {
         swithchLayout.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) { ;
-                //Toast.makeText(getContext(), "" + type, Toast.LENGTH_SHORT).show();
+              // If the user is doctor, show UIs in order to send feedback.
                 if (dataSnapshot.getValue().toString().equals("Doctor")) {
                     UserType = "Doctor";
                     mTypeSp.setVisibility(View.VISIBLE);
@@ -204,27 +209,21 @@ public class ViewDataPacketFragment extends Fragment {
                     mSendBtn.setVisibility(View.VISIBLE);
                     mPasseedPatientIDTV.setVisibility(View.VISIBLE);
                 }
+              // If the user is patient, show UIs in order to receive feedback.
                 else {
                     UserType = "Patient";
-                
                     mTypeSp.setVisibility(View.VISIBLE);
                     mFeedbackFromDoctors.setVisibility(View.VISIBLE);
-                    
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 
-
-
-
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("DataPackets").child(patientID).child(dataPacketID);
 
-
+        // Get all doctors that has been paired with the patient and add to the spinner.
         allDoctors = FirebaseDatabase.getInstance().getReference().child("Users").child("user_id").child(patientID).child("MyDoctors");
         allDoctors.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -233,7 +232,6 @@ public class ViewDataPacketFragment extends Fragment {
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     DoctorList.add(String.valueOf(dataSnapshot1.getKey()));
                     int a = DoctorList.size();
-                    //Toast.makeText(getContext(), " " + a, Toast.LENGTH_LONG).show();
                     final ArrayAdapter DoctorAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, DoctorList);
                     DoctorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     mDoctorsSp.setAdapter(DoctorAdapter);
@@ -241,9 +239,7 @@ public class ViewDataPacketFragment extends Fragment {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             doctorName = DoctorAdapter.getItem(position).toString();
-                            //Toast.makeText(getContext(), "It will show all feedbacks from " + doctorName, Toast.LENGTH_LONG).show();
                         }
-
                         @Override
                         public void onNothingSelected(AdapterView<?> parent) {
 
@@ -258,6 +254,7 @@ public class ViewDataPacketFragment extends Fragment {
             }
         });
 
+        // Retrieve supplimentary files attached to the data packet from the database.
         Typelist = new ArrayList<>();
         Typelist.add("Choose File Type");
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
@@ -271,13 +268,12 @@ public class ViewDataPacketFragment extends Fragment {
                     }
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 
+        // Retrieve feedback attached to the data packet from the doctor.
         ArrayAdapter<String> TypeAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, Typelist);
         TypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mTypeSp.setAdapter(TypeAdapter);
@@ -305,7 +301,6 @@ public class ViewDataPacketFragment extends Fragment {
 
                         }
                     });
-                    //Toast.makeText(getContext(), "Feedback for " + item, Toast.LENGTH_LONG).show();
                 }
                 else {
                     mFeedbackFromDoctors.setText("Please choose a file type.");
@@ -319,6 +314,7 @@ public class ViewDataPacketFragment extends Fragment {
             }
         });
 
+        // Send the feedback to the patient.
         mSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -330,7 +326,6 @@ public class ViewDataPacketFragment extends Fragment {
                             Toast.makeText(getContext(), "Please choose a file type", Toast.LENGTH_SHORT).show();
                         }
                         else {
-                            //String currentDoctorName = dataSnapshot.child("First Name").getValue().toString() + " " + dataSnapshot.child("Last Name").getValue().toString();
                             String feedback = mFeedbackTxt.getText().toString().trim();
                             if (feedback.isEmpty()) {
                                 Toast.makeText(getContext(), "Feedback can not be empty", Toast.LENGTH_SHORT).show();
@@ -352,6 +347,7 @@ public class ViewDataPacketFragment extends Fragment {
         });
     }
 
+   
     private void showLocation(View view, Bundle savedInstanceState, Location location)
     {
         /** Show the location of the patient shared in the data packet in a map container **/
@@ -374,6 +370,7 @@ public class ViewDataPacketFragment extends Fragment {
         });
     }
 
+    // this method allow user to download files from the database.
     private void downloadFile(StorageReference storageRef, String filename) {
 
         File rootPath = new File(Environment.getExternalStorageDirectory(), filename);
@@ -387,7 +384,6 @@ public class ViewDataPacketFragment extends Fragment {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                 Log.e("firebase ",";local temp file created" +localFile.toString());
-                //  updateDb(timestamp,localFile.toString(),position);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
